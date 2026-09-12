@@ -1,0 +1,132 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,600;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <style>
+    body { margin: 0; font-family: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: #1B5E8C; text-decoration: none; }
+    a:hover { color: #123F60; }
+  </style>
+</helmet>
+
+<div style="width: 1160px; height: 744px; box-sizing: border-box; padding: 32px; background: #F5F8FB; font-family: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif; display: flex; flex-direction: column;">
+  <div style="font-family: Newsreader, Georgia, serif; font-weight: 600; font-size: 27px; color: #14304C; line-height: 1.1;">Status hasil tembakan</div>
+  <div style="margin-top: 6px; font-size: 13.5px; font-weight: 500; color: #5D7288;">Panel jarak tembakan berganti isi mengikuti kondisi — sebelum menembak, saat melesat, dan empat hasil pendaratan.</div>
+
+  <div style="margin-top: 26px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px 20px;"><div style="display: flex; flex-direction: column; gap: 9px;">
+      <div style="font-size: 11.5px; font-weight: 700; color: #7B90A5; letter-spacing: 0.01em;">1 · Sebelum menembak</div>
+      <div style="width: 352px; box-sizing: border-box; background: #FFFFFF; border: 1px solid #DBE6EE; border-radius: 20px; padding: 15px 18px; box-shadow: 0 8px 20px rgba(16,44,68,0.09); display: flex; flex-direction: column;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 24px;">
+          <div style="display: flex; align-items: center; gap: 8px;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#7B90A5" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.6" y="8.6" width="18.8" height="8" rx="1.8"/><path d="M7.3 8.6v3M11.9 8.6v4.2M16.6 8.6v3"/></svg><span style="font-size: 13px; font-weight: 700; color: #46586B;">Prakiraan Jarak</span></div>
+          
+        </div>
+        <div style="display: flex; align-items: baseline; gap: 6px; margin-top: 4px;">
+          <span style="font-size: 42px; font-weight: 800; color: #8398AC; letter-spacing: -0.02em; line-height: 1.06;">7,2</span>
+          <span style="font-size: 19px; font-weight: 700; color: #7189A0;">m</span>
+        </div>
+        <div style="margin-top: 5px; min-height: 34px; font-size: 12px; font-weight: 500; line-height: 1.38; color: #5D7288; text-wrap: pretty;">Atur gaya tarik dan massa batu, lalu tekan Lepaskan.</div>
+        <div style="height: 1px; background: #E4EBF1; margin: 12px 0 11px;"></div>
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;"><div style="display: flex; flex-direction: column; gap: 3px;"><span style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #93A6B8;">Gaya</span><span style="font-size: 14px; font-weight: 800; color: #26415C;">60 N</span></div><div style="display: flex; flex-direction: column; gap: 3px;"><span style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #93A6B8;">Massa</span><span style="font-size: 14px; font-weight: 800; color: #26415C;">1,0 kg</span></div><div style="display: flex; flex-direction: column; gap: 3px;"><span style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #93A6B8;">Percepatan</span><span style="font-size: 14px; font-weight: 800; color: #26415C;">60 m/s²</span></div></div>
+      </div>
+    </div><div style="display: flex; flex-direction: column; gap: 9px;">
+      <div style="font-size: 11.5px; font-weight: 700; color: #7B90A5; letter-spacing: 0.01em;">2 · Batu sedang di udara</div>
+      <div style="width: 352px; box-sizing: border-box; background: #FFFFFF; border: 1px solid #DBE6EE; border-radius: 20px; padding: 15px 18px; box-shadow: 0 8px 20px rgba(16,44,68,0.09); display: flex; flex-direction: column;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 24px;">
+          <div style="display: flex; align-items: center; gap: 8px;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#7B90A5" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.6" y="8.6" width="18.8" height="8" rx="1.8"/><path d="M7.3 8.6v3M11.9 8.6v4.2M16.6 8.6v3"/></svg><span style="font-size: 13px; font-weight: 700; color: #46586B;">Batu Melesat</span></div>
+          
+        </div>
+        <div style="display: flex; align-items: baseline; gap: 6px; margin-top: 4px;">
+          <span style="font-size: 42px; font-weight: 800; color: #8398AC; letter-spacing: -0.02em; line-height: 1.06;">…</span>
+          <span style="font-size: 19px; font-weight: 700; color: #7189A0;">m</span>
+        </div>
+        <div style="margin-top: 5px; min-height: 34px; font-size: 12px; font-weight: 500; line-height: 1.38; color: #5D7288; text-wrap: pretty;">Batu melesat dengan percepatan 60 m/s².</div>
+        <div style="height: 1px; background: #E4EBF1; margin: 12px 0 11px;"></div>
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;"><div style="display: flex; flex-direction: column; gap: 3px;"><span style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #93A6B8;">Gaya</span><span style="font-size: 14px; font-weight: 800; color: #26415C;">60 N</span></div><div style="display: flex; flex-direction: column; gap: 3px;"><span style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #93A6B8;">Massa</span><span style="font-size: 14px; font-weight: 800; color: #26415C;">1,0 kg</span></div><div style="display: flex; flex-direction: column; gap: 3px;"><span style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #93A6B8;">Percepatan</span><span style="font-size: 14px; font-weight: 800; color: #26415C;">60 m/s²</span></div></div>
+      </div>
+    </div><div style="display: flex; flex-direction: column; gap: 9px;">
+      <div style="font-size: 11.5px; font-weight: 700; color: #7B90A5; letter-spacing: 0.01em;">3 · Gagal — jatuh sebelum sasaran</div>
+      <div style="width: 352px; box-sizing: border-box; background: #FFFFFF; border: 1px solid #DBE6EE; border-radius: 20px; padding: 15px 18px; box-shadow: 0 8px 20px rgba(16,44,68,0.09); display: flex; flex-direction: column;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 24px;">
+          <div style="display: flex; align-items: center; gap: 8px;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#7B90A5" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.6" y="8.6" width="18.8" height="8" rx="1.8"/><path d="M7.3 8.6v3M11.9 8.6v4.2M16.6 8.6v3"/></svg><span style="font-size: 13px; font-weight: 700; color: #46586B;">Jarak Tembakan</span></div>
+          <div style="display: flex; align-items: center; gap: 6px; background: #FDF2DE; border-radius: 999px; padding: 5px 11px 5px 9px;"><span style="display: block; width: 7px; height: 7px; border-radius: 50%; background: #E0A030;"></span><span style="font-size: 11.5px; font-weight: 800; color: #A9670F;">Kurang Jauh</span></div>
+        </div>
+        <div style="display: flex; align-items: baseline; gap: 6px; margin-top: 4px;">
+          <span style="font-size: 42px; font-weight: 800; color: #17324F; letter-spacing: -0.02em; line-height: 1.06;">7,2</span>
+          <span style="font-size: 19px; font-weight: 700; color: #7189A0;">m</span>
+        </div>
+        <div style="margin-top: 5px; min-height: 34px; font-size: 12px; font-weight: 500; line-height: 1.38; color: #5D7288; text-wrap: pretty;">Kurang 4,8 m dari sasaran. Perbesar gaya tarik atau pakai batu yang lebih ringan.</div>
+        <div style="height: 1px; background: #E4EBF1; margin: 12px 0 11px;"></div>
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;"><div style="display: flex; flex-direction: column; gap: 3px;"><span style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #93A6B8;">Gaya</span><span style="font-size: 14px; font-weight: 800; color: #26415C;">60 N</span></div><div style="display: flex; flex-direction: column; gap: 3px;"><span style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #93A6B8;">Massa</span><span style="font-size: 14px; font-weight: 800; color: #26415C;">1,0 kg</span></div><div style="display: flex; flex-direction: column; gap: 3px;"><span style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #93A6B8;">Percepatan</span><span style="font-size: 14px; font-weight: 800; color: #26415C;">60 m/s²</span></div></div>
+      </div>
+    </div><div style="display: flex; flex-direction: column; gap: 9px;">
+      <div style="font-size: 11.5px; font-weight: 700; color: #7B90A5; letter-spacing: 0.01em;">4 · Berhasil — kena papan sasaran</div>
+      <div style="width: 352px; box-sizing: border-box; background: #FFFFFF; border: 1px solid #DBE6EE; border-radius: 20px; padding: 15px 18px; box-shadow: 0 8px 20px rgba(16,44,68,0.09); display: flex; flex-direction: column;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 24px;">
+          <div style="display: flex; align-items: center; gap: 8px;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#7B90A5" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.6" y="8.6" width="18.8" height="8" rx="1.8"/><path d="M7.3 8.6v3M11.9 8.6v4.2M16.6 8.6v3"/></svg><span style="font-size: 13px; font-weight: 700; color: #46586B;">Jarak Tembakan</span></div>
+          <div style="display: flex; align-items: center; gap: 6px; background: #E3F5EA; border-radius: 999px; padding: 5px 11px 5px 9px;"><span style="display: block; width: 7px; height: 7px; border-radius: 50%; background: #2E9E63;"></span><span style="font-size: 11.5px; font-weight: 800; color: #1F7A4C;">Tepat Sasaran</span></div>
+        </div>
+        <div style="display: flex; align-items: baseline; gap: 6px; margin-top: 4px;">
+          <span style="font-size: 42px; font-weight: 800; color: #17324F; letter-spacing: -0.02em; line-height: 1.06;">12,0</span>
+          <span style="font-size: 19px; font-weight: 700; color: #7189A0;">m</span>
+        </div>
+        <div style="margin-top: 5px; min-height: 34px; font-size: 12px; font-weight: 500; line-height: 1.38; color: #5D7288; text-wrap: pretty;">Percepatan 100 m/s² pas — batu mendarat tepat di papan sasaran.</div>
+        <div style="height: 1px; background: #E4EBF1; margin: 12px 0 11px;"></div>
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;"><div style="display: flex; flex-direction: column; gap: 3px;"><span style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #93A6B8;">Gaya</span><span style="font-size: 14px; font-weight: 800; color: #26415C;">100 N</span></div><div style="display: flex; flex-direction: column; gap: 3px;"><span style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #93A6B8;">Massa</span><span style="font-size: 14px; font-weight: 800; color: #26415C;">1,0 kg</span></div><div style="display: flex; flex-direction: column; gap: 3px;"><span style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #93A6B8;">Percepatan</span><span style="font-size: 14px; font-weight: 800; color: #26415C;">100 m/s²</span></div></div>
+      </div>
+    </div><div style="display: flex; flex-direction: column; gap: 9px;">
+      <div style="font-size: 11.5px; font-weight: 700; color: #7B90A5; letter-spacing: 0.01em;">5 · Gagal — melewati sasaran</div>
+      <div style="width: 352px; box-sizing: border-box; background: #FFFFFF; border: 1px solid #DBE6EE; border-radius: 20px; padding: 15px 18px; box-shadow: 0 8px 20px rgba(16,44,68,0.09); display: flex; flex-direction: column;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 24px;">
+          <div style="display: flex; align-items: center; gap: 8px;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#7B90A5" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.6" y="8.6" width="18.8" height="8" rx="1.8"/><path d="M7.3 8.6v3M11.9 8.6v4.2M16.6 8.6v3"/></svg><span style="font-size: 13px; font-weight: 700; color: #46586B;">Jarak Tembakan</span></div>
+          <div style="display: flex; align-items: center; gap: 6px; background: #FDF2DE; border-radius: 999px; padding: 5px 11px 5px 9px;"><span style="display: block; width: 7px; height: 7px; border-radius: 50%; background: #E0A030;"></span><span style="font-size: 11.5px; font-weight: 800; color: #A9670F;">Terlalu Jauh</span></div>
+        </div>
+        <div style="display: flex; align-items: baseline; gap: 6px; margin-top: 4px;">
+          <span style="font-size: 42px; font-weight: 800; color: #17324F; letter-spacing: -0.02em; line-height: 1.06;">16,5</span>
+          <span style="font-size: 19px; font-weight: 700; color: #7189A0;">m</span>
+        </div>
+        <div style="margin-top: 5px; min-height: 34px; font-size: 12px; font-weight: 500; line-height: 1.38; color: #5D7288; text-wrap: pretty;">Lewat 4,5 m dari sasaran. Kecilkan gaya tarik atau pakai batu yang lebih berat.</div>
+        <div style="height: 1px; background: #E4EBF1; margin: 12px 0 11px;"></div>
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;"><div style="display: flex; flex-direction: column; gap: 3px;"><span style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #93A6B8;">Gaya</span><span style="font-size: 14px; font-weight: 800; color: #26415C;">110 N</span></div><div style="display: flex; flex-direction: column; gap: 3px;"><span style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #93A6B8;">Massa</span><span style="font-size: 14px; font-weight: 800; color: #26415C;">0,8 kg</span></div><div style="display: flex; flex-direction: column; gap: 3px;"><span style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #93A6B8;">Percepatan</span><span style="font-size: 14px; font-weight: 800; color: #26415C;">137,5 m/s²</span></div></div>
+      </div>
+    </div><div style="display: flex; flex-direction: column; gap: 9px;">
+      <div style="font-size: 11.5px; font-weight: 700; color: #7B90A5; letter-spacing: 0.01em;">6 · Gagal — keluar lapangan</div>
+      <div style="width: 352px; box-sizing: border-box; background: #FFFFFF; border: 1px solid #DBE6EE; border-radius: 20px; padding: 15px 18px; box-shadow: 0 8px 20px rgba(16,44,68,0.09); display: flex; flex-direction: column;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 24px;">
+          <div style="display: flex; align-items: center; gap: 8px;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#7B90A5" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.6" y="8.6" width="18.8" height="8" rx="1.8"/><path d="M7.3 8.6v3M11.9 8.6v4.2M16.6 8.6v3"/></svg><span style="font-size: 13px; font-weight: 700; color: #46586B;">Jarak Tembakan</span></div>
+          <div style="display: flex; align-items: center; gap: 6px; background: #FBEAE5; border-radius: 999px; padding: 5px 11px 5px 9px;"><span style="display: block; width: 7px; height: 7px; border-radius: 50%; background: #D7452F;"></span><span style="font-size: 11.5px; font-weight: 800; color: #A93B27;">Keluar Lapangan</span></div>
+        </div>
+        <div style="display: flex; align-items: baseline; gap: 6px; margin-top: 4px;">
+          <span style="font-size: 42px; font-weight: 800; color: #17324F; letter-spacing: -0.02em; line-height: 1.06;">28,8</span>
+          <span style="font-size: 19px; font-weight: 700; color: #7189A0;">m</span>
+        </div>
+        <div style="margin-top: 5px; min-height: 34px; font-size: 12px; font-weight: 500; line-height: 1.38; color: #5D7288; text-wrap: pretty;">Terlempar 28,8 m, jauh melewati batas lapangan 20 m.</div>
+        <div style="height: 1px; background: #E4EBF1; margin: 12px 0 11px;"></div>
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;"><div style="display: flex; flex-direction: column; gap: 3px;"><span style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #93A6B8;">Gaya</span><span style="font-size: 14px; font-weight: 800; color: #26415C;">120 N</span></div><div style="display: flex; flex-direction: column; gap: 3px;"><span style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #93A6B8;">Massa</span><span style="font-size: 14px; font-weight: 800; color: #26415C;">0,5 kg</span></div><div style="display: flex; flex-direction: column; gap: 3px;"><span style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #93A6B8;">Percepatan</span><span style="font-size: 14px; font-weight: 800; color: #26415C;">240 m/s²</span></div></div>
+      </div>
+    </div></div>
+
+  <div style="height: 1px; background: #E1E9F0; margin: 26px 0 22px;"></div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px;"><div style="display: flex; flex-direction: column; gap: 9px;">
+      <div style="font-size: 11.5px; font-weight: 700; color: #7B90A5;">Idle — siap menembak</div>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 352px; height: 50px; box-sizing: border-box; border-radius: 13px; background: #1B3D5E; color: #FFFFFF; font-size: 16px; font-weight: 800; box-shadow: 0 6px 16px rgba(17,50,79,0.24); opacity: 1;"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><polygon points="7,4.5 19.5,12 7,19.5"/></svg>Lepaskan</div>
+    </div><div style="display: flex; flex-direction: column; gap: 9px;">
+      <div style="font-size: 11.5px; font-weight: 700; color: #7B90A5;">Terkunci selama batu di udara</div>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 352px; height: 50px; box-sizing: border-box; border-radius: 13px; background: #1B3D5E; color: #FFFFFF; font-size: 16px; font-weight: 800; box-shadow: 0 6px 16px rgba(17,50,79,0.24); opacity: 0.66;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M2.5 8h8M2.5 12h11M2.5 16h6"/><circle cx="19" cy="12" r="2.6" fill="currentColor" stroke="none"/></svg>Melesat…</div>
+    </div><div style="display: flex; flex-direction: column; gap: 9px;">
+      <div style="font-size: 11.5px; font-weight: 700; color: #7B90A5;">Setelah mendarat — gagal maupun berhasil</div>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 352px; height: 50px; box-sizing: border-box; border-radius: 13px; background: #1B3D5E; color: #FFFFFF; font-size: 16px; font-weight: 800; box-shadow: 0 6px 16px rgba(17,50,79,0.24); opacity: 1;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-2.6-6.1"/><path d="M20.5 3.2v5.4h-5.4"/></svg>Ulangi</div>
+    </div></div>
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1160,"height":744}}'>
+class Component extends DCLogic {}
+</script>
+</body>
+</html>
