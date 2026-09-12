@@ -350,7 +350,7 @@
     </div>
   </sc-if>
 
-  <div style="position: absolute; left: 24px; top: 22px; display: flex; align-items: center; gap: 14px; background: {{s.accent}}; border-radius: 18px; padding: 13px 22px 13px 14px; box-shadow: 0 8px 22px rgba(12,32,52,0.28); z-index: 10;">
+  <div style="position: absolute; left: 24px; top: 22px; display: flex; align-items: center; gap: 14px; background: {{s.accent}}; border: 1px solid rgba(255,255,255,0.3); border-radius: 18px; padding: 13px 22px 13px 14px; box-shadow: 0 8px 22px rgba(12,32,52,0.28); z-index: 10;">
     <div style="display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,0.14);">
       <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="#FFFFFF" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
         <path d="M 7 4 L 13 13 L 19 4"/>
@@ -398,7 +398,7 @@
     </div>
   </div>
 
-  <div style="position: absolute; left: 500px; bottom: 24px; width: 540px; box-sizing: border-box; background: rgba(255,255,255,0.96); border: 1px solid #DBE6EE; border-radius: 20px; padding: 18px 20px; box-shadow: 0 12px 30px rgba(16,44,68,0.16); display: flex; flex-direction: column; gap: 14px; z-index: 10;">
+  <div style="position: absolute; left: 450px; bottom: 24px; width: 540px; box-sizing: border-box; background: rgba(255,255,255,0.96); border: 1px solid #DBE6EE; border-radius: 20px; padding: 18px 20px; box-shadow: 0 12px 30px rgba(16,44,68,0.16); display: flex; flex-direction: column; gap: 14px; z-index: 10;">
     <div style="display: flex; align-items: center; gap: 13px; opacity: {{s.ctlOp}};">
       <div style="display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 11px; background: #E7F0FC; flex-shrink: 0;">
         <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#2E6FD8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -433,10 +433,10 @@
     </button>
   </div>
 
-  <div style="position: absolute; right: 24px; bottom: 24px; width: 352px; box-sizing: border-box; background: rgba(255,255,255,0.96); border: 1px solid #DBE6EE; border-radius: 20px; padding: 15px 18px; box-shadow: 0 12px 30px rgba(16,44,68,0.16); display: flex; flex-direction: column; z-index: 10;">
+  <div style="position: absolute; right: 24px; bottom: 24px; width: 352px; box-sizing: border-box; background: rgba(255,255,255,0.96); border: 1px solid #DBE6EE; border-radius: 20px; padding: 15px 18px; box-shadow: 0 12px 30px rgba(16,44,68,0.16); display: flex; flex-direction: column; gap: 5px; z-index: 10;">
     <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 24px;">
       <div style="display: flex; align-items: center; gap: 8px;">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#7B90A5" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#5D7288" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
           <rect x="2.6" y="8.6" width="18.8" height="8" rx="1.8"/><path d="M7.3 8.6v3M11.9 8.6v4.2M16.6 8.6v3"/>
         </svg>
         <span style="font-size: 13px; font-weight: 700; color: #46586B; letter-spacing: 0.01em;">{{s.headLabel}}</span>
@@ -448,23 +448,22 @@
         </div>
       </sc-if>
     </div>
-    <div style="display: flex; align-items: baseline; gap: 6px; margin-top: 4px;">
+    <div style="display: flex; align-items: baseline; gap: 6px;">
       <span style="font-size: 42px; font-weight: 800; color: {{s.distColor}}; letter-spacing: -0.02em; line-height: 1.06;">{{s.distTxt}}</span>
       <span style="font-size: 19px; font-weight: 700; color: #7189A0;">m</span>
     </div>
-    <div style="margin-top: 5px; min-height: 34px; font-size: 12px; font-weight: 500; line-height: 1.38; color: #5D7288; text-wrap: pretty;">{{s.guidance}}</div>
-    <div style="height: 1px; background: #E4EBF1; margin: 12px 0 11px;"></div>
-    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;">
+    <div style="min-height: 34px; font-size: 12px; font-weight: 500; line-height: 1.38; color: #5D7288; text-wrap: pretty;">{{s.guidance}}</div>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 7px; padding-top: 12px; border-top: 1px solid #E4EBF1;">
       <div style="display: flex; flex-direction: column; gap: 3px;">
-        <span style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #93A6B8;">Gaya</span>
+        <span style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #5D7288;">Gaya</span>
         <span style="font-size: 14px; font-weight: 800; color: #26415C;">{{s.fTxt}}</span>
       </div>
       <div style="display: flex; flex-direction: column; gap: 3px;">
-        <span style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #93A6B8;">Massa</span>
+        <span style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #5D7288;">Massa</span>
         <span style="font-size: 14px; font-weight: 800; color: #26415C;">{{s.mTxt}}</span>
       </div>
       <div style="display: flex; flex-direction: column; gap: 3px;">
-        <span style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #93A6B8;">Percepatan</span>
+        <span style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #5D7288;">Percepatan</span>
         <span style="font-size: 14px; font-weight: 800; color: #26415C;">{{s.aTxt}}</span>
       </div>
     </div>
@@ -526,13 +525,15 @@ class Component extends DCLogic {
   }
 
   onF(e) {
-    if (this.state.phase !== 'idle') return;
-    this.setState({ f: Number(e.target.value) });
+    if (this.state.phase === 'flying') return;
+    if (this.timer) clearTimeout(this.timer);
+    this.setState({ f: Number(e.target.value), phase: 'idle' });
   }
 
   onM(e) {
-    if (this.state.phase !== 'idle') return;
-    this.setState({ m: Math.round(Number(e.target.value) * 10) / 10 });
+    if (this.state.phase === 'flying') return;
+    if (this.timer) clearTimeout(this.timer);
+    this.setState({ m: Math.round(Number(e.target.value) * 10) / 10, phase: 'idle' });
   }
 
   onPrimary() {
@@ -553,26 +554,26 @@ class Component extends DCLogic {
     var idle = ph === 'idle', flying = ph === 'flying', done = ph === 'done';
     var accent = this.props.warnaAksen || '#1B3D5E';
 
+    var aTxt = (Math.abs(c.a - Math.round(c.a)) < 0.05 ? this.fmt(c.a, 0) : this.fmt(c.a, 1)) + ' m/s²';
     var label = '', bg = '', fg = '', dot = '', guide = '';
     if (idle) {
       guide = 'Atur gaya tarik dan massa batu, lalu tekan Lepaskan.';
     } else if (flying) {
-      guide = 'Batu melesat dengan percepatan ' + this.fmt(c.a, 0) + ' m/s².';
+      guide = 'Batu melesat dengan percepatan ' + aTxt + '.';
     } else if (c.kind === 'hit') {
       label = 'Tepat Sasaran'; bg = '#E3F5EA'; fg = '#1F7A4C'; dot = '#2E9E63';
-      guide = 'Percepatan ' + this.fmt(c.a, 0) + ' m/s² pas — batu mendarat tepat di papan sasaran.';
+      guide = 'Percepatan ' + aTxt + ' pas — batu mendarat tepat di papan sasaran.';
     } else if (c.kind === 'short') {
       label = 'Kurang Jauh'; bg = '#FDF2DE'; fg = '#A9670F'; dot = '#E0A030';
       guide = 'Kurang ' + this.fmt(c.T - c.R, 1) + ' m dari sasaran. Perbesar gaya tarik atau pakai batu yang lebih ringan.';
     } else if (c.kind === 'long') {
       label = 'Terlalu Jauh'; bg = '#FDF2DE'; fg = '#A9670F'; dot = '#E0A030';
-      guide = 'Lewat ' + this.fmt(c.R - c.T, 1) + ' m dari sasaran. Kecilkan gaya tarik atau pakai batu yang lebih berat.';
+      guide = 'Melewati sasaran sejauh ' + this.fmt(c.R - c.T, 1) + ' m. Kecilkan gaya tarik atau pakai batu yang lebih berat.';
     } else {
       label = 'Keluar Lapangan'; bg = '#FBEAE5'; fg = '#A93B27'; dot = '#D7452F';
       guide = 'Terlempar ' + this.fmt(c.R, 1) + ' m, jauh melewati batas lapangan 20 m.';
     }
 
-    var aTxt = (Math.abs(c.a - Math.round(c.a)) < 0.05 ? this.fmt(c.a, 0) : this.fmt(c.a, 1)) + ' m/s²';
     var len = 34 + (c.f - 40) * 1.15;
     var tip = 500 + len;
     var x0 = 472, y0 = 362;
@@ -594,8 +595,8 @@ class Component extends DCLogic {
       flying: flying,
       done: done,
       shot: !idle,
-      locked: !idle,
-      ctlOp: idle ? '1' : '0.55',
+      locked: flying,
+      ctlOp: flying ? '0.55' : '1',
       btnOp: flying ? '0.66' : '1',
       btnLabel: idle ? 'Lepaskan' : (flying ? 'Melesat…' : 'Ulangi'),
 

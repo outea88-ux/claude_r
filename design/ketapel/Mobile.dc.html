@@ -12,8 +12,9 @@
     body { margin: 0; font-family: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
     a { color: #1B5E8C; text-decoration: none; }
     a:hover { color: #123F60; }
-    .rng-tall { position: relative; height: 8px; border-radius: 999px; margin: 10px 0; }
-    .rng-tall .thumb { position: absolute; top: 50%; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%; background: #FFFFFF; border: 3px solid currentColor; box-shadow: 0 1px 4px rgba(14,38,60,.30); }
+    /* 8px of painted track inside a 44px touch target */
+    .track { position: relative; box-sizing: content-box; height: 8px; padding: 18px 0; border-radius: 999px; background-clip: content-box; }
+    .track .thumb { position: absolute; top: 50%; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%; background: #FFFFFF; border: 3px solid currentColor; box-shadow: 0 1px 4px rgba(14,38,60,.30); }
   </style>
 </helmet>
 
@@ -25,8 +26,8 @@
       <linearGradient id="mbFore" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9EC364"/><stop offset="1" stop-color="#7BA34B"/></linearGradient>
     </defs>
     <rect x="0" y="0" width="390" height="200" fill="url(#mbSky)"/>
-    <circle cx="316" cy="46" r="46" fill="#FFFFFF" opacity="0.22"/>
-    <circle cx="316" cy="46" r="25" fill="#FFF7DE" opacity="0.95"/>
+    <circle cx="196" cy="40" r="38" fill="#FFFFFF" opacity="0.22"/>
+    <circle cx="196" cy="40" r="20" fill="#FFF7DE" opacity="0.95"/>
     <path d="M -10 200 L -10 168 L 54 128 L 116 160 L 186 112 L 252 154 L 318 122 L 400 162 L 400 200 Z" fill="#A6C5DA"/>
     <path d="M 186 112 L 252 154 L 186 154 Z" fill="#C2D9E8" opacity="0.85"/>
     <path d="M -10 200 L -10 186 L 76 158 L 148 188 L 226 152 L 300 186 L 400 156 L 400 200 Z" fill="#8AB1CB"/>
@@ -61,8 +62,8 @@
       <rect x="-54" y="344" width="108" height="27" rx="13.5" fill="#1B3D5E" opacity="0.94"/>
       <text x="0" y="362" text-anchor="middle" fill="#FFFFFF" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="12.5" font-weight="700">Sasaran 12 m</text>
     </g>
-    <path d="M 158.8 157.1 Q 244.4 6.0 330 219.4" fill="none" stroke="#2A4A63" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 11" opacity="0.16"/>
-    <path d="M 158.8 157.1 Q 244.4 6.0 330 219.4" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="2 11" opacity="0.92"/>
+    <path d="M 158.8 157.1 Q 208.4 17.7 258 258" fill="none" stroke="#2A4A63" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 11" opacity="0.1"/>
+    <path d="M 158.8 157.1 Q 208.4 17.7 258 258" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="2 11" opacity="0.5"/>
     <g transform="translate(-86.6 -31.1) scale(0.52)"><g>
       <ellipse cx="312" cy="560" rx="122" ry="13" fill="#4E6A38" opacity="0.2"/>
       <path d="M 286 452 L 248 506 L 226 546" stroke="#303C55" stroke-width="30" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
@@ -94,12 +95,12 @@
       <path d="M 264 296 Q 250 274 260 246 Q 244 282 258 310 Z" fill="#24232C"/>
       <path d="M 288 252 Q 310 245 330 256 Q 308 251 290 259 Z" fill="#3E3C4A"/>
 
-      <g>
-        <path d="M 286 356 L 244 378" stroke="#EFF3F7" stroke-width="32" stroke-linecap="round" fill="none"/>
-        <path d="M 244 378 L 252 344" stroke="#DFA97F" stroke-width="23" stroke-linecap="round" fill="none"/>
-        <circle cx="254" cy="338" r="13" fill="#DFA97F"/>
-      </g>
       
+      <g>
+        <path d="M 286 356 L 266 398" stroke="#EFF3F7" stroke-width="32" stroke-linecap="round" fill="none"/>
+        <path d="M 266 398 L 300 415" stroke="#DFA97F" stroke-width="23" stroke-linecap="round" fill="none"/>
+        <circle cx="306" cy="417" r="13" fill="#DFA97F"/>
+      </g>
 
       <path d="M 330 358 L 374 364" stroke="#FBFCFD" stroke-width="34" stroke-linecap="round" fill="none"/>
       <path d="M 372 364 L 442 372" stroke="#E9B68E" stroke-width="25" stroke-linecap="round" fill="none"/>
@@ -112,22 +113,24 @@
       <circle cx="436" cy="330" r="7" fill="#6F4A29"/>
       <circle cx="480" cy="336" r="7" fill="#6F4A29"/>
 
-      <g>
-        <path d="M 436 330 L 256 331" stroke="#2E2E36" stroke-width="6" stroke-linecap="round" fill="none"/>
-        <path d="M 480 336 L 258 345" stroke="#2E2E36" stroke-width="6" stroke-linecap="round" fill="none"/>
-        <path d="M 247 325 Q 265 319 269 338 Q 265 357 247 351 Z" fill="#4A3A2C"/>
-      </g>
+      
+      
       
         <g>
-          <ellipse cx="258" cy="338" rx="11.5" ry="9.5" fill="#6E7B85"/>
-          <path d="M 251 334 Q 258 330 264 334 Q 258 336 251 334 Z" fill="#8C99A3"/>
+          <path d="M 436 330 Q 452 342 465 339" stroke="#2E2E36" stroke-width="6" stroke-linecap="round" fill="none"/>
+          <path d="M 480 336 Q 472 344 465 342" stroke="#2E2E36" stroke-width="6" stroke-linecap="round" fill="none"/>
+          <ellipse cx="466" cy="341" rx="9" ry="7" fill="#4A3A2C"/>
         </g>
       
-      
     </g></g>
+    <g>
+      <ellipse cx="258" cy="259" rx="15" ry="4" fill="#8C7550" opacity="0.35"/>
+      <path d="M 250 256 L 254 250 L 262 251 L 265 256 L 260 262 L 252 261 Z" fill="#6E7B85"/>
+      <path d="M 250 256 L 254 250 L 262 251 L 257 256 Z" fill="#8C99A3"/>
+    </g>
   </svg>
 
-  <div style="position: absolute; left: 14px; top: 14px; display: flex; align-items: center; gap: 10px; background: #1B3D5E; border-radius: 14px; padding: 9px 15px 9px 10px; box-shadow: 0 6px 16px rgba(12,32,52,0.28);">
+  <div style="position: absolute; left: 14px; top: 14px; display: flex; align-items: center; gap: 10px; background: #1B3D5E; border: 1px solid rgba(255,255,255,0.3); border-radius: 14px; padding: 9px 15px 9px 10px; box-shadow: 0 6px 16px rgba(12,32,52,0.28);">
     <div style="display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 9px; background: rgba(255,255,255,0.14);">
       <svg width="19" height="19" viewBox="0 0 26 26" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M 7 4 L 13 13 L 19 4"/><path d="M 13 13 L 13 22"/><path d="M 7 4 Q 13 10 19 4"/><circle cx="13" cy="7.6" r="2.2" fill="#FFFFFF" stroke="none"/></svg>
     </div>
@@ -137,19 +140,13 @@
     </div>
   </div>
 
+  <div style="position: absolute; right: 14px; top: 16px; background: rgba(255,255,255,0.94); border: 1px solid #DBE6EE; border-radius: 13px; padding: 8px 15px; box-shadow: 0 6px 16px rgba(16,44,68,0.16);">
+    <span style="font-family: Newsreader, Georgia, serif; font-style: italic; font-weight: 600; font-size: 21px; color: #17324F; line-height: 1.1;">F = m × a</span>
+  </div>
+
   <div style="position: absolute; left: 0; top: 314px; width: 390px; height: 530px; box-sizing: border-box; background: #FFFFFF; border-radius: 24px 24px 0 0; box-shadow: 0 -8px 26px rgba(16,44,68,0.14); padding: 18px; display: flex; flex-direction: column; gap: 12px;">
 
-    <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
-      <div style="display: flex; align-items: center; gap: 12px; background: #F2F6FA; border: 1px solid #E4EBF1; border-radius: 12px; padding: 7px 14px;">
-        <span style="font-family: Newsreader, Georgia, serif; font-style: italic; font-weight: 600; font-size: 21px; color: #17324F; line-height: 1;">F = m × a</span>
-        <span style="font-size: 10.5px; font-weight: 600; color: #7B90A5; line-height: 1.25;">gaya = massa<br>× percepatan</span>
-      </div>
-      <div style="display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 13px; background: #1B3D5E; flex-shrink: 0;">
-        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#F4C05E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 18h5"/><path d="M10.2 21.2h3.6"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1.1 1.4 1.1 2.2h5c0-.8.5-1.7 1.1-2.2A6 6 0 0 0 12 3z"/></svg>
-      </div>
-    </div>
-
-    <div style="background: #F2F7FB; border: 1px solid #E1EAF2; border-radius: 16px; padding: 14px;">
+    <div style="background: #F2F7FB; border: 1px solid #E1EAF2; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 5px;">
       <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
         <span style="font-size: 12.5px; font-weight: 700; color: #46586B;">Jarak Tembakan</span>
         <div style="display: flex; align-items: center; gap: 6px; background: #FDF2DE; border-radius: 999px; padding: 5px 11px 5px 9px;">
@@ -157,35 +154,34 @@
           <span style="font-size: 11px; font-weight: 800; color: #A9670F;">Kurang Jauh</span>
         </div>
       </div>
-      <div style="display: flex; align-items: baseline; gap: 5px; margin-top: 3px;">
+      <div style="display: flex; align-items: baseline; gap: 5px;">
         <span style="font-size: 36px; font-weight: 800; color: #17324F; letter-spacing: -0.02em; line-height: 1.08;">7,2</span>
         <span style="font-size: 17px; font-weight: 700; color: #7189A0;">m</span>
       </div>
-      <div style="margin-top: 4px; font-size: 11.5px; font-weight: 500; line-height: 1.4; color: #5D7288;">Kurang 4,8 m dari sasaran. Perbesar gaya tarik atau pakai batu yang lebih ringan.</div>
+      <div style="font-size: 11.5px; font-weight: 500; line-height: 1.4; color: #5D7288;">Kurang 4,8 m dari sasaran. Perbesar gaya tarik atau pakai batu yang lebih ringan.</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 7px; padding-top: 11px; border-top: 1px solid #E1EAF2;"><span style="font-size: 11px; font-weight: 600; color: #5D7288;">Gaya <b style="font-weight: 800; color: #26415C;">60 N</b></span><span style="font-size: 11px; font-weight: 600; color: #5D7288;">Massa <b style="font-weight: 800; color: #26415C;">1,0 kg</b></span><span style="font-size: 11px; font-weight: 600; color: #5D7288;">Percepatan <b style="font-weight: 800; color: #26415C;">60 m/s²</b></span></div>
     </div>
 
     <div>
       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px;">
         <div style="display: flex; align-items: center; gap: 9px;">
-          <div style="display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 8px; background: #E7F0FC;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2E6FD8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12H5l2-5 3 10 3-10 2 5h2.5"/><path d="M16 8.4L19.6 12 16 15.6"/></svg></div>
+          <div style="display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 8px; background: #E7F0FC;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2E6FD8" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12H5l2-5 3 10 3-10 2 5h2.5"/><path d="M16 8.4L19.6 12 16 15.6"/></svg></div>
           <span style="font-size: 13.5px; font-weight: 700; color: #26415C;">Gaya Tarik</span>
         </div>
         <span style="font-size: 14px; font-weight: 800; color: #17324F;">60 N</span>
       </div>
-      <div class="rng rng-tall" style="color: #2E6FD8; background: linear-gradient(90deg, #2E6FD8 0%, #2E6FD8 25%, #DFE7EE 25%, #DFE7EE 100%);"><span class="thumb" style="left: 25%;"></span></div>
+      <div class="track" style="color: #2E6FD8; background: linear-gradient(90deg, #2E6FD8 0%, #2E6FD8 25%, #DFE7EE 25%, #DFE7EE 100%);"><span class="thumb" style="left: 25%;"></span></div>
     </div>
     <div>
       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px;">
         <div style="display: flex; align-items: center; gap: 9px;">
-          <div style="display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 8px; background: #E6F3EB;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2F8F5B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8.4h10l2.3 10.9a1.5 1.5 0 0 1-1.5 1.8H6.2a1.5 1.5 0 0 1-1.5-1.8L7 8.4z"/><path d="M9.6 8.4V7a2.4 2.4 0 0 1 4.8 0v1.4"/></svg></div>
+          <div style="display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 8px; background: #E6F3EB;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2F8F5B" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8.4h10l2.3 10.9a1.5 1.5 0 0 1-1.5 1.8H6.2a1.5 1.5 0 0 1-1.5-1.8L7 8.4z"/><path d="M9.6 8.4V7a2.4 2.4 0 0 1 4.8 0v1.4"/></svg></div>
           <span style="font-size: 13.5px; font-weight: 700; color: #26415C;">Massa Batu</span>
         </div>
         <span style="font-size: 14px; font-weight: 800; color: #17324F;">1,0 kg</span>
       </div>
-      <div class="rng rng-tall" style="color: #2F8F5B; background: linear-gradient(90deg, #2F8F5B 0%, #2F8F5B 50%, #DFE7EE 50%, #DFE7EE 100%);"><span class="thumb" style="left: 50%;"></span></div>
+      <div class="track" style="color: #2F8F5B; background: linear-gradient(90deg, #2F8F5B 0%, #2F8F5B 50%, #DFE7EE 50%, #DFE7EE 100%);"><span class="thumb" style="left: 50%;"></span></div>
     </div>
-
-    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;"><div style="background: #F2F6FA; border: 1px solid #E4EBF1; border-radius: 12px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 9.5px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: #93A6B8;">Gaya</span><span style="font-size: 13px; font-weight: 800; color: #26415C;">60 N</span></div><div style="background: #F2F6FA; border: 1px solid #E4EBF1; border-radius: 12px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 9.5px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: #93A6B8;">Massa</span><span style="font-size: 13px; font-weight: 800; color: #26415C;">1,0 kg</span></div><div style="background: #F2F6FA; border: 1px solid #E4EBF1; border-radius: 12px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 9.5px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: #93A6B8;">Percepatan</span><span style="font-size: 13px; font-weight: 800; color: #26415C;">60 m/s²</span></div></div>
 
     <div style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 52px; border-radius: 14px; background: #1B3D5E; color: #FFFFFF; font-size: 16px; font-weight: 800; box-shadow: 0 6px 16px rgba(17,50,79,0.26);">
       <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-2.6-6.1"/><path d="M20.5 3.2v5.4h-5.4"/></svg>
@@ -193,11 +189,11 @@
     </div>
 
     <div style="display: flex; gap: 6px; margin-top: auto; background: #F2F6FA; border: 1px solid #E4EBF1; border-radius: 18px; padding: 6px;">
-      <div style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; height: 54px; border-radius: 13px; color: #64778A;">
+      <div style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; height: 52px; border-radius: 13px; color: #5D7288;">
         <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.4C12 6.4 9.6 4.4 5 4.4v13c4.6 0 7 2 7 2s2.4-2 7-2v-13c-4.6 0-7 2-7 2z"/><path d="M12 6.4v13"/></svg>
         <span style="font-size: 11.5px; font-weight: 700;">Materi</span>
       </div>
-      <div style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; height: 54px; border-radius: 13px; background: #1B3D5E; color: #FFFFFF;">
+      <div style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; height: 52px; border-radius: 13px; background: #1B3D5E; color: #FFFFFF;">
         <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.2"/><path d="M12 1.8v2.6M12 19.6v2.6M1.8 12h2.6M19.6 12h2.6"/></svg>
         <span style="font-size: 11.5px; font-weight: 700;">Eksplorasi</span>
       </div>

@@ -7,7 +7,7 @@
   ],
   "annotations": [
     { "id": "model-fisika", "x": 0, "y": -258, "w": 700,
-      "text": "Model fisika di Eksplorasi\na = F / m   ·   v₀ = √(2 · a · s) dengan s = 0,6 m   ·   R = v₀² / g dengan g = 10 m/s², sudut lempar 45°\nHasilnya R = 0,12 × a. Rentang slider: gaya 40–120 N, massa 0,5–1,5 kg → jarak 3,2 m sampai 28,8 m.\nSasaran default 12 m, butuh a = 100 m/s² (mis. 100 N + 1,0 kg, atau 70 N + 0,7 kg). Toleransi ±0,6 m = lebar papan.\nJarak sasaran bisa digeser 6–18 m; lapangan berakhir di 20 m." },
+      "text": "Model fisika di Eksplorasi\na = F / m   ·   v₀ = √(2 · a · s) dengan s = 0,6 m   ·   R = v₀² / g dengan g = 10 m/s², sudut lempar 45°\nHasilnya R = 0,12 × a. Rentang slider: gaya 40–120 N, massa 0,5–1,5 kg → jarak 3,2 m sampai 28,8 m.\nSasaran default 12 m, butuh a = 100 m/s² (mis. 100 N + 1,0 kg, atau 70 N + 0,7 kg). Toleransi ±0,6 m (papan sengaja digambar lebih lebar agar jelas terlihat).\nJarak sasaran bisa digeser 6–18 m; lapangan berakhir di 20 m." },
     { "id": "alur-tembak", "x": 740, "y": -258, "w": 700,
       "text": "Alur tombol\nLepaskan → karet menjentik balik ke garpu, batu terbang mengikuti percepatannya, slider terkunci.\nMendarat → panel jarak berganti dari Prakiraan ke Jarak Tembakan, muncul status (Tepat Sasaran / Kurang Jauh / Terlalu Jauh / Keluar Lapangan) dan tombol berubah jadi Ulangi.\nUlangi → batu kembali ke kantong karet, slider terbuka lagi, tombol kembali Lepaskan." }
   ],
