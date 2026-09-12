@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Petualangan Layang-Layang</title>
+<meta name="description" content="Simulasi IPA SMP: mainkan angin, kemiringan, massa, dan ekor layangan lalu lihat gaya-gaya yang membuatnya terbang.">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: { extend: {
+    fontFamily: { display: ['Fredoka','Trebuchet MS','sans-serif'], body: ['Nunito','Segoe UI','sans-serif'] },
+    colors: {
+      darkbg:'#070b14', cardbg:'rgba(15,23,42,.72)',
+      skyaccent:'#38bdf8', purpleaccent:'#c084fc', amberaccent:'#fbbf24',
+      roseaccent:'#fb7185', emeraldaccent:'#34d399'
+    }
+  }}
+}
+</script>
+<style>
+  :root{
+    --bg-top:#0f1d33; --bg-mid:#090f1c; --bg-bot:#05080f;
+    --ink:#f8fafc; --ink-dim:#94a3b8; --ink-faint:#64748b;
+    --line:rgba(148,163,184,.18);
+    --sky:#38bdf8; --purple:#c084fc; --amber:#fbbf24; --rose:#fb7185; --emerald:#34d399;
+  }
+  html{ -webkit-text-size-adjust:100%; }
+  body{
+    margin:0; padding-bottom:2.5rem;
+    font-family:'Nunito','Segoe UI',sans-serif;
+    background:radial-gradient(circle at 50% 8%, var(--bg-top) 0%, var(--bg-mid) 62%, var(--bg-bot) 100%);
+    background-attachment:fixed;
+    color:var(--ink); min-height:100vh;
+  }
+  ::selection{ background:#0ea5e9; color:#0f172a; }
+  .glass-card{
+    background:rgba(15,23,42,.72);
+    backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    border:1px solid rgba(255,255,255,.12);
+    box-shadow:0 12px 30px 0 rgba(0,0,0,.45);
+    border-radius:1.25rem;
+  }
+  .btn-glow{ transition:all .25s cubic-bezier(.34,1.56,.64,1); box-shadow:0 4px 15px rgba(56,189,248,.25); }
+  .btn-glow:hover{ transform:translateY(-2px) scale(1.02); box-shadow:0 6px 22px rgba(56,189,248,.45); }
+  .btn-glow:active{ transform:translateY(1px) scale(.98); }
+
+  /* ---- sliders (both engines) ---- */
+  input[type=range]{ -webkit-appearance:none; appearance:none; background:#1e293b; border-radius:8px; height:8px; width:100%; }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none; appearance:none; height:22px; width:22px; border-radius:50%;
+    background:var(--sl,#38bdf8); box-shadow:0 0 10px var(--sl,#38bdf8); cursor:pointer;
+    border:2px solid rgba(255,255,255,.75); transition:transform .15s ease;
+  }
+  input[type=range]::-webkit-slider-thumb:hover{ transform:scale(1.18); }
+  input[type=range]::-moz-range-thumb{
+    height:20px; width:20px; border-radius:50%; background:var(--sl,#38bdf8);
+    box-shadow:0 0 10px var(--sl,#38bdf8); cursor:pointer; border:2px solid rgba(255,255,255,.75);
+  }
+  input[type=range]::-moz-range-track{ background:#1e293b; height:8px; border-radius:8px; }
+
+  ::-webkit-scrollbar{ width:8px; height:8px; }
+  ::-webkit-scrollbar-track{ background:#090d16; }
+  ::-webkit-scrollbar-thumb{ background:#1e293b; border-radius:4px; }
+  ::-webkit-scrollbar-thumb:hover{ background:#38bdf8; }
+
+  canvas{ touch-action:none; display:block; }
+  summary::-webkit-details-marker{ display:none; }
+  .num{ font-variant-numeric:tabular-nums; }
+
+  :focus-visible{ outline:3px solid #7dd3fc; outline-offset:2px; border-radius:.6rem; }
+
+  @keyframes pulseGlow{ 0%,100%{ filter:drop-shadow(0 0 8px rgba(56,189,248,.6)); } 50%{ filter:drop-shadow(0 0 18px rgba(192,132,252,.8)); } }
+  .glow-effect{ animation:pulseGlow 3s infinite ease-in-out; }
+  @keyframes popIn{ from{ opacity:0; transform:translateY(10px) scale(.96); } to{ opacity:1; transform:none; } }
+  .pop-in{ animation:popIn .35s cubic-bezier(.2,.9,.3,1.2) both; }
+  @keyframes toastIn{ 0%{ opacity:0; transform:translate(-50%,18px) scale(.94); } 12%,88%{ opacity:1; transform:translate(-50%,0) scale(1); } 100%{ opacity:0; transform:translate(-50%,-10px) scale(.98); } }
+  .toast{ animation:toastIn 3.4s ease both; }
+
+  .tab-on{ background:#0284c7; color:#fff; box-shadow:0 2px 10px rgba(2,132,199,.45); }
+  .tab-off{ color:#94a3b8; }
+  .tab-off:hover{ color:#fff; }
+
+  .mission-done{ border-color:rgba(52,211,153,.55) !important; background:rgba(6,78,59,.32) !important; }
+
+  @media (prefers-reduced-motion:reduce){
+    .glow-effect,.animate-ping,.pop-in,.toast{ animation:none !important; }
+    .btn-glow{ transition:none; }
+  }
+</style>
+</head>
+<body class="flex flex-col selection:bg-sky-500 selection:text-slate-900 pb-10">
+
+<!-- ══════════ HEADER ══════════ -->
+<header class="w-full px-4 lg:px-8 py-4">
+  <div class="max-w-7xl mx-auto glass-card px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+
+    <div class="flex items-center gap-3 min-w-0">
+      <div class="w-12 h-12 shrink-0 rounded-2xl bg-gradient-to-tr from-sky-500 via-indigo-500 to-purple-500 flex items-center justify-center text-2xl shadow-lg shadow-sky-500/30 -rotate-6 glow-effect" aria-hidden="true">🪁</div>
+      <div class="min-w-0">
+        <h1 class="font-display font-bold text-lg sm:text-xl md:text-2xl text-white tracking-wide flex flex-wrap items-center gap-2">
+          Petualangan Layang-Layang
+          <span class="text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full bg-sky-950 text-sky-300 border border-sky-800 whitespace-nowrap">IPA SMP · Kelas 7–9 🍃</span>
+        </h1>
+        <p class="text-xs font-semibold text-slate-400 hidden sm:block">Main-main dengan angin, lalu temukan gaya-gaya yang bikin layangan bisa naik</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+      <div class="flex items-center gap-2 bg-slate-900/80 px-3.5 py-1.5 rounded-xl border border-slate-700">
+        <span id="status-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" aria-hidden="true"></span>
+        <span id="status-text" class="text-xs font-bold text-slate-200 uppercase tracking-wider">Menyiapkan…</span>
+      </div>
+
+      <div class="flex items-center gap-1.5 bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-700" title="Misi yang sudah selesai">
+        <span aria-hidden="true">🎯</span>
+        <span class="text-xs font-bold text-slate-200 num"><span id="chip-mission">0</span>/6</span>
+      </div>
+
+      <button id="btn-sound" aria-pressed="false" class="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-400 flex items-center justify-center transition-all" title="Nyalakan suara angin">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path id="sound-x" d="M16.5 8.5l5 5m0-5l-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/><path id="sound-on" d="M15.5 8.5a5 5 0 010 7M18.5 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none" style="display:none"/></svg>
+        <span class="sr-only">Suara</span>
+      </button>
+
+      <button id="btn-help" class="h-10 px-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-sky-300 font-display font-bold text-xs flex items-center gap-1.5 transition-all">
+        <span aria-hidden="true">❓</span><span class="hidden sm:inline">Cara Main</span><span class="sr-only sm:hidden">Cara main</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════ MAIN ══════════ -->
+<main class="max-w-7xl w-full mx-auto px-4 lg:px-8 flex flex-col lg:flex-row gap-5 mt-1">
+
+  <!-- ─── LEFT: simulation ─── -->
+  <section class="lg:w-7/12 flex flex-col gap-4 lg:sticky lg:top-4 lg:self-start">
+    <div class="glass-card relative overflow-hidden flex flex-col border border-slate-700/60 p-3 md:p-0">
+
+      <!-- HUD: in-flow on phones, overlay from md up -->
+      <div class="relative md:absolute md:top-4 md:left-4 md:right-4 z-10 grid grid-cols-2 sm:grid-cols-4 gap-2 md:gap-2.5 mb-3 md:mb-0 pointer-events-none">
+        <div class="bg-slate-900/85 backdrop-blur-md p-2.5 rounded-xl border border-sky-500/30 flex flex-col">
+          <span class="text-[10px] font-extrabold uppercase text-sky-400 tracking-wider">Ketinggian</span>
+          <div class="flex items-baseline gap-1 mt-0.5">
+            <span id="hud-altitude" class="font-display text-xl font-bold text-white num">0,0</span>
+            <span class="text-[10px] text-slate-400">meter</span>
+          </div>
+          <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mt-1.5"><div id="bar-altitude" class="h-full bg-gradient-to-r from-sky-500 to-blue-500" style="width:0%"></div></div>
+        </div>
+        <div class="bg-slate-900/85 backdrop-blur-md p-2.5 rounded-xl border border-purple-500/30 flex flex-col">
+          <span class="text-[10px] font-extrabold uppercase text-purple-400 tracking-wider">Gaya Angkat ⬆️</span>
+          <div class="flex items-baseline gap-1 mt-0.5">
+            <span id="hud-lift" class="font-display text-xl font-bold text-white num">0,0</span>
+            <span class="text-[10px] text-slate-400">newton</span>
+          </div>
+          <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mt-1.5"><div id="bar-lift" class="h-full bg-gradient-to-r from-purple-500 to-pink-500" style="width:0%"></div></div>
+        </div>
+        <div class="bg-slate-900/85 backdrop-blur-md p-2.5 rounded-xl border border-amber-500/30 flex flex-col">
+          <span class="text-[10px] font-extrabold uppercase text-amber-400 tracking-wider">Dorongan Angin ➡️</span>
+          <div class="flex items-baseline gap-1 mt-0.5">
+            <span id="hud-drag" class="font-display text-xl font-bold text-white num">0,0</span>
+            <span class="text-[10px] text-slate-400">newton</span>
+          </div>
+          <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mt-1.5"><div id="bar-drag" class="h-full bg-gradient-to-r from-amber-400 to-orange-500" style="width:0%"></div></div>
+        </div>
+        <div class="bg-slate-900/85 backdrop-blur-md p-2.5 rounded-xl border border-emerald-500/30 flex flex-col">
+          <span class="text-[10px] font-extrabold uppercase text-emerald-400 tracking-wider">Tarikan Tali ⬅️</span>
+          <div class="flex items-baseline gap-1 mt-0.5">
+            <span id="hud-tension" class="font-display text-xl font-bold text-white num">0,0</span>
+            <span class="text-[10px] text-slate-400">newton</span>
+          </div>
+          <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mt-1.5"><div id="bar-tension" class="h-full bg-gradient-to-r from-emerald-400 to-teal-500" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <div id="canvas-wrap" class="relative w-full h-[300px] sm:h-[380px] md:h-[600px] xl:h-[640px] rounded-2xl overflow-hidden">
+        <canvas id="kite-canvas" class="w-full h-full" role="img" aria-label="Simulasi layang-layang"></canvas>
+        <div id="toast-slot" class="absolute left-1/2 bottom-24 z-20 pointer-events-none"></div>
+      </div>
+
+      <!-- what to draw -->
+      <details id="legend-box" class="relative md:absolute md:bottom-[4.25rem] md:left-4 md:right-4 z-10 mt-3 md:mt-0 bg-slate-900/85 backdrop-blur-md rounded-xl border border-slate-700/80 text-xs" open>
+        <summary class="cursor-pointer select-none px-2.5 py-2 font-bold text-slate-300 text-[11px] uppercase tracking-wider list-none flex items-center gap-2">
+          <span aria-hidden="true">👁️</span> Tampilkan di layar
+          <span class="ml-auto text-[10px] font-semibold normal-case text-slate-500">panjang panah = perbandingan besar gaya</span>
+        </summary>
+        <div class="px-2.5 pb-2.5 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+          <label class="flex items-center gap-1.5 cursor-pointer text-purple-300 font-semibold"><input id="chk-fl" type="checkbox" checked class="accent-purple-500"><span>Gaya Angkat</span></label>
+          <label class="flex items-center gap-1.5 cursor-pointer text-amber-300 font-semibold"><input id="chk-fd" type="checkbox" checked class="accent-amber-500"><span>Dorongan Angin</span></label>
+          <label class="flex items-center gap-1.5 cursor-pointer text-rose-300 font-semibold"><input id="chk-fg" type="checkbox" checked class="accent-rose-500"><span>Berat</span></label>
+          <label class="flex items-center gap-1.5 cursor-pointer text-emerald-300 font-semibold"><input id="chk-t" type="checkbox" checked class="accent-emerald-500"><span>Tarikan Tali</span></label>
+          <span class="w-px h-4 bg-slate-700 hidden sm:block"></span>
+          <label class="flex items-center gap-1.5 cursor-pointer text-sky-300 font-semibold"><input id="chk-flow" type="checkbox" checked class="accent-sky-500"><span>Aliran Angin 💨</span></label>
+          <label class="flex items-center gap-1.5 cursor-pointer text-indigo-300 font-semibold"><input id="chk-press" type="checkbox" checked class="accent-indigo-500"><span>Tekanan Udara ☁️</span></label>
+          <label class="flex items-center gap-1.5 cursor-pointer text-slate-300 font-semibold"><input id="chk-angle" type="checkbox" checked class="accent-slate-400"><span>Sudut Tali 📐</span></label>
+        </div>
+      </details>
+
+      <!-- actions -->
+      <div class="relative md:absolute md:bottom-3 md:left-4 md:right-4 z-10 mt-3 md:mt-0 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-2 flex-wrap">
+          <button id="btn-tug" class="btn-glow px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 font-display font-bold text-white text-xs flex items-center gap-1.5 shadow-lg">✊ Sentak Tali!</button>
+          <button id="btn-reel-in" class="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-sky-300 border border-slate-700 font-display font-bold text-xs transition-all">↩️ Tarik −5 m</button>
+          <button id="btn-reel-out" class="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-sky-300 border border-slate-700 font-display font-bold text-xs transition-all">↪️ Ulur +5 m</button>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="btn-gust" class="px-3 py-2.5 rounded-xl bg-purple-950/80 hover:bg-purple-900 border border-purple-700 text-purple-300 font-bold text-xs transition-all">🍃 Embusan Angin!</button>
+          <button id="btn-reset" class="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-bold text-xs transition-all">🔄 Reset</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── RIGHT: balance + controls ─── -->
+  <aside class="lg:w-5/12 flex flex-col gap-4">
+
+    <!-- Neraca Gaya -->
+    <div class="glass-card p-4 sm:p-5 border border-slate-700/60 flex flex-col gap-3">
+      <div class="flex items-center justify-between gap-2">
+        <h2 class="font-display font-bold text-base text-white flex items-center gap-2">⚖️ Neraca Gaya</h2>
+        <span id="verdict-chip" class="text-[11px] font-extrabold px-2.5 py-1 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800 whitespace-nowrap">SEIMBANG ✓</span>
+      </div>
+
+      <div class="flex flex-col gap-2.5">
+        <div>
+          <div class="flex justify-between items-baseline text-xs mb-1">
+            <span class="font-bold text-purple-300">⬆️ Gaya angkat mendorong naik</span>
+            <span class="font-display font-bold text-purple-300 num"><span id="bal-lift">0,0</span> N</span>
+          </div>
+          <div class="w-full bg-slate-800/80 h-3 rounded-full overflow-hidden"><div id="balbar-lift" class="h-full rounded-full bg-gradient-to-r from-purple-500 to-fuchsia-400 transition-[width] duration-150" style="width:0%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between items-baseline text-xs mb-1">
+            <span class="font-bold text-rose-300">⬇️ Berat menarik turun</span>
+            <span class="font-display font-bold text-rose-300 num"><span id="bal-weight">0,0</span> N</span>
+          </div>
+          <div class="w-full bg-slate-800/80 h-3 rounded-full overflow-hidden"><div id="balbar-weight" class="h-full rounded-full bg-gradient-to-r from-rose-500 to-red-400 transition-[width] duration-150" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <p id="balance-verdict" class="text-xs leading-relaxed text-slate-300 bg-slate-900/60 border border-slate-700/70 rounded-xl px-3 py-2">Menghitung…</p>
+
+      <div class="grid grid-cols-2 gap-2.5 pt-1 border-t border-slate-700/60">
+        <div>
+          <div class="flex justify-between items-baseline text-xs mb-1">
+            <span class="font-bold text-amber-300">➡️ Angin</span>
+            <span class="font-display font-bold text-amber-300 num"><span id="bal-drag">0,0</span> N</span>
+          </div>
+          <div class="w-full bg-slate-800/80 h-2.5 rounded-full overflow-hidden"><div id="balbar-drag" class="h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-500 transition-[width] duration-150" style="width:0%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between items-baseline text-xs mb-1">
+            <span class="font-bold text-emerald-300">⬅️ Tali</span>
+            <span class="font-display font-bold text-emerald-300 num"><span id="bal-tension">0,0</span> N</span>
+          </div>
+          <div class="w-full bg-slate-800/80 h-2.5 rounded-full overflow-hidden"><div id="balbar-tension" class="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-500 transition-[width] duration-150" style="width:0%"></div></div>
+        </div>
+      </div>
+      <p class="text-[11px] text-slate-400 leading-relaxed">Semua batang di atas memakai <b class="text-slate-300">skala yang sama</b>, jadi panjangnya boleh langsung dibandingkan.</p>
+    </div>
+
+    <!-- Pengaturan -->
+    <div class="glass-card p-4 sm:p-5 flex flex-col gap-4 border border-slate-700/60">
+      <div class="flex items-center justify-between border-b border-slate-700/60 pb-3">
+        <h2 class="font-display font-bold text-base text-white flex items-center gap-2">🎛️ Atur Layanganmu</h2>
+        <span class="text-[11px] font-extrabold px-2.5 py-1 rounded-full bg-sky-950 text-sky-400 border border-sky-800">Ubah &amp; amati</span>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <div class="font-display font-bold text-sm text-slate-200 flex items-center justify-between">
+          <span>1. Pilih layangan</span>
+          <span id="preset-tag" class="text-xs font-extrabold text-sky-400">Layangan Aduan</span>
+        </div>
+        <div class="grid grid-cols-3 gap-2" role="group" aria-label="Jenis layangan">
+          <button data-preset="aduan" class="btn-preset p-2.5 rounded-xl border-2 border-sky-500 bg-sky-950/40 hover:bg-sky-900/30 flex flex-col items-center gap-1 transition-all text-center">
+            <span class="text-2xl" aria-hidden="true">⚡</span>
+            <span class="font-display font-bold text-xs text-sky-200">Aduan</span>
+            <span class="text-[10px] text-slate-400 leading-tight">Ringan &amp; lincah</span>
+          </button>
+          <button data-preset="kaghati" class="btn-preset p-2.5 rounded-xl border-2 border-slate-700 bg-slate-900/40 hover:bg-slate-800/50 flex flex-col items-center gap-1 transition-all text-center">
+            <span class="text-2xl" aria-hidden="true">🍃</span>
+            <span class="font-display font-bold text-xs text-slate-300">Kaghati</span>
+            <span class="text-[10px] text-slate-400 leading-tight">Daun, dari Muna</span>
+          </button>
+          <button data-preset="bebean" class="btn-preset p-2.5 rounded-xl border-2 border-slate-700 bg-slate-900/40 hover:bg-slate-800/50 flex flex-col items-center gap-1 transition-all text-center">
+            <span class="text-2xl" aria-hidden="true">🐟</span>
+            <span class="font-display font-bold text-xs text-slate-300">Bebean</span>
+            <span class="text-[10px] text-slate-400 leading-tight">Besar &amp; stabil</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-1.5 bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+        <div class="flex justify-between items-center gap-2 text-xs">
+          <label for="slider-wind" class="font-display font-bold text-slate-200">2. Kecepatan angin</label>
+          <span id="val-wind" class="font-display font-bold text-sky-400 num text-right">8,0 m/s · 29 km/jam</span>
+        </div>
+        <input id="slider-wind" type="range" min="1" max="25" step="0.5" value="8" style="--sl:#38bdf8">
+        <div class="flex justify-between text-[10px] font-semibold text-slate-500"><span>Sepoi-sepoi</span><span>Sedang</span><span>Kencang</span></div>
+        <p class="text-[11px] text-slate-400 leading-snug">Angin terlalu pelan → gaya angkat kalah sama berat, layangan tidak naik.</p>
+      </div>
+
+      <div class="flex flex-col gap-1.5 bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+        <div class="flex justify-between items-center gap-2 text-xs">
+          <label for="slider-aoa" class="font-display font-bold text-slate-200">3. Kemiringan layangan</label>
+          <span id="val-aoa" class="font-display font-bold text-purple-400 num">25°</span>
+        </div>
+        <input id="slider-aoa" type="range" min="5" max="60" step="1" value="25" style="--sl:#c084fc">
+        <div class="flex justify-between text-[10px] font-semibold text-slate-500"><span>Datar 5°</span><span>Pas 20°–30°</span><span>Curam 60°</span></div>
+        <p class="text-[11px] text-slate-400 leading-snug">Sudut antara permukaan layangan dan arah angin. Terlalu curam → angin malah menghambat.</p>
+      </div>
+
+      <div class="flex flex-col gap-1.5 bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+        <div class="flex justify-between items-center gap-2 text-xs">
+          <label for="slider-mass" class="font-display font-bold text-slate-200">4. Massa layangan</label>
+          <span id="val-mass" class="font-display font-bold text-rose-400 num">120 gram</span>
+        </div>
+        <input id="slider-mass" type="range" min="0.04" max="0.80" step="0.02" value="0.12" style="--sl:#fb7185">
+        <p id="hint-mass" class="text-[11px] text-slate-400 leading-snug">Berat = massa × g = 0,12 kg × 10 = <b class="text-rose-300">1,2 N</b>. Massa dalam kilogram, berat dalam newton.</p>
+      </div>
+
+      <div class="flex flex-col gap-1.5 bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+        <div class="flex justify-between items-center gap-2 text-xs">
+          <label for="slider-area" class="font-display font-bold text-slate-200">5. Luas permukaan</label>
+          <span id="val-area" class="font-display font-bold text-amber-400 num">0,35 m²</span>
+        </div>
+        <input id="slider-area" type="range" min="0.10" max="1.50" step="0.05" value="0.35" style="--sl:#fbbf24">
+        <p class="text-[11px] text-slate-400 leading-snug">Makin lebar permukaannya, makin banyak udara yang menekan → gaya angkat makin besar.</p>
+      </div>
+
+      <div class="flex flex-col gap-1.5 bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+        <div class="flex justify-between items-center gap-2 text-xs">
+          <label for="slider-string" class="font-display font-bold text-slate-200">6. Panjang tali</label>
+          <span id="val-string" class="font-display font-bold text-emerald-400 num">35 meter</span>
+        </div>
+        <input id="slider-string" type="range" min="10" max="120" step="5" value="35" style="--sl:#34d399">
+        <p class="text-[11px] text-slate-400 leading-snug">Tali panjang = layangan bisa lebih tinggi, tapi ketinggiannya tetap bergantung sudut tali.</p>
+      </div>
+
+      <div class="flex flex-col gap-1.5 bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+        <div class="flex justify-between items-center gap-2 text-xs">
+          <label for="slider-tail" class="font-display font-bold text-slate-200">7. Panjang ekor</label>
+          <span id="val-tail" class="font-display font-bold text-indigo-400 num">1,2 meter</span>
+        </div>
+        <input id="slider-tail" type="range" min="0" max="4" step="0.2" value="1.2" style="--sl:#818cf8">
+        <p id="hint-tail" class="text-[11px] text-slate-400 leading-snug">Ekor yang pas untuk kondisi sekarang: sekitar <b class="text-indigo-300">1,1 m</b>.</p>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<!-- ══════════ LEARNING PANEL ══════════ -->
+<section class="max-w-7xl w-full mx-auto px-4 lg:px-8 mt-5">
+  <div class="glass-card p-4 sm:p-6 border border-slate-700/60">
+
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-4 border-b border-slate-700/60 pb-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 shrink-0 rounded-2xl bg-sky-500/20 text-sky-400 flex items-center justify-center text-xl border border-sky-500/40" aria-hidden="true">💡</div>
+        <div>
+          <h2 class="font-display font-bold text-base sm:text-lg text-white">Pojok Rahasia Sains</h2>
+          <p class="text-xs font-semibold text-slate-400">Gaya, keseimbangan, dan tekanan udara — versi yang bisa kamu coba sendiri</p>
+        </div>
+      </div>
+      <div class="bg-slate-900/90 p-1 rounded-xl flex border border-slate-800 text-xs font-bold" role="tablist" aria-label="Materi">
+        <button id="tab-sains" role="tab" aria-selected="true" aria-controls="panel-sains" class="px-3 py-1.5 rounded-lg tab-on transition-all">💡 Materi</button>
+        <button id="tab-misi"  role="tab" aria-selected="false" aria-controls="panel-misi"  class="px-3 py-1.5 rounded-lg tab-off transition-all">🎯 Misi</button>
+        <button id="tab-kuis"  role="tab" aria-selected="false" aria-controls="panel-kuis"  class="px-3 py-1.5 rounded-lg tab-off transition-all">🧠 Kuis</button>
+      </div>
+    </div>
+
+    <!-- ── MATERI ── -->
+    <div id="panel-sains" role="tabpanel" aria-labelledby="tab-sains" class="flex flex-col gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+
+        <article class="bg-slate-900/60 p-4 rounded-xl border border-sky-500/30 flex flex-col gap-2">
+          <h3 class="flex items-center gap-2 font-display font-bold text-sky-400 text-sm">
+            <span class="w-7 h-7 shrink-0 rounded-full bg-sky-950 border border-sky-700 flex items-center justify-center text-xs num">1</span>
+            Udara cepat, tekanan kecil
+          </h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Layangan dipasang miring, jadi udara yang lewat di <b class="text-sky-300">atas</b> harus menempuh jalan lebih jauh dan mengalir lebih cepat. Udara yang mengalir cepat menekan lebih lemah. Udara di bawah yang lebih pelan menekan lebih kuat, dan selisih tekanan itulah yang mendorong layangan naik.</p>
+          <p class="text-[11px] text-slate-400 leading-relaxed border-t border-slate-700/60 pt-2">Sama seperti tanganmu yang terangkat kalau dimiringkan keluar jendela mobil yang sedang melaju.</p>
+        </article>
+
+        <article class="bg-slate-900/60 p-4 rounded-xl border border-purple-500/30 flex flex-col gap-2">
+          <h3 class="flex items-center gap-2 font-display font-bold text-purple-400 text-sm">
+            <span class="w-7 h-7 shrink-0 rounded-full bg-purple-950 border border-purple-700 flex items-center justify-center text-xs num">2</span>
+            Empat gaya yang seimbang
+          </h3>
+          <ul class="text-xs text-slate-300 leading-relaxed flex flex-col gap-1">
+            <li><span class="text-purple-300 font-bold">⬆️ Gaya angkat</span> — mendorong layangan naik</li>
+            <li><span class="text-rose-300 font-bold">⬇️ Berat</span> — menarik layangan turun</li>
+            <li><span class="text-amber-300 font-bold">➡️ Dorongan angin</span> — mendorong layangan menjauh</li>
+            <li><span class="text-emerald-300 font-bold">⬅️ Tarikan tali</span> — menahan layangan</li>
+          </ul>
+          <p class="text-[11px] text-slate-400 leading-relaxed border-t border-slate-700/60 pt-2">Saat layangan terlihat diam menggantung, keempatnya saling meniadakan: resultan gayanya <b class="text-slate-300">nol</b>. Itu <b class="text-slate-300">Hukum I Newton</b>.</p>
+        </article>
+
+        <article class="bg-slate-900/60 p-4 rounded-xl border border-emerald-500/30 flex flex-col gap-2">
+          <h3 class="flex items-center gap-2 font-display font-bold text-emerald-400 text-sm">
+            <span class="w-7 h-7 shrink-0 rounded-full bg-emerald-950 border border-emerald-700 flex items-center justify-center text-xs num">3</span>
+            Tugas si tali
+          </h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Tali bukan sekadar pegangan. Tali menahan layangan supaya tetap <b class="text-emerald-300">miring menghadap angin</b>. Kemiringan itulah sumber gaya angkatnya.</p>
+          <p class="text-[11px] text-slate-400 leading-relaxed border-t border-slate-700/60 pt-2">Kalau tali putus, layangan langsung kehilangan kemiringannya, gaya angkatnya hilang, lalu terbawa angin sampai jatuh — bukan naik makin tinggi.</p>
+        </article>
+
+        <article class="bg-slate-900/60 p-4 rounded-xl border border-amber-500/30 flex flex-col gap-2">
+          <h3 class="flex items-center gap-2 font-display font-bold text-amber-400 text-sm">
+            <span class="w-7 h-7 shrink-0 rounded-full bg-amber-950 border border-amber-700 flex items-center justify-center text-xs num">4</span>
+            Rahasia ekor
+          </h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Ekor menambah hambatan udara di bagian bawah, jadi layangan tetap menghadap angin dan tidak berputar-putar.</p>
+          <p class="text-[11px] text-slate-400 leading-relaxed border-t border-slate-700/60 pt-2">Tapi ada harganya: ekor <b class="text-amber-300">terlalu panjang</b> menambah hambatan sehingga layangan jadi malas naik. Angin makin kencang → ekor yang dibutuhkan makin panjang.</p>
+        </article>
+      </div>
+
+      <div class="bg-slate-900/45 rounded-xl border border-slate-700/60 p-4">
+        <h3 class="font-display font-bold text-sm text-white mb-3 flex items-center gap-2">🔬 Coba sendiri — tiga percobaan singkat</h3>
+        <ol class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs text-slate-300">
+          <li class="bg-slate-900/60 rounded-lg p-3 border-l-2 border-sky-500"><b class="text-sky-300 block mb-1">Percobaan 1 — kapan mulai naik?</b>Tahan pengaturan lain, geser <b>kecepatan angin</b> pelan-pelan dari 1 m/s. Catat di angka berapa gaya angkat mulai melewati berat.</li>
+          <li class="bg-slate-900/60 rounded-lg p-3 border-l-2 border-purple-500"><b class="text-purple-300 block mb-1">Percobaan 2 — sudut terbaik</b>Set angin 8 m/s, lalu geser <b>kemiringan</b> dari 5° sampai 60°. Gaya angkat terus naik sampai 45°, tapi ketinggiannya justru puncak di sekitar 20°. Kenapa, ya?</li>
+          <li class="bg-slate-900/60 rounded-lg p-3 border-l-2 border-amber-500"><b class="text-amber-300 block mb-1">Percobaan 3 — ekor hilang</b>Set angin 18 m/s, lalu pendekkan <b>ekor</b> sampai 0 m. Amati layangan mulai oleng. Panjangkan lagi sampai tenang.</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- ── MISI ── -->
+    <div id="panel-misi" role="tabpanel" aria-labelledby="tab-misi" class="hidden flex-col gap-4">
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="flex-grow min-w-[180px]">
+          <div class="flex justify-between text-xs font-bold mb-1"><span class="text-slate-300">Kemajuan misi</span><span class="text-sky-300 num"><span id="misi-count">0</span> dari 6 selesai</span></div>
+          <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden"><div id="misi-bar" class="h-full bg-gradient-to-r from-sky-500 via-indigo-500 to-emerald-400 transition-[width] duration-500" style="width:0%"></div></div>
+        </div>
+        <button id="btn-misi-reset" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-bold text-xs transition-all">Ulangi semua misi</button>
+      </div>
+      <div id="misi-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3"></div>
+      <p class="text-[11px] text-slate-400">Misi tercentang otomatis begitu layanganmu memenuhi syaratnya. Tidak perlu menekan apa pun.</p>
+    </div>
+
+    <!-- ── KUIS ── -->
+    <div id="panel-kuis" role="tabpanel" aria-labelledby="tab-kuis" class="hidden flex-col gap-4">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <p class="text-xs text-slate-400">Enam soal. Pilih satu jawaban — penjelasannya langsung muncul, benar atau salah.</p>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold px-3 py-1.5 rounded-xl bg-slate-900/80 border border-slate-700 text-slate-200 num">Skor: <span id="kuis-score">0</span>/6</span>
+          <button id="btn-kuis-reset" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-bold text-xs transition-all">Ulangi kuis</button>
+        </div>
+      </div>
+      <div id="kuis-list" class="grid grid-cols-1 xl:grid-cols-2 gap-3"></div>
+    </div>
+
+    <!-- cultural strip -->
+    <div class="mt-5 pt-4 border-t border-slate-700/60 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs text-slate-400">
+      <p class="flex gap-2"><span class="text-amber-400 text-base shrink-0" aria-hidden="true">🌿</span><span><b class="text-slate-200">Kaghati Kolope, Muna.</b> Dibuat dari daun kolope (umbi gadung) dengan rangka bambu dan tali serat nanas. Lukisan gua di Sulawesi Tenggara menunjukkan layangan ini sudah diterbangkan ribuan tahun lalu — sering disebut layang-layang tertua di dunia.</span></p>
+      <p class="flex gap-2"><span class="text-purple-400 text-base shrink-0" aria-hidden="true">🐟</span><span><b class="text-slate-200">Bebean, Bali.</b> Berbentuk ikan dan bisa selebar 4 meter, diterbangkan beramai-ramai saat musim angin timur. Ukurannya besar supaya luas permukaannya cukup mengangkat rangka bambu yang berat.</span></p>
+      <p class="flex gap-2"><span class="text-sky-400 text-base shrink-0" aria-hidden="true">⚡</span><span><b class="text-slate-200">Layangan aduan.</b> Sengaja dibuat ringan, tanpa ekor, dan bersudut kecil supaya lincah bermanuver — persis kebalikan dari resep "stabil" yang kamu temukan di simulasi ini.</span></p>
+    </div>
+  </div>
+</section>
+
+<footer class="max-w-7xl w-full mx-auto px-4 lg:px-8 mt-5 text-[11px] text-slate-500 leading-relaxed">
+  <p>Simulasi memakai <b class="text-slate-400">g = 10 m/s²</b> dan kerapatan udara 1,2 kg/m³ seperti kebiasaan buku IPA SMP. Angka gayanya disederhanakan agar pola hubungannya mudah terlihat, bukan untuk perhitungan teknik.</p>
+</footer>
+
+<!-- ══════════ HELP DIALOG ══════════ -->
+<dialog id="help-dialog" class="glass-card p-0 w-[min(92vw,640px)] text-slate-100 backdrop:bg-slate-950/70 backdrop:backdrop-blur-sm">
+  <div class="p-5 sm:p-6 flex flex-col gap-4">
+    <div class="flex items-start justify-between gap-3">
+      <h2 class="font-display font-bold text-lg text-white flex items-center gap-2">🪁 Cara main</h2>
+      <button id="btn-help-close" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 font-bold transition-all" aria-label="Tutup">✕</button>
+    </div>
+    <ol class="flex flex-col gap-2.5 text-sm text-slate-300">
+      <li class="flex gap-3"><span class="w-6 h-6 shrink-0 rounded-full bg-sky-950 border border-sky-700 text-sky-300 text-xs font-bold flex items-center justify-center num">1</span><span>Geser <b class="text-sky-300">Kecepatan angin</b> dan lihat layangan mulai naik. Perhatikan batang <b>Gaya angkat</b> menyalip batang <b>Berat</b> di Neraca Gaya.</span></li>
+      <li class="flex gap-3"><span class="w-6 h-6 shrink-0 rounded-full bg-purple-950 border border-purple-700 text-purple-300 text-xs font-bold flex items-center justify-center num">2</span><span>Ubah <b class="text-purple-300">Kemiringan</b> untuk mencari sudut yang bikin layangan paling tinggi.</span></li>
+      <li class="flex gap-3"><span class="w-6 h-6 shrink-0 rounded-full bg-amber-950 border border-amber-700 text-amber-300 text-xs font-bold flex items-center justify-center num">3</span><span>Kalau layangan <b class="text-amber-300">oleng</b>, panjangkan <b>ekor</b>. Kalau jadi malas naik, ekornya kepanjangan.</span></li>
+      <li class="flex gap-3"><span class="w-6 h-6 shrink-0 rounded-full bg-emerald-950 border border-emerald-700 text-emerald-300 text-xs font-bold flex items-center justify-center num">4</span><span>Buka tab <b class="text-emerald-300">Misi</b> untuk enam tantangan, lalu tab <b>Kuis</b> untuk mengecek pemahamanmu.</span></li>
+    </ol>
+    <p class="text-xs text-slate-400 bg-slate-900/60 border border-slate-700/70 rounded-xl px-3 py-2">Panah berwarna di langit adalah gaya. <b class="text-slate-300">Panjang panah menunjukkan perbandingan besar gaya</b> — panah dua kali lebih panjang berarti gayanya dua kali lebih besar.</p>
+    <button id="btn-help-ok" class="btn-glow self-end px-5 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 font-display font-bold text-white text-sm">Siap, main!</button>
+  </div>
+</dialog>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ═══════════ 1. Konstanta & pembantu ═══════════ */
+  const G = 10;        // m/s^2 — nilai yang dipakai buku IPA SMP
+  const RHO = 1.2;     // kg/m^3
+  const DEG = Math.PI / 180;
+  const GUST_DUR = 2.6;
+
+  const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+  const mqWide = window.matchMedia("(min-width: 768px)");   // = breakpoint md: Tailwind
+  const fmt = (n, d) => Number(n).toFixed(d).replace(".", ",");
+  const $ = id => document.getElementById(id);
+
+  /* ═══════════ 2. Suara (baru aktif setelah disentuh pengguna) ═══════════ */
+  const Sound = {
+    ctx: null, on: false, noise: null, filter: null, gain: null, osc: null, oscGain: null,
+    build() {
+      if (this.ctx) return;
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      this.ctx = new AC();
+      const n = this.ctx.sampleRate * 2;
+      const buf = this.ctx.createBuffer(1, n, this.ctx.sampleRate);
+      const out = buf.getChannelData(0);
+      let last = 0;
+      for (let i = 0; i < n; i++) { const white = Math.random() * 2 - 1; last = (last + 0.02 * white) / 1.02; out[i] = last * 3.2; }
+      this.noise = this.ctx.createBufferSource(); this.noise.buffer = buf; this.noise.loop = true;
+      this.filter = this.ctx.createBiquadFilter(); this.filter.type = "lowpass"; this.filter.frequency.value = 320;
+      this.gain = this.ctx.createGain(); this.gain.gain.value = 0.0001;
+      this.noise.connect(this.filter); this.filter.connect(this.gain); this.gain.connect(this.ctx.destination);
+      this.noise.start();
+      this.osc = this.ctx.createOscillator(); this.oscGain = this.ctx.createGain();
+      this.osc.type = "sine"; this.osc.frequency.value = 500; this.oscGain.gain.value = 0.0001;
+      this.osc.connect(this.oscGain); this.oscGain.connect(this.ctx.destination); this.osc.start();
+    },
+    update(wind, tension) {
+      if (!this.on || !this.ctx) return;
+      const t = this.ctx.currentTime;
+      this.filter.frequency.setTargetAtTime(150 + (wind / 25) * 1100, t, 0.15);
+      this.gain.gain.setTargetAtTime(Math.min(0.16, (wind / 25) * 0.16), t, 0.15);
+      if (tension > 1) {
+        this.osc.frequency.setTargetAtTime(380 + Math.min(1500, tension * 22), t, 0.2);
+        this.oscGain.gain.setTargetAtTime(Math.min(0.035, (tension / 60) * 0.035), t, 0.2);
+      } else this.oscGain.gain.setTargetAtTime(0.0001, t, 0.2);
+    },
+    mute() { if (!this.ctx) return; const t = this.ctx.currentTime; this.gain.gain.setTargetAtTime(0.0001, t, 0.12); this.oscGain.gain.setTargetAtTime(0.0001, t, 0.12); },
+    blip() {
+      if (!this.on || !this.ctx) return;
+      const o = this.ctx.createOscillator(), g = this.ctx.createGain(), t = this.ctx.currentTime;
+      o.type = "triangle"; o.frequency.setValueAtTime(160, t); o.frequency.exponentialRampToValueAtTime(620, t + 0.1);
+      g.gain.setValueAtTime(0.12, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
+      o.connect(g); g.connect(this.ctx.destination); o.start(); o.stop(t + 0.17);
+    }
+  };
+
+  /* ═══════════ 3. Keadaan ═══════════ */
+  const S = { preset: "aduan", wind: 8, aoa: 25, mass: 0.12, area: 0.35, strLen: 35, tail: 1.2 };
+  const sim = { theta: 0.04, thetaVel: 0, gustT: 0, pxPerM: 4, t: 0, roll: 0 };
+  let F = { L: 0, D: 0, W: 1.2, T: 0, windEff: 8, flying: false, instab: 0, tailNeeded: 1.1, alt: 0 };
+
+  const PRESETS = {
+    aduan:   { label: "Layangan Aduan",  mass: 0.12, area: 0.35, tail: 1.2 },
+    kaghati: { label: "Kaghati Kolope",  mass: 0.28, area: 0.75, tail: 2.0 },
+    bebean:  { label: "Bebean Bali",     mass: 0.55, area: 1.25, tail: 3.0 }
+  };
+
+  /* ═══════════ 4. Fisika ═══════════ */
+  function computeForces() {
+    const env = sim.gustT > 0 ? Math.sin(Math.PI * (sim.gustT / GUST_DUR)) : 0;
+    const windEff = S.wind * (1 + 0.7 * env);
+
+    // Model pelat datar: gaya normal C_N = 2 sin a, lalu diuraikan jadi angkat & hambat.
+    const a = S.aoa * DEG;
+    const CN = 2 * Math.sin(a);
+    const CL = CN * Math.cos(a);
+    const tailDrag = Math.min(0.9, 0.05 * S.tail / Math.max(0.15, S.area));
+    const CD = 0.06 + tailDrag + CN * Math.sin(a);
+
+    const q = 0.5 * RHO * windEff * windEff;
+    const L = q * S.area * CL;
+    const D = q * S.area * CD;
+    const W = S.mass * G;
+    const flying = L > W;
+    const T = Math.hypot(Math.max(0, L - W), D);
+
+    const tailNeeded = 0.35 + 0.055 * windEff + 0.9 * S.area;
+    const instab = clamp(Math.max(0, tailNeeded - S.tail) / (0.45 + 0.5 * tailNeeded), 0, 1);
+
+    return { L, D, W, T, flying, windEff, instab, tailNeeded, gustEnv: env };
+  }
+
+  function step(dt, w, h) {
+    F = Object.assign(F, computeForces());
+    if (sim.gustT > 0) sim.gustT = Math.max(0, sim.gustT - dt);
+
+    // Sudut tali setimbang: tan(sudut) = (angkat − berat) / dorongan angin
+    let target = F.flying ? Math.atan2(F.L - F.W, F.D) : 0;
+    target *= (1 - 0.7 * F.instab * F.instab);
+    target = clamp(target, 0.012, 1.396);
+
+    const k = 6.5, c = 2 * Math.sqrt(k) * 0.62;
+    sim.thetaVel += (k * (target - sim.theta) - c * sim.thetaVel) * dt;
+    sim.theta += sim.thetaVel * dt;
+    if (sim.theta < 0.012) { sim.theta = 0.012; if (sim.thetaVel < 0) sim.thetaVel = 0; }
+    if (sim.theta > 1.40) { sim.theta = 1.40; if (sim.thetaVel > 0) sim.thetaVel = 0; }
+
+    sim.roll = F.instab * 0.5 * Math.sin(sim.t * (2.2 + F.windEff * 0.14))
+             + F.gustEnv * 0.10 * Math.sin(sim.t * 9);
+
+    F.alt = S.strLen * Math.sin(sim.theta);
+    F.target = target;
+
+    // skala gambar: seluruh panjang tali selalu muat di kanvas
+    const wide = mqWide.matches;          // samakan dengan breakpoint md: milik Tailwind
+    const anchorX = Math.max(52, w * 0.11);
+    const groundY = h - (wide ? 142 : 54);
+    const topPad = wide ? 86 : 14;
+    const fit = Math.min((w - anchorX - 64) / S.strLen, (groundY - topPad) / S.strLen);
+    sim.pxPerM += (Math.max(0.6, fit) - sim.pxPerM) * (1 - Math.exp(-dt * 6));
+    return { anchorX, groundY, wide };
+  }
+
+  /* ═══════════ 5. Kanvas ═══════════ */
+  const canvas = $("kite-canvas"), ctx = canvas.getContext("2d");
+  const show = { fl: $("chk-fl"), fd: $("chk-fd"), fg: $("chk-fg"), t: $("chk-t"), flow: $("chk-flow"), press: $("chk-press"), angle: $("chk-angle") };
+  let cw = 800, ch = 500, labelTop = 14;
+
+  const stars = Array.from({ length: 46 }, () => ({ xf: Math.random(), yf: Math.random() * 0.62, r: Math.random() * 1.3 + 0.4, ph: Math.random() * 6.28 }));
+  const flow = Array.from({ length: 58 }, () => ({ x: Math.random() * 900, yf: Math.random(), len: 12 + Math.random() * 14, off: (Math.random() - 0.5) * 14 }));
+
+  function resize() {
+    const r = canvas.parentElement.getBoundingClientRect();
+    if (!r.width || !r.height) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cw = r.width; ch = r.height;
+    canvas.width = Math.round(cw * dpr);
+    canvas.height = Math.round(ch * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);   // set, bukan scale — supaya tidak menumpuk
+  }
+
+  function niceStep(raw) {
+    for (const s of [1, 2, 5, 10, 20, 25, 50, 100]) if (s >= raw) return s;
+    return 100;
+  }
+
+  function arrow(x1, y1, x2, y2, color, label) {
+    const dx = x2 - x1, dy = y2 - y1, ang = Math.atan2(dy, dx), len = Math.hypot(dx, dy);
+    if (len < 3) return;
+    const head = clamp(len * 0.3, 5, 11);
+    ctx.save();
+    ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 3.2; ctx.lineCap = "round";
+    ctx.shadowColor = color; ctx.shadowBlur = 8;
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2 - Math.cos(ang) * head * 0.7, y2 - Math.sin(ang) * head * 0.7); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - head * Math.cos(ang - 0.42), y2 - head * Math.sin(ang - 0.42));
+    ctx.lineTo(x2 - head * Math.cos(ang + 0.42), y2 - head * Math.sin(ang + 0.42));
+    ctx.closePath(); ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.font = "700 11px Nunito, sans-serif";
+    const tw = ctx.measureText(label).width;
+    let lx = x2 + Math.cos(ang) * 10, ly = y2 + Math.sin(ang) * 10;
+    lx = clamp(lx, 4, cw - tw - 10); ly = clamp(ly, labelTop, ch - 6);
+    ctx.fillStyle = "rgba(2,6,23,.78)";
+    ctx.beginPath(); ctx.roundRect(lx - 4, ly - 11, tw + 8, 16, 5); ctx.fill();
+    ctx.fillStyle = color; ctx.fillText(label, lx, ly + 1);
+    ctx.restore();
+  }
+
+  function drawKiteShape(k) {
+    if (S.preset === "aduan") {
+      ctx.fillStyle = "#38bdf8"; ctx.strokeStyle = "#f8fafc"; ctx.lineWidth = 2.4;
+      ctx.beginPath(); ctx.moveTo(0, -k * 1.2); ctx.lineTo(k * .9, 0); ctx.lineTo(0, k * 1.3); ctx.lineTo(-k * .9, 0); ctx.closePath();
+      ctx.fill(); ctx.stroke();
+      ctx.strokeStyle = "#78350f"; ctx.lineWidth = 1.8;
+      ctx.beginPath(); ctx.moveTo(0, -k * 1.2); ctx.lineTo(0, k * 1.3);
+      ctx.moveTo(-k * .9, 0); ctx.quadraticCurveTo(0, -k * .16, k * .9, 0); ctx.stroke();
+    } else if (S.preset === "kaghati") {
+      ctx.fillStyle = "#fbbf24"; ctx.strokeStyle = "#b45309"; ctx.lineWidth = 2.4;
+      ctx.beginPath(); ctx.ellipse(0, 0, k * 1.05, k * .85, 0, 0, 6.2832); ctx.fill(); ctx.stroke();
+      ctx.strokeStyle = "#78350f"; ctx.lineWidth = 1.3;
+      ctx.beginPath(); ctx.moveTo(-k * 1.05, 0); ctx.lineTo(k * 1.05, 0); ctx.moveTo(0, -k * .85); ctx.lineTo(0, k * .85);
+      for (let i = -2; i <= 2; i++) { if (!i) continue; ctx.moveTo(0, 0); ctx.lineTo(k * i * .42, k * .78); }
+      ctx.stroke();
+    } else {
+      ctx.fillStyle = "#c084fc"; ctx.strokeStyle = "#f8fafc"; ctx.lineWidth = 2.4;
+      ctx.beginPath(); ctx.moveTo(0, -k * 1.4);
+      ctx.quadraticCurveTo(k * 1.25, -k * .5, k * .78, k * .8);
+      ctx.lineTo(0, k * .5); ctx.lineTo(-k * .78, k * .8);
+      ctx.quadraticCurveTo(-k * 1.25, -k * .5, 0, -k * 1.4);
+      ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#fb7185";
+      ctx.beginPath(); ctx.moveTo(0, k * .5); ctx.lineTo(k * 1.05, k * 1.35); ctx.lineTo(0, k * .92); ctx.lineTo(-k * 1.05, k * 1.35); ctx.closePath();
+      ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#0f172a"; ctx.beginPath(); ctx.arc(-k * .3, -k * .72, k * .12, 0, 6.2832); ctx.fill();
+    }
+  }
+
+  function draw(geo) {
+    const w = cw, h = ch, { anchorX, groundY, wide } = geo;
+    const px = sim.pxPerM;
+    const kx = anchorX + Math.cos(sim.theta) * S.strLen * px;
+    const ky = groundY - Math.sin(sim.theta) * S.strLen * px;
+
+    // langit
+    const sky = ctx.createLinearGradient(0, 0, 0, h);
+    sky.addColorStop(0, "#0b6ea8"); sky.addColorStop(.42, "#13294a"); sky.addColorStop(.78, "#0b1526"); sky.addColorStop(1, "#070b14");
+    ctx.fillStyle = sky; ctx.fillRect(0, 0, w, h);
+
+    ctx.save();
+    for (const s of stars) {
+      const a = .28 + .32 * Math.sin(sim.t * 1.4 + s.ph);
+      ctx.globalAlpha = a; ctx.fillStyle = "#e2e8f0";
+      ctx.beginPath(); ctx.arc(s.xf * w, s.yf * h, s.r, 0, 6.2832); ctx.fill();
+    }
+    ctx.restore();
+
+    // garis ketinggian — satuan nyata, langsung terbaca
+    const step = niceStep(S.strLen / 6);
+    ctx.save();
+    ctx.setLineDash([3, 7]); ctx.lineWidth = 1;
+    ctx.font = "700 9px Nunito, sans-serif"; ctx.textAlign = "right";
+    for (let m = step; m * px < groundY - 12; m += step) {
+      const y = groundY - m * px;
+      ctx.strokeStyle = "rgba(148,163,184,.16)";
+      ctx.beginPath(); ctx.moveTo(anchorX - 26, y); ctx.lineTo(w - 6, y); ctx.stroke();
+      ctx.fillStyle = "rgba(148,163,184,.62)"; ctx.fillText(m + " m", w - 8, y - 3);
+    }
+    ctx.restore(); ctx.textAlign = "left";
+
+    // aliran angin
+    if (show.flow.checked) {
+      const R = 118;
+      ctx.lineWidth = 1.6; ctx.lineCap = "round";
+      for (const p of flow) {
+        const py = p.yf * h;
+        if (py > groundY - 6) continue;
+        const ddx = p.x - kx, ddy = py - ky, d = Math.hypot(ddx, ddy);
+        let dy = 0, boost = 1, above = ddy < 0;
+        if (d < R) { const f = 1 - d / R; dy = (above ? -1 : 1) * f * 26; boost = 1 + f * (above ? 1.1 : .25); }
+        ctx.strokeStyle = above && boost > 1.1 ? "rgba(125,211,252,.55)" : "rgba(56,189,248,.24)";
+        ctx.beginPath(); ctx.moveTo(p.x, py + dy); ctx.lineTo(p.x + p.len * boost, py + dy); ctx.stroke();
+      }
+    }
+
+    // tanah
+    ctx.save();
+    const glow = ctx.createLinearGradient(0, groundY - 60, 0, groundY);
+    glow.addColorStop(0, "rgba(56,189,248,0)"); glow.addColorStop(1, "rgba(56,189,248,.10)");
+    ctx.fillStyle = glow; ctx.fillRect(0, groundY - 60, w, 60);
+    ctx.fillStyle = "#0a1120";
+    ctx.beginPath(); ctx.ellipse(w / 2, groundY + 150, w, 165, 0, 0, 6.2832); ctx.fill();
+    ctx.strokeStyle = "rgba(52,211,153,.30)"; ctx.lineWidth = 1.6;
+    for (let i = 0; i < w; i += 17) {
+      const sway = Math.sin(sim.t * 2 + i * .13) * (1 + F.windEff * .12);
+      ctx.beginPath(); ctx.moveTo(i, groundY + 4); ctx.quadraticCurveTo(i + sway, groundY - 5, i + sway * 2, groundY - 11); ctx.stroke();
+    }
+    ctx.restore();
+
+    // sudut tali
+    if (show.angle.checked && F.alt > 0.4) {
+      const r = clamp(S.strLen * px * .4, 26, 62);
+      ctx.save();
+      ctx.strokeStyle = "rgba(226,232,240,.42)"; ctx.lineWidth = 1.4; ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(anchorX, groundY); ctx.lineTo(anchorX + r + 16, groundY); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.beginPath(); ctx.arc(anchorX, groundY, r, -sim.theta, 0); ctx.stroke();
+      ctx.font = "700 11px Nunito, sans-serif"; ctx.fillStyle = "#e2e8f0";
+      ctx.fillText(Math.round(sim.theta / DEG) + "°", anchorX + Math.cos(sim.theta / 2) * (r + 9), groundY - Math.sin(sim.theta / 2) * (r + 9) + 4);
+      ctx.restore();
+    }
+
+    // orang + gulungan benang
+    const hx = anchorX + 14, hy = groundY - 30;
+    ctx.save();
+    ctx.strokeStyle = "#7dd3fc"; ctx.fillStyle = "#7dd3fc"; ctx.lineWidth = 3.4; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.arc(anchorX, groundY - 46, 8, 0, 6.2832); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(anchorX, groundY - 38); ctx.lineTo(anchorX, groundY - 14);
+    ctx.moveTo(anchorX, groundY - 14); ctx.lineTo(anchorX - 8, groundY);
+    ctx.moveTo(anchorX, groundY - 14); ctx.lineTo(anchorX + 8, groundY);
+    ctx.moveTo(anchorX, groundY - 34); ctx.lineTo(hx, hy);
+    ctx.stroke();
+    ctx.fillStyle = "#fbbf24"; ctx.beginPath(); ctx.arc(hx, hy, 4.5, 0, 6.2832); ctx.fill();
+    ctx.restore();
+
+    // tali
+    ctx.save();
+    ctx.strokeStyle = "rgba(248,250,252,.8)"; ctx.lineWidth = 1.6;
+    const sag = 5 + 34 / (1 + F.T * .45);
+    ctx.beginPath(); ctx.moveTo(hx, hy);
+    ctx.quadraticCurveTo((hx + kx) / 2, (hy + ky) / 2 + sag, kx, ky);
+    ctx.stroke(); ctx.restore();
+
+    const k = clamp(Math.sqrt(S.area) * 52, 26, 86);
+    const kiteRot = (90 - S.aoa) * DEG * 0.7 + (sim.theta - Math.PI / 4) * 0.16 + sim.roll;
+
+    // zona tekanan
+    if (show.press.checked) {
+      ctx.save(); ctx.translate(kx, ky); ctx.rotate(kiteRot);
+      let g1 = ctx.createRadialGradient(0, k * .7, 4, 0, k * .7, k * 1.5);
+      g1.addColorStop(0, "rgba(251,113,133,.45)"); g1.addColorStop(1, "rgba(251,113,133,0)");
+      ctx.fillStyle = g1; ctx.beginPath(); ctx.arc(0, k * .7, k * 1.5, 0, 6.2832); ctx.fill();
+      let g2 = ctx.createRadialGradient(0, -k * .8, 4, 0, -k * .8, k * 1.6);
+      g2.addColorStop(0, "rgba(56,189,248,.5)"); g2.addColorStop(1, "rgba(56,189,248,0)");
+      ctx.fillStyle = g2; ctx.beginPath(); ctx.arc(0, -k * .8, k * 1.6, 0, 6.2832); ctx.fill();
+      ctx.restore();
+      ctx.save(); ctx.font = "700 10px Nunito, sans-serif"; ctx.textAlign = "center";
+      ctx.fillStyle = "#7dd3fc"; ctx.fillText("cepat · tekanan KECIL", kx, ky - k * 1.55);
+      ctx.fillStyle = "#fda4af"; ctx.fillText("pelan · tekanan BESAR", kx, ky + k * 1.75);
+      ctx.restore(); ctx.textAlign = "left";
+    }
+
+    // layangan
+    ctx.save(); ctx.translate(kx, ky); ctx.rotate(kiteRot);
+    ctx.shadowColor = "rgba(56,189,248,.45)"; ctx.shadowBlur = 16;
+    drawKiteShape(k);
+    ctx.restore();
+
+    // ekor — digambar di ruang dunia supaya benar-benar tertiup ke arah angin
+    if (S.tail > 0.05) {
+      const tipX = kx + Math.sin(kiteRot) * -(k * 1.25), tipY = ky + Math.cos(kiteRot) * (k * 1.25);
+      const pull = clamp(F.windEff / 13, .2, 1);
+      let dx = 0.5 + 0.5 * pull, dy = 0.92 - 0.5 * pull;
+      const nrm = Math.hypot(dx, dy); dx /= nrm; dy /= nrm;
+      const segs = 18, total = clamp(S.tail * 27, 6, 190), segLen = total / segs;
+      ctx.save(); ctx.strokeStyle = "#fb7185"; ctx.lineWidth = 2.6; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(tipX, tipY);
+      let px2 = tipX, py2 = tipY;
+      for (let i = 1; i <= segs; i++) {
+        const wv = Math.sin(sim.t * 5 - i * .55) * (i / segs) * (2.5 + F.windEff * .32 + F.instab * 6);
+        px2 = tipX + dx * segLen * i - dy * wv;
+        py2 = tipY + dy * segLen * i + dx * wv;
+        ctx.lineTo(px2, py2);
+      }
+      ctx.stroke();
+      ctx.fillStyle = "#fda4af";
+      for (let i = 5; i <= segs; i += 6) {
+        const wv = Math.sin(sim.t * 5 - i * .55) * (i / segs) * (2.5 + F.windEff * .32);
+        ctx.beginPath(); ctx.arc(tipX + dx * segLen * i - dy * wv, tipY + dy * segLen * i + dx * wv, 2.6, 0, 6.2832); ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    // panah gaya — satu skala bersama, jadi panjangnya bisa dibandingkan
+    const maxF = Math.max(F.L, F.D, F.W, F.T, 0.4);
+    labelTop = wide ? 96 : 14;
+    const room = Math.max(42, ky - (wide ? 104 : 14));
+    const maxLen = clamp(Math.min(h * .28, (w - kx) * .85, room, 118), 36, 118);
+    const sc = maxLen / maxF;
+    if (show.fl.checked) arrow(kx, ky, kx, ky - F.L * sc, "#c084fc", "Angkat " + fmt(F.L, 1) + " N");
+    if (show.fd.checked) arrow(kx, ky, kx + F.D * sc, ky, "#fbbf24", "Angin " + fmt(F.D, 1) + " N");
+    if (show.fg.checked) arrow(kx, ky, kx, ky + F.W * sc, "#fb7185", "Berat " + fmt(F.W, 1) + " N");
+    if (show.t.checked) {
+      const ux = (anchorX - kx), uy = (groundY - ky), dd = Math.hypot(ux, uy) || 1;
+      arrow(kx, ky, kx + ux / dd * F.T * sc, ky + uy / dd * F.T * sc, "#34d399", "Tali " + fmt(F.T, 1) + " N");
+    }
+  }
+
+  /* roundRect cadangan untuk peramban lawas */
+  if (!CanvasRenderingContext2D.prototype.roundRect) {
+    CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+      r = Math.min(r, w / 2, h / 2);
+      this.moveTo(x + r, y); this.arcTo(x + w, y, x + w, y + h, r); this.arcTo(x + w, y + h, x, y + h, r);
+      this.arcTo(x, y + h, x, y, r); this.arcTo(x, y, x + w, y, r); this.closePath(); return this;
+    };
+  }
+
+  /* ═══════════ 6. Panel angka ═══════════ */
+  const el = {
+    alt: $("hud-altitude"), lift: $("hud-lift"), drag: $("hud-drag"), ten: $("hud-tension"),
+    bAlt: $("bar-altitude"), bLift: $("bar-lift"), bDrag: $("bar-drag"), bTen: $("bar-tension"),
+    dot: $("status-dot"), st: $("status-text"),
+    balL: $("bal-lift"), balW: $("bal-weight"), balD: $("bal-drag"), balT: $("bal-tension"),
+    bbL: $("balbar-lift"), bbW: $("balbar-weight"), bbD: $("balbar-drag"), bbT: $("balbar-tension"),
+    chip: $("verdict-chip"), verdict: $("balance-verdict"), hintTail: $("hint-tail")
+  };
+
+  function setStatus(txt, dotCls) {
+    if (el.st.textContent !== txt) {
+      el.st.textContent = txt;
+      el.dot.className = "w-2.5 h-2.5 rounded-full animate-ping " + dotCls;
+    }
+  }
+  function setChip(txt, cls) {
+    if (el.chip.textContent !== txt) {
+      el.chip.textContent = txt;
+      el.chip.className = "text-[11px] font-extrabold px-2.5 py-1 rounded-full whitespace-nowrap border " + cls;
+    }
+  }
+
+  let uiAccum = 0;
+  function syncUI(dt) {
+    uiAccum += dt; if (uiAccum < 0.06) return; uiAccum = 0;
+
+    const maxF = Math.max(F.L, F.D, F.W, F.T, 0.4);
+    const pc = v => (clamp(v / maxF, 0, 1) * 100).toFixed(1) + "%";
+
+    el.alt.textContent = fmt(F.alt, 1);
+    el.lift.textContent = fmt(F.L, 1);
+    el.drag.textContent = fmt(F.D, 1);
+    el.ten.textContent = fmt(F.T, 1);
+    el.bAlt.style.width = clamp(F.alt / S.strLen * 100, 0, 100).toFixed(1) + "%";
+    el.bLift.style.width = pc(F.L); el.bDrag.style.width = pc(F.D); el.bTen.style.width = pc(F.T);
+
+    el.balL.textContent = fmt(F.L, 1); el.balW.textContent = fmt(F.W, 1);
+    el.balD.textContent = fmt(F.D, 1); el.balT.textContent = fmt(F.T, 1);
+    el.bbL.style.width = pc(F.L); el.bbW.style.width = pc(F.W);
+    el.bbD.style.width = pc(F.D); el.bbT.style.width = pc(F.T);
+
+    const diff = F.L - F.W, settled = Math.abs(sim.theta - F.target) < 0.035;
+
+    if (!F.flying) {
+      setStatus(F.alt < 0.6 ? "Jatuh ke Tanah" : "Kehilangan Angkat", "bg-rose-400");
+      setChip("TURUN ⬇️", "bg-rose-950 text-rose-300 border-rose-800");
+      el.verdict.innerHTML = "Gaya angkat <b class='text-purple-300'>" + fmt(F.L, 1) + " N</b> masih kalah dari berat <b class='text-rose-300'>" + fmt(F.W, 1) + " N</b>, jadi layangan belum bisa naik. Coba perbesar kecepatan angin atau luas permukaannya, kurangi massanya, atau atur kemiringan ke sekitar 20°–30°.";
+    } else if (F.instab > 0.6) {
+      setStatus("Oleng! Tambah Ekor", "bg-amber-400");
+      setChip("OLENG 〰️", "bg-amber-950 text-amber-300 border-amber-800");
+      el.verdict.innerHTML = "Gaya angkat sudah menang <b class='text-emerald-300'>" + fmt(diff, 1) + " N</b>, tapi ekornya terlalu pendek untuk angin sekencang ini. Layangan berputar-putar dan sudut talinya jatuh. Panjangkan ekor sampai sekitar <b class='text-indigo-300'>" + fmt(F.tailNeeded, 1) + " m</b>.";
+    } else if (settled) {
+      setStatus("Terbang Stabil", "bg-emerald-400");
+      setChip("SEIMBANG ✓", "bg-emerald-950 text-emerald-300 border-emerald-800");
+      el.verdict.innerHTML = "Semua gaya saling meniadakan, jadi layangan menggantung tenang di ketinggian <b class='text-sky-300'>" + fmt(F.alt, 1) + " m</b> — inilah <b class='text-slate-200'>Hukum I Newton</b>. Kelebihan gaya angkat <b class='text-emerald-300'>" + fmt(diff, 1) + " N</b> ditahan oleh tarikan tali.";
+    } else {
+      const naik = sim.theta < F.target;
+      setStatus(naik ? "Sedang Naik" : "Sedang Turun", "bg-sky-400");
+      setChip(naik ? "NAIK ⬆️" : "TURUN ⬇️", "bg-sky-950 text-sky-300 border-sky-800");
+      el.verdict.innerHTML = "Gaya belum seimbang, layangan masih bergerak menuju posisi barunya. Selisih angkat dan berat: <b class='text-emerald-300'>" + fmt(diff, 1) + " N</b>.";
+    }
+
+    el.hintTail.innerHTML = "Ekor yang pas untuk kondisi sekarang: sekitar <b class='text-indigo-300'>" + fmt(F.tailNeeded, 1) + " m</b>." +
+      (S.tail > F.tailNeeded * 1.9 ? " <b class='text-amber-300'>Sekarang kepanjangan</b> — hambatannya bikin layangan malas naik." : "");
+
+    canvas.setAttribute("aria-label",
+      "Layangan " + PRESETS[S.preset].label + " pada ketinggian " + fmt(F.alt, 1) +
+      " meter. Gaya angkat " + fmt(F.L, 1) + " newton, berat " + fmt(F.W, 1) +
+      " newton, dorongan angin " + fmt(F.D, 1) + " newton, tarikan tali " + fmt(F.T, 1) +
+      " newton. Status: " + el.st.textContent + ".");
+  }
+
+  /* ═══════════ 7. Misi ═══════════ */
+  const MISSIONS = [
+    { ic: "🪁", name: "Terbang Perdana", desc: "Naikkan layangan sampai ketinggian 15 meter.", ok: s => s.alt >= 15 },
+    { ic: "📐", name: "Sudut Emas", desc: "Capai 30 meter dengan kemiringan 18°–22° — sudut paling efisien, bukan yang gaya angkatnya terbesar.", ok: s => s.alt >= 30 && s.aoa >= 18 && s.aoa <= 22 },
+    { ic: "🍃", name: "Jago Angin Sepoi", desc: "Capai 10 meter padahal anginnya cuma 4 m/s atau kurang.", ok: s => s.alt >= 10 && s.wind <= 4 },
+    { ic: "🎗️", name: "Ekor Penyeimbang", desc: "Tetap stabil di ketinggian 20 m saat angin 20 m/s atau lebih — ekor bawaannya tidak akan cukup.", ok: s => s.alt >= 20 && s.wind >= 20 && s.stable },
+    { ic: "🐟", name: "Naga Raksasa", desc: "Terbangkan layangan berat (massa 0,5 kg ke atas) sampai 40 meter.", ok: s => s.mass >= 0.5 && s.alt >= 40 },
+    { ic: "🌤️", name: "Setinggi Awan", desc: "Capai ketinggian 60 meter. Ulur talinya dulu!", ok: s => s.alt >= 60 }
+  ];
+  const done = MISSIONS.map(() => false);
+
+  function renderMissions() {
+    $("misi-grid").innerHTML = MISSIONS.map((m, i) =>
+      '<article class="' + (done[i] ? "mission-done " : "") + 'bg-slate-900/60 p-3.5 rounded-xl border border-slate-700/70 flex gap-3 items-start transition-colors">' +
+        '<span class="text-2xl shrink-0" aria-hidden="true">' + m.ic + '</span>' +
+        '<div class="min-w-0"><h3 class="font-display font-bold text-sm ' + (done[i] ? "text-emerald-300" : "text-slate-200") + ' flex items-center gap-1.5">' +
+          m.name + (done[i] ? ' <span aria-label="selesai">✅</span>' : '') + '</h3>' +
+        '<p class="text-xs text-slate-400 leading-snug mt-0.5">' + m.desc + '</p></div></article>').join("");
+    const n = done.filter(Boolean).length;
+    $("misi-count").textContent = n; $("chip-mission").textContent = n;
+    $("misi-bar").style.width = (n / MISSIONS.length * 100) + "%";
+  }
+
+  function toast(msg) {
+    const slot = $("toast-slot");
+    const d = document.createElement("div");
+    d.className = "toast -translate-x-1/2 whitespace-nowrap px-4 py-2.5 rounded-xl bg-emerald-500/95 text-slate-900 font-display font-bold text-sm shadow-xl shadow-emerald-900/50";
+    d.textContent = msg;
+    slot.appendChild(d);
+    setTimeout(() => d.remove(), 3500);
+  }
+
+  let misiAccum = 0;
+  function checkMissions(dt) {
+    misiAccum += dt; if (misiAccum < 0.25) return; misiAccum = 0;
+    const s = { alt: F.alt, wind: S.wind, aoa: S.aoa, mass: S.mass, area: S.area, tail: S.tail, flying: F.flying, stable: F.instab < 0.3 && F.flying };
+    let changed = false;
+    MISSIONS.forEach((m, i) => {
+      if (!done[i] && m.ok(s)) { done[i] = true; changed = true; toast("🎉 Misi selesai: " + m.name); Sound.blip(); }
+    });
+    if (changed) renderMissions();
+  }
+
+  /* ═══════════ 8. Kuis ═══════════ */
+  const QUIZ = [
+    { q: "Kenapa layang-layang bisa terangkat ke atas?",
+      a: ["Karena layangan lebih ringan daripada udara", "Karena udara di bawah layangan menekan lebih kuat daripada udara di atasnya", "Karena tali menariknya ke atas", "Karena angin selalu bertiup dari bawah ke atas"], c: 1,
+      e: "Layangan yang dipasang miring membuat udara di atasnya mengalir lebih cepat. Udara yang cepat menekan lebih lemah, jadi tekanan di bawah menang dan layangan terdorong naik." },
+    { q: "Massa sebuah layangan 0,2 kg. Dengan g = 10 m/s², berapa beratnya?",
+      a: ["0,02 N", "0,2 N", "2 N", "20 N"], c: 2,
+      e: "Berat = massa × g = 0,2 × 10 = 2 N. Ingat: massa diukur dalam kilogram, berat adalah gaya sehingga satuannya newton." },
+    { q: "Apa fungsi utama ekor pada layang-layang tradisional?",
+      a: ["Menambah gaya angkat", "Menjaga layangan tetap menghadap angin supaya tidak berputar", "Membuat layangan terbang lebih cepat", "Menambah berat supaya cepat turun"], c: 1,
+      e: "Ekor menambah hambatan udara di bagian bawah sehingga layangan tetap menghadap angin. Tapi kalau kepanjangan, hambatannya jadi terlalu besar dan layangan malas naik." },
+    { q: "Sebuah layangan terlihat diam menggantung di langit. Berapa resultan gaya yang bekerja padanya?",
+      a: ["Nol", "Sama dengan beratnya", "Sama dengan gaya angkatnya", "Selalu berubah-ubah"], c: 0,
+      e: "Ini Hukum I Newton. Benda yang diam berarti semua gaya saling meniadakan: gaya angkat, berat, dorongan angin, dan tarikan tali jumlahnya nol." },
+    { q: "Kalau talinya tiba-tiba putus, apa yang terjadi pada layangan?",
+      a: ["Terus naik makin tinggi karena bebas", "Langsung jatuh lurus ke bawah", "Kehilangan kemiringannya, gaya angkatnya hilang, lalu terbawa angin sampai jatuh", "Diam melayang di tempat"], c: 2,
+      e: "Tali yang menahanlah yang membuat layangan tetap miring terhadap angin. Tanpa tali, kemiringan itu hilang bersama gaya angkatnya." },
+    { q: "Angin dibuat makin kencang, tetapi sudut tali layangan hampir tidak berubah. Yang paling terasa bertambah adalah…",
+      a: ["Massa layangan", "Tarikan tali di tangan", "Luas permukaan layangan", "Berat layangan"], c: 1,
+      e: "Gaya angkat dan dorongan angin sama-sama membesar, jadi sudutnya hampir tetap. Yang jelas naik adalah tarikan talinya — tangan terasa makin berat. Coba buktikan di simulasi!" }
+  ];
+  const answered = QUIZ.map(() => -1);
+
+  function renderQuiz() {
+    $("kuis-list").innerHTML = QUIZ.map((q, i) => {
+      const pick = answered[i], settled = pick >= 0;
+      const opts = q.a.map((txt, j) => {
+        let cls = "border-slate-700 bg-slate-900/60 hover:bg-slate-800/70 text-slate-300";
+        if (settled && j === q.c) cls = "border-emerald-500/70 bg-emerald-950/50 text-emerald-200";
+        else if (settled && j === pick) cls = "border-rose-500/70 bg-rose-950/50 text-rose-200";
+        else if (settled) cls = "border-slate-800 bg-slate-900/40 text-slate-500";
+        return '<button data-q="' + i + '" data-o="' + j + '"' + (settled ? " disabled" : "") +
+          ' class="kuis-opt text-left w-full px-3 py-2 rounded-lg border text-xs leading-snug transition-all ' + cls + '">' +
+          '<b class="font-display mr-1.5">' + "ABCD"[j] + ".</b>" + txt +
+          (settled && j === q.c ? " ✅" : settled && j === pick ? " ❌" : "") + "</button>";
+      }).join("");
+      return '<article class="bg-slate-900/45 p-4 rounded-xl border border-slate-700/70 flex flex-col gap-2.5">' +
+        '<h3 class="font-display font-bold text-sm text-white flex gap-2"><span class="text-sky-400 num">' + (i + 1) + '.</span><span>' + q.q + '</span></h3>' +
+        '<div class="flex flex-col gap-1.5">' + opts + '</div>' +
+        (settled ? '<p class="text-[11px] leading-relaxed ' + (pick === q.c ? "text-emerald-200 bg-emerald-950/40 border-emerald-800/60" : "text-amber-100 bg-amber-950/30 border-amber-800/60") + ' border rounded-lg px-3 py-2 pop-in"><b>' + (pick === q.c ? "Tepat! " : "Belum tepat. ") + '</b>' + q.e + '</p>' : "") +
+        "</article>";
+    }).join("");
+    $("kuis-score").textContent = answered.filter((p, i) => p === QUIZ[i].c).length;
+  }
+
+  $("kuis-list").addEventListener("click", e => {
+    const b = e.target.closest(".kuis-opt"); if (!b) return;
+    const i = +b.dataset.q; if (answered[i] >= 0) return;
+    answered[i] = +b.dataset.o; renderQuiz(); Sound.blip();
+  });
+  $("btn-kuis-reset").addEventListener("click", () => { answered.fill(-1); renderQuiz(); });
+  $("btn-misi-reset").addEventListener("click", () => { done.fill(false); renderMissions(); });
+
+  /* ═══════════ 9. Kontrol ═══════════ */
+  function windLabel(v) {
+    const kmh = Math.round(v * 3.6);
+    return fmt(v, 1) + " m/s · " + kmh + " km/jam";
+  }
+  const bind = (id, apply) => {
+    const inp = $(id);
+    const run = () => apply(parseFloat(inp.value));
+    inp.addEventListener("input", run);
+    return run;
+  };
+  const syncWind   = bind("slider-wind", v => { S.wind = v;   $("val-wind").textContent = windLabel(v); });
+  const syncAoa    = bind("slider-aoa", v => { S.aoa = v;    $("val-aoa").textContent = Math.round(v) + "°"; });
+  const syncMass   = bind("slider-mass", v => {
+    S.mass = v; $("val-mass").textContent = Math.round(v * 1000) + " gram";
+    $("hint-mass").innerHTML = "Berat = massa × g = " + fmt(v, 2) + " kg × 10 = <b class='text-rose-300'>" + fmt(v * G, 1) + " N</b>. Massa dalam kilogram, berat dalam newton.";
+  });
+  const syncArea   = bind("slider-area", v => { S.area = v;   $("val-area").textContent = fmt(v, 2) + " m²"; });
+  const syncString = bind("slider-string", v => { S.strLen = v; $("val-string").textContent = Math.round(v) + " meter"; });
+  const syncTail   = bind("slider-tail", v => { S.tail = v;   $("val-tail").textContent = fmt(v, 1) + " meter"; });
+  const syncAll = () => { syncWind(); syncAoa(); syncMass(); syncArea(); syncString(); syncTail(); };
+
+  document.querySelectorAll(".btn-preset").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".btn-preset").forEach(b => {
+        b.classList.remove("border-sky-500", "bg-sky-950/40");
+        b.classList.add("border-slate-700", "bg-slate-900/40");
+        b.querySelector(".font-display").classList.replace("text-sky-200", "text-slate-300");
+      });
+      btn.classList.remove("border-slate-700", "bg-slate-900/40");
+      btn.classList.add("border-sky-500", "bg-sky-950/40");
+      btn.querySelector(".font-display").classList.replace("text-slate-300", "text-sky-200");
+      S.preset = btn.dataset.preset;
+      const p = PRESETS[S.preset];
+      $("preset-tag").textContent = p.label;
+      $("slider-mass").value = p.mass; $("slider-area").value = p.area; $("slider-tail").value = p.tail;
+      syncMass(); syncArea(); syncTail();
+    });
+  });
+
+  $("btn-tug").addEventListener("click", () => { sim.thetaVel += 1.5; Sound.blip(); });
+  $("btn-gust").addEventListener("click", () => { sim.gustT = GUST_DUR; });
+  $("btn-reel-in").addEventListener("click", () => {
+    $("slider-string").value = Math.max(10, S.strLen - 5); syncString(); Sound.blip();
+  });
+  $("btn-reel-out").addEventListener("click", () => {
+    $("slider-string").value = Math.min(120, S.strLen + 5); syncString();
+  });
+  $("btn-reset").addEventListener("click", () => {
+    S.preset = "aduan";
+    document.querySelector('.btn-preset[data-preset="aduan"]').click();
+    $("slider-wind").value = 8; $("slider-aoa").value = 25; $("slider-string").value = 35;
+    syncAll();
+    sim.theta = 0.04; sim.thetaVel = 0; sim.gustT = 0;
+  });
+
+  const btnSound = $("btn-sound"), soundX = $("sound-x"), soundOn = $("sound-on");
+  btnSound.addEventListener("click", () => {
+    Sound.on = !Sound.on;
+    btnSound.setAttribute("aria-pressed", String(Sound.on));
+    btnSound.title = Sound.on ? "Matikan suara angin" : "Nyalakan suara angin";
+    soundX.style.display = Sound.on ? "none" : "";
+    soundOn.style.display = Sound.on ? "" : "none";
+    btnSound.classList.toggle("text-sky-400", Sound.on);
+    btnSound.classList.toggle("text-slate-400", !Sound.on);
+    if (Sound.on) { Sound.build(); if (Sound.ctx && Sound.ctx.state === "suspended") Sound.ctx.resume(); }
+    else Sound.mute();
+  });
+
+  const tabs = [["tab-sains", "panel-sains"], ["tab-misi", "panel-misi"], ["tab-kuis", "panel-kuis"]];
+  tabs.forEach(([tid, pid]) => $(tid).addEventListener("click", () => {
+    tabs.forEach(([t, p]) => {
+      const on = t === tid;
+      $(t).className = "px-3 py-1.5 rounded-lg transition-all " + (on ? "tab-on" : "tab-off");
+      $(t).setAttribute("aria-selected", String(on));
+      $(p).classList.toggle("hidden", !on);
+      $(p).classList.toggle("flex", on);
+    });
+  }));
+
+  const dlg = $("help-dialog");
+  const openHelp = () => { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", ""); };
+  const closeHelp = () => { if (dlg.close) dlg.close(); else dlg.removeAttribute("open"); };
+  $("btn-help").addEventListener("click", openHelp);
+  $("btn-help-close").addEventListener("click", closeHelp);
+  $("btn-help-ok").addEventListener("click", closeHelp);
+
+  /* ═══════════ 10. Gelung utama ═══════════ */
+  let last = performance.now(), soundAccum = 0;
+  function frame(now) {
+    let dt = (now - last) / 1000; last = now;
+    dt = clamp(dt, 0, 0.05);
+    sim.t += dt;
+
+    const geo = step(dt, cw, ch);
+
+    if (show.flow.checked) {
+      const spd = (18 + F.windEff * 9) * dt;
+      for (const p of flow) { p.x += spd + p.off * dt; if (p.x > cw + 4) { p.x = -30; p.yf = Math.random(); } }
+    }
+
+    draw(geo);
+    syncUI(dt);
+    checkMissions(dt);
+
+    soundAccum += dt;
+    if (soundAccum > 0.2) { soundAccum = 0; Sound.update(F.windEff, F.T); }
+
+    requestAnimationFrame(frame);
+  }
+
+  /* ═══════════ 11. Mulai ═══════════ */
+  syncAll();
+  renderMissions();
+  renderQuiz();
+  resize();
+  if (window.ResizeObserver) new ResizeObserver(resize).observe(canvas.parentElement);
+  else window.addEventListener("resize", resize);
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
