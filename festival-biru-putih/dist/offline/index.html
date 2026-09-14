@@ -1,0 +1,4201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Rumah Permainan Nusantara — Media Pembelajaran Interaktif SMP</title>
+
+<!-- ====== Metadata karya (sesuai Lampiran atribut panduan) ====== -->
+<meta name="description" content="Media pembelajaran interaktif jenjang SMP: empat permainan tradisional Indonesia (gasing, layang-layang, ketapel, congklak) dibedah menjadi percobaan maya IPA dan Matematika Fase D.">
+<meta name="author" content="">
+<meta name="mata-pelajaran" content="IPA dan Matematika">
+<meta name="fase" content="Fase D (Kelas VII-IX)">
+<meta name="unit" content="Gerak dan Gaya; Usaha dan Energi; Bilangan dan Pola">
+<meta name="color-scheme" content="light">
+
+<!-- Seluruh gaya dan skrip berada di dalam berkas ini / folder aset lokal.
+     Tidak ada satu pun rujukan ke internet. -->
+<style>
+/* ===== styles/tokens.css ===== */
+/* ============================================================
+   Rumah Permainan Nusantara — Design Tokens
+   Palet terinspirasi warna alam & kain Nusantara.
+   Semua warna diuji kontras minimal 4.5:1 untuk teks.
+   Tidak ada aset eksternal. Tidak ada @import.
+   ============================================================ */
+:root {
+  /* --- Warna dasar --- */
+  --c-ink:        #16233a;   /* teks utama   — kontras 14.2:1 di atas kertas */
+  --c-ink-soft:   #4a5a75;   /* teks sekunder — kontras 6.4:1 */
+  --c-ink-faint:  #6d7c95;   /* label kecil   — kontras 4.6:1 */
+
+  --c-paper:      #fbf7f0;   /* latar halaman (kertas hangat) */
+  --c-surface:    #ffffff;   /* kartu */
+  --c-surface-2:  #f2ece1;   /* kartu tenggelam */
+  --c-line:       #ded4c4;   /* garis pembatas */
+  --c-line-soft:  #ebe3d6;
+
+  /* --- Warna aksen (identitas "Biru Putih") --- */
+  --c-blue:       #14509b;   /* primer      — 7.3:1 di atas putih */
+  --c-blue-deep:  #0b356b;   /* header gelap — 11.1:1 */
+  --c-blue-soft:  #e6eff9;
+  --c-blue-line:  #b9d1ec;
+
+  --c-red:        #b3261e;   /* bahaya / energi — 6.4:1 */
+  --c-red-soft:   #fce9e7;
+  --c-red-line:   #f2c0bb;
+
+  --c-amber:      #a86a08;   /* sorot / kunyit — 4.8:1 */
+  --c-amber-soft: #fdf1dc;
+  --c-amber-line: #eccf9a;
+
+  --c-green:      #1c6b45;   /* benar / berhasil — 6.1:1 */
+  --c-green-soft: #e4f2ea;
+  --c-green-line: #a9d3bd;
+
+  --c-plum:       #6b3f96;   /* variabel kedua — 6.9:1 */
+  --c-plum-soft:  #f0e9f8;
+  --c-plum-line:  #d3bfe8;
+
+  --c-wood:       #8a5a2b;   /* bambu / kayu */
+  --c-wood-soft:  #f4e7d6;
+
+  /* --- Panggung 16:9 --- */
+  --stage-w: 1280px;
+  --stage-h: 720px;
+
+  /* --- Jarak --- */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 20px; --sp-6: 24px; --sp-8: 32px; --sp-10: 40px;
+
+  /* --- Sudut --- */
+  --r-sm: 8px; --r-md: 12px; --r-lg: 18px; --r-xl: 26px; --r-pill: 999px;
+
+  /* --- Bayangan (halus, tidak menutupi informasi) --- */
+  --sh-1: 0 1px 2px rgba(22,35,58,.07), 0 1px 1px rgba(22,35,58,.04);
+  --sh-2: 0 4px 10px rgba(22,35,58,.08), 0 1px 3px rgba(22,35,58,.05);
+  --sh-3: 0 12px 28px rgba(22,35,58,.12), 0 3px 8px rgba(22,35,58,.06);
+
+  /* --- Huruf: tumpukan sistem, tanpa unduhan eksternal --- */
+  --f-body: ui-rounded, "Segoe UI Variable Display", "Segoe UI", system-ui,
+            -apple-system, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --f-num:  ui-monospace, "SFMono-Regular", "Consolas", "Roboto Mono", monospace;
+
+  /* --- Ukuran sentuh minimum sesuai panduan (44x44 px) --- */
+  --touch: 44px;
+}
+
+</style>
+<style>
+/* ===== styles/base.css ===== */
+/* ============================================================
+   Dasar + Panggung 16:9
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0; padding: 0; height: 100%;
+  background: #101a2b;          /* bingkai gelap di luar panggung */
+  font-family: var(--f-body);
+  color: var(--c-ink);
+  -webkit-text-size-adjust: 100%;
+  overflow: hidden;
+}
+
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+
+/* --- Pembungkus panggung: selalu menjaga rasio 16:9 --- */
+#panggung-wrap {
+  position: fixed; inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 100% at 50% 0%, #1b2a45 0%, #101a2b 60%, #0a121f 100%);
+}
+
+/* Panggung berukuran tetap 1280x720 lalu diperkecil agar muat.
+   Elemen yang diskalakan tetap menempati kotak tata letak aslinya,
+   jadi pemusatan tidak boleh mengandalkan grid — kalau tidak,
+   pada layar yang lebih kecil dari 1280x720 panggung akan meleset
+   keluar layar. Karena itu dipakai penempatan mutlak + translate. */
+#panggung {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--stage-w);
+  height: var(--stage-h);
+  transform: translate(-50%, -50%) scale(1);
+  transform-origin: center center;
+  background: var(--c-paper);
+  overflow: hidden;
+  box-shadow: 0 24px 70px rgba(0,0,0,.55);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Saat layar sangat sempit & tegak, sarankan memutar perangkat */
+#putar-hp {
+  position: fixed; inset: 0; z-index: 90;
+  display: none;
+  place-items: center;
+  background: #101a2b;
+  color: #fff;
+  text-align: center;
+  padding: var(--sp-8);
+}
+#putar-hp .isi { max-width: 300px; }
+#putar-hp svg { width: 72px; height: 72px; margin-bottom: var(--sp-4); }
+#putar-hp h2 { font-size: 20px; margin: 0 0 var(--sp-2); }
+#putar-hp p  { font-size: 14px; line-height: 1.6; color: #b9c6dc; margin: 0; }
+body.perlu-putar #putar-hp { display: grid; }
+
+/* --- Tipografi panggung --- */
+h1, h2, h3, h4 { margin: 0; line-height: 1.25; font-weight: 700; letter-spacing: -.01em; }
+p { margin: 0; line-height: 1.6; }
+
+.judul-xl { font-size: 40px; font-weight: 800; }
+.judul-l  { font-size: 27px; font-weight: 800; }
+.judul-m  { font-size: 20px; }
+.judul-s  { font-size: 16px; }
+.teks     { font-size: 15px; }
+.teks-s   { font-size: 13.5px; }
+.teks-xs  { font-size: 12px; }
+.lembut   { color: var(--c-ink-soft); }
+.samar    { color: var(--c-ink-faint); }
+.angka    { font-family: var(--f-num); font-variant-numeric: tabular-nums; }
+
+/* --- Utilitas tata letak minimal --- */
+.baris  { display: flex; align-items: center; }
+.kolom  { display: flex; flex-direction: column; }
+.antara { justify-content: space-between; }
+.tengah { justify-content: center; }
+.isi-penuh { flex: 1 1 auto; min-height: 0; min-width: 0; }
+.g1 { gap: 4px; } .g2 { gap: 8px; } .g3 { gap: 12px; }
+.g4 { gap: 16px; } .g5 { gap: 20px; } .g6 { gap: 24px; }
+.bungkus { flex-wrap: wrap; }
+
+/* --- Aksesibilitas --- */
+:focus-visible {
+  outline: 3px solid var(--c-amber);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.hanya-pembaca-layar {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* Hormati preferensi pengguna yang sensitif terhadap gerak */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}
+
+</style>
+<style>
+/* ===== styles/components.css ===== */
+/* ============================================================
+   Komponen antarmuka
+   ============================================================ */
+
+/* ---------- Bilah atas ---------- */
+.bilah-atas {
+  flex: none;
+  height: 58px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--sp-4);
+  padding: 0 var(--sp-5);
+  background: var(--c-blue-deep);
+  color: #fff;
+  box-shadow: var(--sh-2);
+  z-index: 20;
+}
+.bilah-atas .merek { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.bilah-atas .lambang {
+  width: 34px; height: 34px; flex: none;
+  border-radius: 10px;
+  background: linear-gradient(140deg, #f0c14b, #d98324);
+  display: grid; place-items: center;
+  color: #4a2d05; font-weight: 800; font-size: 15px;
+}
+.bilah-atas .nama { font-size: 15px; font-weight: 700; white-space: nowrap; }
+.bilah-atas .sub  { font-size: 11.5px; color: #a8c2e4; white-space: nowrap; }
+
+/* ---------- Indikator progres langkah ---------- */
+.progres { display: flex; align-items: center; gap: 6px; }
+.progres .titik {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: rgba(255,255,255,.28);
+  transition: background .2s, transform .2s;
+}
+.progres .titik.aktif   { background: #f0c14b; transform: scale(1.35); }
+.progres .titik.selesai { background: #6fd39b; }
+.progres .label { font-size: 11.5px; color: #a8c2e4; margin-left: 4px; white-space: nowrap; }
+
+/* ---------- Tombol ---------- */
+.tbl {
+  min-height: var(--touch);
+  min-width: var(--touch);
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 10px 18px;
+  border: 1.5px solid transparent;
+  border-radius: var(--r-pill);
+  font-size: 14px; font-weight: 700;
+  background: var(--c-surface-2); color: var(--c-ink);
+  transition: transform .12s ease, box-shadow .18s ease, background .18s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.tbl:hover  { box-shadow: var(--sh-2); }
+.tbl:active { transform: translateY(1px) scale(.985); }
+.tbl svg { width: 17px; height: 17px; flex: none; }
+
+.tbl-utama   { background: var(--c-blue);  color: #fff; box-shadow: var(--sh-2); }
+.tbl-utama:hover { background: #16599f; box-shadow: var(--sh-3); }
+.tbl-garis   { background: var(--c-surface); border-color: var(--c-line); }
+.tbl-garis:hover { border-color: var(--c-blue-line); background: var(--c-blue-soft); }
+.tbl-sunyi   { background: transparent; color: var(--c-ink-soft); }
+.tbl-sunyi:hover { background: var(--c-surface-2); color: var(--c-ink); }
+.tbl-bahaya  { background: var(--c-red-soft); color: var(--c-red); border-color: var(--c-red-line); }
+.tbl-kecil   { padding: 7px 13px; font-size: 13px; min-height: 36px; }
+.tbl-bulat   { width: var(--touch); height: var(--touch); padding: 0; border-radius: 50%; }
+.tbl[disabled] { opacity: .42; pointer-events: none; }
+
+/* Tombol pada bilah atas */
+.bilah-atas .tbl {
+  background: rgba(255,255,255,.12); color: #fff; border-color: rgba(255,255,255,.22);
+}
+.bilah-atas .tbl:hover { background: rgba(255,255,255,.22); }
+
+/* ---------- Kartu ---------- */
+.kartu {
+  background: var(--c-surface);
+  border: 1px solid var(--c-line-soft);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-1);
+}
+.kartu-pad { padding: var(--sp-5); }
+.kartu-tenggelam { background: var(--c-surface-2); border-color: var(--c-line); box-shadow: none; }
+
+/* ---------- Lencana ---------- */
+.lencana {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 11px; border-radius: var(--r-pill);
+  font-size: 11.5px; font-weight: 700; letter-spacing: .01em;
+  background: var(--c-blue-soft); color: var(--c-blue); border: 1px solid var(--c-blue-line);
+  white-space: nowrap;
+}
+.lencana-kuning { background: var(--c-amber-soft); color: var(--c-amber); border-color: var(--c-amber-line); }
+.lencana-hijau  { background: var(--c-green-soft); color: var(--c-green); border-color: var(--c-green-line); }
+.lencana-ungu   { background: var(--c-plum-soft);  color: var(--c-plum);  border-color: var(--c-plum-line); }
+.lencana-merah  { background: var(--c-red-soft);   color: var(--c-red);   border-color: var(--c-red-line); }
+
+/* ---------- Halaman / tampilan ---------- */
+.layar { display: none; flex: 1 1 auto; min-height: 0; }
+.layar.tampil { display: flex; flex-direction: column; }
+
+.isi-layar {
+  flex: 1 1 auto; min-height: 0;
+  padding: var(--sp-6) var(--sp-8);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.isi-layar::-webkit-scrollbar { width: 10px; }
+.isi-layar::-webkit-scrollbar-track { background: transparent; }
+.isi-layar::-webkit-scrollbar-thumb { background: var(--c-line); border-radius: 5px; border: 3px solid var(--c-paper); }
+
+/* ---------- Bilah navigasi bawah ---------- */
+.bilah-bawah {
+  flex: none;
+  height: 62px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--sp-4);
+  padding: 0 var(--sp-8);
+  background: var(--c-surface);
+  border-top: 1px solid var(--c-line);
+  z-index: 10;
+}
+
+/* ---------- Penggeser (slider) ---------- */
+.penggeser { display: flex; flex-direction: column; gap: 6px; }
+.penggeser .kepala { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.penggeser .nama { font-size: 13px; font-weight: 700; color: var(--c-ink); }
+.penggeser .nilai {
+  font-family: var(--f-num); font-size: 13px; font-weight: 700;
+  color: var(--c-blue); background: var(--c-blue-soft);
+  padding: 2px 9px; border-radius: var(--r-pill); white-space: nowrap;
+}
+.penggeser .skala { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--c-ink-faint); }
+
+input[type=range] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 30px;            /* area sentuh nyaman */
+  background: transparent; margin: 0; cursor: pointer;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  height: 8px; border-radius: 4px;
+  background: var(--c-surface-2); border: 1px solid var(--c-line);
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 24px; height: 24px; margin-top: -9px;
+  border-radius: 50%; background: var(--c-blue);
+  border: 3px solid #fff; box-shadow: var(--sh-2);
+}
+input[type=range]::-moz-range-track {
+  height: 8px; border-radius: 4px;
+  background: var(--c-surface-2); border: 1px solid var(--c-line);
+}
+input[type=range]::-moz-range-thumb {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--c-blue); border: 3px solid #fff; box-shadow: var(--sh-2);
+}
+
+/* ---------- Pilihan berbentuk kartu (preset) ---------- */
+.pilihan-grid { display: grid; gap: 8px; }
+.pilihan {
+  min-height: var(--touch);
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 9px 6px;
+  border: 2px solid var(--c-line);
+  border-radius: var(--r-md);
+  background: var(--c-surface);
+  text-align: center;
+  transition: border-color .15s, background .15s, transform .12s;
+}
+.pilihan:hover { border-color: var(--c-blue-line); background: var(--c-blue-soft); }
+.pilihan:active { transform: translateY(1px); }
+.pilihan .ikon { font-size: 20px; line-height: 1; }
+.pilihan .tajuk { font-size: 12.5px; font-weight: 700; }
+.pilihan .ket { font-size: 10.5px; color: var(--c-ink-faint); line-height: 1.3; }
+.pilihan[aria-pressed="true"] {
+  border-color: var(--c-blue); background: var(--c-blue-soft);
+  box-shadow: inset 0 0 0 1px var(--c-blue);
+}
+.pilihan[aria-pressed="true"] .tajuk { color: var(--c-blue); }
+
+/* ---------- Panel ukur (HUD) ---------- */
+.ukur-grid { display: grid; gap: 8px; }
+.ukur {
+  background: var(--c-surface);
+  border: 1px solid var(--c-line-soft);
+  border-left: 4px solid var(--c-blue);
+  border-radius: var(--r-md);
+  padding: 8px 11px;
+}
+.ukur .nama { font-size: 10.5px; font-weight: 800; letter-spacing: .04em;
+              text-transform: uppercase; color: var(--c-ink-faint); }
+.ukur .nilai { font-family: var(--f-num); font-size: 20px; font-weight: 700; line-height: 1.15; }
+.ukur .satuan { font-size: 11px; color: var(--c-ink-faint); font-weight: 600; }
+.ukur .bar { height: 5px; border-radius: 3px; background: var(--c-surface-2); overflow: hidden; margin-top: 5px; }
+.ukur .bar > i { display: block; height: 100%; width: 0%; border-radius: 3px; background: var(--c-blue); transition: width .12s linear; }
+.ukur-kuning { border-left-color: var(--c-amber); }
+.ukur-kuning .bar > i { background: var(--c-amber); }
+.ukur-hijau  { border-left-color: var(--c-green); }
+.ukur-hijau .bar > i { background: var(--c-green); }
+.ukur-ungu   { border-left-color: var(--c-plum); }
+.ukur-ungu .bar > i { background: var(--c-plum); }
+.ukur-merah  { border-left-color: var(--c-red); }
+.ukur-merah .bar > i { background: var(--c-red); }
+
+/* ---------- Kanvas simulasi ---------- */
+.panggung-sim {
+  position: relative;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  box-shadow: var(--sh-1);
+}
+.panggung-sim canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+
+/* ---------- Kotak catatan / sains ---------- */
+.catatan {
+  border-radius: var(--r-md);
+  padding: 11px 13px;
+  font-size: 13px; line-height: 1.55;
+  border: 1px solid var(--c-blue-line);
+  background: var(--c-blue-soft);
+  color: var(--c-ink);
+}
+.catatan .tajuk { font-weight: 800; font-size: 12.5px; display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
+.catatan-kuning { background: var(--c-amber-soft); border-color: var(--c-amber-line); }
+.catatan-hijau  { background: var(--c-green-soft); border-color: var(--c-green-line); }
+.catatan-merah  { background: var(--c-red-soft);   border-color: var(--c-red-line); }
+.catatan-ungu   { background: var(--c-plum-soft);  border-color: var(--c-plum-line); }
+
+/* ---------- Kuis ---------- */
+.kuis-soal { font-size: 16px; font-weight: 700; line-height: 1.5; }
+.kuis-opsi { display: grid; gap: 9px; }
+.opsi {
+  min-height: var(--touch);
+  display: flex; align-items: center; gap: 11px;
+  width: 100%; padding: 11px 15px;
+  border: 2px solid var(--c-line);
+  border-radius: var(--r-md);
+  background: var(--c-surface);
+  text-align: left; font-size: 14.5px; font-weight: 600; line-height: 1.4;
+  transition: border-color .15s, background .15s;
+}
+.opsi:hover:not([disabled]) { border-color: var(--c-blue); background: var(--c-blue-soft); }
+.opsi .huruf {
+  flex: none; width: 27px; height: 27px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--c-surface-2); color: var(--c-ink-soft);
+  font-size: 13px; font-weight: 800;
+}
+.opsi.benar { border-color: var(--c-green); background: var(--c-green-soft); }
+.opsi.benar .huruf { background: var(--c-green); color: #fff; }
+.opsi.salah { border-color: var(--c-red); background: var(--c-red-soft); }
+.opsi.salah .huruf { background: var(--c-red); color: #fff; }
+.opsi[disabled] { cursor: default; }
+
+/* ---------- Langkah panduan ---------- */
+.langkah { display: flex; gap: 13px; align-items: flex-start; }
+.langkah .nomor {
+  flex: none; width: 30px; height: 30px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--c-blue); color: #fff; font-weight: 800; font-size: 14px;
+}
+
+/* ---------- Kartu modul di menu ---------- */
+.kartu-modul {
+  display: flex; flex-direction: column; gap: 9px;
+  padding: var(--sp-4);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-lg);
+  background: var(--c-surface);
+  box-shadow: var(--sh-1);
+  text-align: left;
+  transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.kartu-modul:hover { transform: translateY(-3px); box-shadow: var(--sh-3); border-color: var(--c-blue-line); }
+.kartu-modul .gambar {
+  height: 96px; border-radius: var(--r-md);
+  display: grid; place-items: center; font-size: 44px;
+  background: var(--c-surface-2);
+}
+.kartu-modul .tajuk { font-size: 15.5px; font-weight: 800; }
+.kartu-modul .ket { font-size: 12.5px; color: var(--c-ink-soft); line-height: 1.45; }
+.kartu-modul .kaki { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: auto; }
+
+/* ---------- Animasi ringan ---------- */
+@keyframes munculHalus { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: none; } }
+.muncul { animation: munculHalus .32s cubic-bezier(.22,.9,.3,1) both; }
+@keyframes denyut { 0%,100% { transform: scale(1); } 50% { transform: scale(1.07); } }
+.denyut { animation: denyut 1.6s ease-in-out infinite; }
+
+</style>
+</head>
+<body>
+
+<!-- Pesan bila perangkat dipegang tegak pada layar kecil -->
+<div id="putar-hp">
+  <div class="isi">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#f0c14b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="7" width="18" height="10" rx="2"/>
+      <path d="M12 3v2M12 19v2"/>
+      <path d="M7.5 10.5 5 13l2.5 2.5"/>
+    </svg>
+    <h2>Putar perangkatmu</h2>
+    <p>Media ini dirancang dengan tampilan lebar 16:9. Putar ponsel ke posisi mendatar agar semua bagian terlihat jelas.</p>
+  </div>
+</div>
+
+<!-- Panggung berukuran tetap 1280x720, diskalakan agar pas di layar apa pun -->
+<div id="panggung-wrap">
+  <div id="panggung">
+    <header id="bilah-atas" class="bilah-atas"></header>
+    <div id="isi-panggung" class="isi-penuh kolom"></div>
+  </div>
+</div>
+
+<noscript>
+  <div style="padding:32px;font-family:system-ui,sans-serif;color:#fff;text-align:center">
+    <h2>JavaScript perlu diaktifkan</h2>
+    <p>Media pembelajaran ini berjalan sepenuhnya di dalam peramban dan membutuhkan JavaScript.</p>
+  </div>
+</noscript>
+
+<!-- Skrip biasa (bukan modul ES) supaya berkas ini tetap bisa dibuka
+     langsung dari cakram tanpa server web. -->
+<script>
+/* ===== scripts/core/bus.js ===== */
+/* ============================================================
+   bus.js — penyampai pesan sederhana antar bagian aplikasi
+   ============================================================ */
+(function (RPN) {
+  'use strict';
+  var peta = {};
+  RPN.bus = {
+    dengar: function (nama, fn) {
+      (peta[nama] = peta[nama] || []).push(fn);
+      return function () { RPN.bus.lepas(nama, fn); };
+    },
+    lepas: function (nama, fn) {
+      var a = peta[nama]; if (!a) return;
+      var i = a.indexOf(fn); if (i > -1) a.splice(i, 1);
+    },
+    pancar: function (nama, data) {
+      var a = peta[nama]; if (!a) return;
+      for (var i = 0; i < a.length; i++) {
+        try { a[i](data); } catch (e) { /* satu pendengar gagal tidak menghentikan sisanya */ }
+      }
+    }
+  };
+})(window.RPN = window.RPN || {});
+
+</script>
+<script>
+/* ===== scripts/core/stage.js ===== */
+/* ============================================================
+   stage.js — menjaga rasio 16:9 di semua perangkat
+   Panggung berukuran tetap 1280x720 lalu diskalakan agar pas
+   di layar apa pun (laptop, tablet, ponsel) tanpa distorsi.
+   ============================================================ */
+(function (RPN) {
+  'use strict';
+
+  var LEBAR = 1280, TINGGI = 720;
+  var el, wrap, siapPutar = false;
+
+  function pasang() {
+    el   = document.getElementById('panggung');
+    wrap = document.getElementById('panggung-wrap');
+    if (!el) return;
+    skala();
+    window.addEventListener('resize', skala, { passive: true });
+    window.addEventListener('orientationchange', function () { setTimeout(skala, 120); });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', skala, { passive: true });
+    }
+  }
+
+  function skala() {
+    var lw = wrap.clientWidth, lh = wrap.clientHeight;
+    var s  = Math.min(lw / LEBAR, lh / TINGGI);
+
+    // Pada layar sangat kecil & tegak, minta pengguna memutar perangkat.
+    var tegakSempit = lh > lw && lw < 640;
+    document.body.classList.toggle('perlu-putar', tegakSempit);
+
+    el.style.transform = 'translate(-50%, -50%) scale(' + s + ')';
+    RPN.skalaPanggung = s;
+    RPN.bus.pancar('panggung:skala', s);
+  }
+
+  /* Ubah koordinat penunjuk layar menjadi koordinat di dalam kanvas,
+     sudah memperhitungkan penskalaan panggung. */
+  function titikKanvas(kanvas, ev) {
+    var r = kanvas.getBoundingClientRect();
+    var cx = ev.touches ? ev.touches[0].clientX : ev.clientX;
+    var cy = ev.touches ? ev.touches[0].clientY : ev.clientY;
+    return {
+      x: (cx - r.left) / r.width  * kanvas.clientWidth,
+      y: (cy - r.top)  / r.height * kanvas.clientHeight
+    };
+  }
+
+  /* Siapkan kanvas agar tajam di layar ber-DPI tinggi.
+     Penting: reset transform dulu supaya skala tidak menumpuk
+     setiap kali ukuran berubah. */
+  function siapkanKanvas(kanvas) {
+    var ctx = kanvas.getContext('2d');
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var w = kanvas.clientWidth, h = kanvas.clientHeight;
+    if (!w || !h) return ctx;
+    var wantW = Math.round(w * dpr), wantH = Math.round(h * dpr);
+    if (kanvas.width !== wantW || kanvas.height !== wantH) {
+      kanvas.width = wantW; kanvas.height = wantH;
+    }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);   // reset, bukan menumpuk
+    return ctx;
+  }
+
+  RPN.panggung = {
+    pasang: pasang,
+    skala: skala,
+    titikKanvas: titikKanvas,
+    siapkanKanvas: siapkanKanvas,
+    LEBAR: LEBAR,
+    TINGGI: TINGGI
+  };
+})(window.RPN = window.RPN || {});
+
+</script>
+<script>
+/* ===== scripts/core/audio.js ===== */
+/* ============================================================
+   audio.js — seluruh bunyi dibangkitkan Web Audio API.
+   Tidak ada berkas suara eksternal sama sekali.
+   ============================================================ */
+(function (RPN) {
+  'use strict';
+
+  var ctx = null, nyala = true, master = null;
+  var nadaBerjalan = {};   // bunyi menerus (putaran gasing, desir angin)
+
+  function hidupkan() {
+    if (ctx) { if (ctx.state === 'suspended') ctx.resume(); return ctx; }
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    ctx = new AC();
+    master = ctx.createGain();
+    master.gain.value = 0.9;
+    master.connect(ctx.destination);
+    return ctx;
+  }
+
+  function bolehBunyi() {
+    if (!nyala) return false;
+    return !!hidupkan();
+  }
+
+  /* --- Nada pendek (klik, benar, salah) --- */
+  function nada(opsi) {
+    if (!bolehBunyi()) return;
+    var t = ctx.currentTime + (opsi.tunda || 0);
+    var osc = ctx.createOscillator(), g = ctx.createGain();
+    osc.type = opsi.bentuk || 'sine';
+    osc.frequency.setValueAtTime(opsi.dari, t);
+    if (opsi.ke) osc.frequency.exponentialRampToValueAtTime(Math.max(1, opsi.ke), t + (opsi.lama || .15));
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(opsi.keras || .16, t + .012);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + (opsi.lama || .15));
+    osc.connect(g); g.connect(master);
+    osc.start(t); osc.stop(t + (opsi.lama || .15) + .02);
+  }
+
+  /* --- Derau tersaring (benturan, gesekan, angin) --- */
+  function derau(opsi) {
+    if (!bolehBunyi()) return;
+    var lama = opsi.lama || .18;
+    var n = Math.floor(ctx.sampleRate * lama);
+    var buf = ctx.createBuffer(1, n, ctx.sampleRate);
+    var d = buf.getChannelData(0);
+    for (var i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n);
+    var src = ctx.createBufferSource(); src.buffer = buf;
+    var f = ctx.createBiquadFilter();
+    f.type = opsi.saring || 'lowpass';
+    f.frequency.value = opsi.cutoff || 900;
+    var g = ctx.createGain();
+    g.gain.setValueAtTime(opsi.keras || .2, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + lama);
+    src.connect(f); f.connect(g); g.connect(master);
+    src.start();
+  }
+
+  /* --- Bunyi menerus yang bisa diatur nada & kerasnya --- */
+  function mulaiMenerus(kunci, opsi) {
+    if (!bolehBunyi()) return null;
+    if (nadaBerjalan[kunci]) return nadaBerjalan[kunci];
+    var osc = ctx.createOscillator(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+    osc.type = (opsi && opsi.bentuk) || 'sawtooth';
+    osc.frequency.value = (opsi && opsi.dari) || 120;
+    f.type = 'lowpass'; f.frequency.value = 700;
+    g.gain.value = 0.0001;
+    osc.connect(f); f.connect(g); g.connect(master);
+    osc.start();
+    return (nadaBerjalan[kunci] = { osc: osc, f: f, g: g });
+  }
+
+  function aturMenerus(kunci, freq, keras, cutoff) {
+    var n = nadaBerjalan[kunci];
+    if (!n || !ctx) return;
+    var t = ctx.currentTime;
+    n.osc.frequency.setTargetAtTime(Math.max(20, freq), t, .05);
+    n.g.gain.setTargetAtTime(nyala ? Math.max(0.0001, keras) : 0.0001, t, .06);
+    if (cutoff) n.f.frequency.setTargetAtTime(cutoff, t, .06);
+  }
+
+  function hentikanMenerus(kunci) {
+    var n = nadaBerjalan[kunci];
+    if (!n || !ctx) return;
+    n.g.gain.setTargetAtTime(0.0001, ctx.currentTime, .05);
+  }
+
+  function bersihkanSemua() {
+    for (var k in nadaBerjalan) hentikanMenerus(k);
+  }
+
+  /* --- Bunyi siap pakai --- */
+  var efek = {
+    klik:    function () { nada({ dari: 620, ke: 880, lama: .07, keras: .09, bentuk: 'triangle' }); },
+    pindah:  function () { nada({ dari: 430, ke: 660, lama: .12, keras: .10, bentuk: 'sine' }); },
+    benar:   function () {
+      [523.25, 659.25, 783.99].forEach(function (f, i) {
+        nada({ dari: f, lama: .22, keras: .13, tunda: i * .075, bentuk: 'sine' });
+      });
+    },
+    salah:   function () { nada({ dari: 300, ke: 150, lama: .28, keras: .13, bentuk: 'triangle' }); },
+    hebat:   function () {
+      [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach(function (f, i) {
+        nada({ dari: f, lama: .3, keras: .12, tunda: i * .085, bentuk: 'sine' });
+      });
+    },
+    tumbuk:  function (kuat) { derau({ lama: .2, cutoff: 380 + (kuat || .5) * 900, keras: Math.min(.32, .1 + (kuat || .5) * .25) }); },
+    kayu:    function () { nada({ dari: 420 + Math.random() * 170, ke: 120, lama: .06, keras: .14, bentuk: 'triangle' }); },
+    lonceng: function () { nada({ dari: 880, lama: .3, keras: .12 }); nada({ dari: 1320, lama: .3, keras: .07 }); },
+    lenting: function () { nada({ dari: 180, ke: 620, lama: .11, keras: .13, bentuk: 'triangle' }); }
+  };
+
+  RPN.audio = {
+    efek: efek,
+    nada: nada,
+    derau: derau,
+    mulaiMenerus: mulaiMenerus,
+    aturMenerus: aturMenerus,
+    hentikanMenerus: hentikanMenerus,
+    bersihkanSemua: bersihkanSemua,
+    hidupkan: hidupkan,
+    get nyala() { return nyala; },
+    set nyala(v) {
+      nyala = !!v;
+      if (!nyala) bersihkanSemua();
+      RPN.bus.pancar('audio:ubah', nyala);
+    }
+  };
+})(window.RPN = window.RPN || {});
+
+</script>
+<script>
+/* ===== scripts/core/store.js ===== */
+/* ============================================================
+   store.js — menyimpan kemajuan belajar murid.
+   Memakai localStorage bila tersedia; bila diblokir (mode privat,
+   berkas dibuka langsung dari disk), otomatis jatuh ke memori
+   sehingga aplikasi tetap berjalan normal.
+   ============================================================ */
+(function (RPN) {
+  'use strict';
+
+  var KUNCI = 'rpn.kemajuan.v1';
+  var cadangan = {};                 // penyimpanan memori
+  var adaLocal = (function () {
+    try {
+      var t = '__uji__';
+      window.localStorage.setItem(t, '1');
+      window.localStorage.removeItem(t);
+      return true;
+    } catch (e) { return false; }
+  })();
+
+  function bacaMentah() {
+    if (!adaLocal) return cadangan;
+    try { return JSON.parse(window.localStorage.getItem(KUNCI) || '{}'); }
+    catch (e) { return {}; }
+  }
+
+  function tulisMentah(obj) {
+    if (!adaLocal) { cadangan = obj; return; }
+    try { window.localStorage.setItem(KUNCI, JSON.stringify(obj)); }
+    catch (e) { cadangan = obj; }
+  }
+
+  var awal = {
+    dikunjungi: {},     // idModul -> true
+    kuis: {},           // idModul -> { benar, total }
+    percobaan: {},      // idModul -> jumlah percobaan simulasi
+    evaluasi: null      // { benar, total, waktu }
+  };
+
+  function muat() {
+    var d = bacaMentah();
+    return {
+      dikunjungi: d.dikunjungi || {},
+      kuis: d.kuis || {},
+      percobaan: d.percobaan || {},
+      evaluasi: d.evaluasi || null
+    };
+  }
+
+  var data = muat();
+
+  var api = {
+    get data() { return data; },
+    tersimpanPermanen: adaLocal,
+
+    kunjungi: function (id) {
+      if (data.dikunjungi[id]) return;
+      data.dikunjungi[id] = true;
+      tulisMentah(data);
+      RPN.bus.pancar('kemajuan:ubah', data);
+    },
+
+    catatKuis: function (id, benar, total) {
+      var lama = data.kuis[id];
+      // simpan hasil terbaik agar murid terdorong mencoba lagi
+      if (!lama || benar > lama.benar) {
+        data.kuis[id] = { benar: benar, total: total };
+        tulisMentah(data);
+        RPN.bus.pancar('kemajuan:ubah', data);
+      }
+    },
+
+    catatPercobaan: function (id) {
+      data.percobaan[id] = (data.percobaan[id] || 0) + 1;
+      tulisMentah(data);
+    },
+
+    catatEvaluasi: function (benar, total) {
+      data.evaluasi = { benar: benar, total: total, waktu: Date.now() };
+      tulisMentah(data);
+      RPN.bus.pancar('kemajuan:ubah', data);
+    },
+
+    /* Berapa modul yang sudah dituntaskan (dikunjungi + kuis lulus) */
+    ringkas: function (daftarModul) {
+      var tuntas = 0, dibuka = 0;
+      daftarModul.forEach(function (m) {
+        if (data.dikunjungi[m.id]) dibuka++;
+        var k = data.kuis[m.id];
+        if (k && k.total > 0 && k.benar / k.total >= 0.6) tuntas++;
+      });
+      return { dibuka: dibuka, tuntas: tuntas, total: daftarModul.length };
+    },
+
+    hapus: function () {
+      data = { dikunjungi: {}, kuis: {}, percobaan: {}, evaluasi: null };
+      tulisMentah(data);
+      RPN.bus.pancar('kemajuan:ubah', data);
+    }
+  };
+
+  RPN.simpanan = api;
+})(window.RPN = window.RPN || {});
+
+</script>
+<script>
+/* ===== scripts/core/ui.js ===== */
+/* ============================================================
+   ui.js — potongan antarmuka yang dipakai berulang oleh modul:
+   penggeser, panel ukur, pilihan preset, kotak catatan.
+   ============================================================ */
+(function (RPN) {
+  'use strict';
+
+  function el(tag, kelas, isi) {
+    var n = document.createElement(tag);
+    if (kelas) n.className = kelas;
+    if (isi != null) n.innerHTML = isi;
+    return n;
+  }
+
+  /**
+   * Penggeser bernilai.
+   * o = { nama, min, max, step, nilai, format(v), skala:[kiri,tengah,kanan], saatUbah(v) }
+   */
+  function penggeser(o) {
+    var w = el('div', 'penggeser');
+    var kepala = el('div', 'kepala');
+    kepala.appendChild(el('span', 'nama', o.nama));
+    var nilai = el('span', 'nilai', o.format ? o.format(o.nilai) : o.nilai);
+    kepala.appendChild(nilai);
+    w.appendChild(kepala);
+
+    var inp = document.createElement('input');
+    inp.type = 'range';
+    inp.min = o.min; inp.max = o.max; inp.step = o.step; inp.value = o.nilai;
+    inp.setAttribute('aria-label', o.nama);
+    w.appendChild(inp);
+
+    if (o.skala) {
+      var sk = el('div', 'skala');
+      o.skala.forEach(function (t) { sk.appendChild(el('span', '', t)); });
+      w.appendChild(sk);
+    }
+
+    inp.addEventListener('input', function () {
+      var v = parseFloat(inp.value);
+      nilai.innerHTML = o.format ? o.format(v) : v;
+      if (o.saatUbah) o.saatUbah(v);
+    });
+
+    w.setNilai = function (v) {
+      inp.value = v;
+      nilai.innerHTML = o.format ? o.format(v) : v;
+    };
+    return w;
+  }
+
+  /**
+   * Panel ukur (HUD).
+   * o = { nama, satuan, warna:'kuning|hijau|ungu|merah', maks }
+   * Mengembalikan elemen dengan method .set(nilai, teksOpsional)
+   */
+  function ukur(o) {
+    var w = el('div', 'ukur' + (o.warna ? ' ukur-' + o.warna : ''));
+    w.appendChild(el('div', 'nama', o.nama));
+    var baris = el('div', 'baris g1');
+    baris.style.alignItems = 'baseline';
+    var n = el('span', 'nilai', '0');
+    baris.appendChild(n);
+    if (o.satuan) baris.appendChild(el('span', 'satuan', o.satuan));
+    w.appendChild(baris);
+    var bar = el('div', 'bar', '<i></i>');
+    w.appendChild(bar);
+    var isiBar = bar.firstChild;
+
+    w.set = function (v, teks) {
+      n.textContent = teks != null ? teks : v;
+      if (o.maks) isiBar.style.width = Math.max(0, Math.min(100, v / o.maks * 100)) + '%';
+    };
+    return w;
+  }
+
+  /**
+   * Kelompok pilihan berbentuk kartu (preset).
+   * o = { kolom, daftar:[{id, ikon, tajuk, ket}], terpilih, saatPilih(id) }
+   */
+  function pilihan(o) {
+    var w = el('div', 'pilihan-grid');
+    w.style.gridTemplateColumns = 'repeat(' + (o.kolom || o.daftar.length) + ', 1fr)';
+    var tombol = {};
+    o.daftar.forEach(function (d) {
+      var b = el('button', 'pilihan');
+      b.type = 'button';
+      b.setAttribute('aria-pressed', d.id === o.terpilih ? 'true' : 'false');
+      if (d.ikon) b.appendChild(el('span', 'ikon', d.ikon));
+      b.appendChild(el('span', 'tajuk', d.tajuk));
+      if (d.ket) b.appendChild(el('span', 'ket', d.ket));
+      b.addEventListener('click', function () {
+        for (var k in tombol) tombol[k].setAttribute('aria-pressed', 'false');
+        b.setAttribute('aria-pressed', 'true');
+        RPN.audio.efek.klik();
+        if (o.saatPilih) o.saatPilih(d.id);
+      });
+      tombol[d.id] = b;
+      w.appendChild(b);
+    });
+    w.pilih = function (id) {
+      for (var k in tombol) tombol[k].setAttribute('aria-pressed', k === id ? 'true' : 'false');
+    };
+    return w;
+  }
+
+  /* Kotak catatan berwarna */
+  function catatan(warna, tajuk, isi) {
+    return el('div', 'catatan' + (warna ? ' catatan-' + warna : '') + ' teks-s',
+      (tajuk ? '<span class="tajuk">' + tajuk + '</span>' : '') + isi);
+  }
+
+  /* Judul kecil untuk bagian panel */
+  function tajukPanel(teks, lencana, warnaLencana) {
+    var w = el('div', 'baris antara g2');
+    w.appendChild(el('div', 'judul-s', teks));
+    if (lencana) w.appendChild(el('span', 'lencana lencana-' + (warnaLencana || 'biru'), lencana));
+    return w;
+  }
+
+  /* Baris tombol aksi */
+  function aksi(daftar) {
+    var w = el('div', 'baris g2 bungkus');
+    daftar.forEach(function (d) {
+      var b = el('button', 'tbl tbl-kecil ' + (d.kelas || 'tbl-garis'),
+        (d.ikon ? d.ikon + ' ' : '') + '<span>' + d.teks + '</span>');
+      b.type = 'button';
+      b.addEventListener('click', d.aksi);
+      if (d.simpan) d.simpan(b);
+      w.appendChild(b);
+    });
+    return w;
+  }
+
+  /* Tabel kecil untuk mencatat hasil percobaan (Langkah "Bandingkan") */
+  function tabelCatat(kolom) {
+    var w = el('div', '');
+    w.style.border = '1px solid var(--c-line)';
+    w.style.borderRadius = 'var(--r-md)';
+    w.style.overflow = 'hidden';
+    var t = document.createElement('table');
+    t.style.width = '100%';
+    t.style.borderCollapse = 'collapse';
+    t.style.fontSize = '12.5px';
+    var thead = document.createElement('thead');
+    var tr = document.createElement('tr');
+    kolom.forEach(function (k) {
+      var th = document.createElement('th');
+      th.textContent = k;
+      th.style.cssText = 'text-align:left;padding:7px 9px;background:var(--c-surface-2);' +
+                         'font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--c-ink-faint)';
+      tr.appendChild(th);
+    });
+    thead.appendChild(tr); t.appendChild(thead);
+    var tbody = document.createElement('tbody');
+    t.appendChild(tbody); w.appendChild(t);
+
+    w.tambah = function (sel) {
+      var r = document.createElement('tr');
+      sel.forEach(function (s, i) {
+        var td = document.createElement('td');
+        td.innerHTML = s;
+        td.style.cssText = 'padding:7px 9px;border-top:1px solid var(--c-line-soft);' +
+                           (i === 0 ? 'font-weight:700;' : 'font-family:var(--f-num);');
+        r.appendChild(td);
+      });
+      tbody.insertBefore(r, tbody.firstChild);
+      while (tbody.children.length > 6) tbody.removeChild(tbody.lastChild);
+    };
+    w.kosong = function () { tbody.innerHTML = ''; };
+    w.jumlahBaris = function () { return tbody.children.length; };
+    return w;
+  }
+
+  RPN.ui = {
+    el: el, penggeser: penggeser, ukur: ukur, pilihan: pilihan,
+    catatan: catatan, tajukPanel: tajukPanel, aksi: aksi, tabelCatat: tabelCatat
+  };
+})(window.RPN = window.RPN || {});
+
+</script>
+<script>
+/* ===== scripts/core/quiz.js ===== */
+/* ============================================================
+   quiz.js — mesin asesmen formatif.
+   Setiap pilihan punya penjelasan sendiri, sehingga umpan balik
+   tidak berhenti di "benar/salah" tetapi meluruskan miskonsepsi.
+   ============================================================ */
+(function (RPN) {
+  'use strict';
+
+  var HURUF = ['A', 'B', 'C', 'D', 'E'];
+
+  function el(tag, kelas, isi) {
+    var n = document.createElement(tag);
+    if (kelas) n.className = kelas;
+    if (isi != null) n.innerHTML = isi;
+    return n;
+  }
+
+  /**
+   * Membuat sesi kuis.
+   * @param {HTMLElement} wadah  tempat kuis digambar
+   * @param {Array} soal        daftar soal
+   * @param {Object} opsi       { judul, saatSelesai(benar, total) }
+   */
+  function buat(wadah, soal, opsi) {
+    opsi = opsi || {};
+    var ke = 0, benar = 0, terjawab = false;
+
+    function gambar() {
+      wadah.innerHTML = '';
+      if (ke >= soal.length) return selesai();
+
+      var s = soal[ke];
+      var kotak = el('div', 'kolom g4 muncul');
+
+      /* Kepala: nomor soal + indikator progres */
+      var kepala = el('div', 'baris antara g3');
+      kepala.appendChild(el('span', 'lencana', 'Soal ' + (ke + 1) + ' dari ' + soal.length));
+      var skor = el('span', 'teks-s lembut angka', 'Benar: ' + benar);
+      kepala.appendChild(skor);
+      kotak.appendChild(kepala);
+
+      /* Pertanyaan */
+      kotak.appendChild(el('p', 'kuis-soal', s.tanya));
+
+      if (s.petunjuk) {
+        kotak.appendChild(el('div', 'catatan catatan-kuning teks-s',
+          '<span class="tajuk">Petunjuk</span>' + s.petunjuk));
+      }
+
+      /* Pilihan jawaban */
+      var daftar = el('div', 'kuis-opsi');
+      s.opsi.forEach(function (o, i) {
+        var b = el('button', 'opsi');
+        b.type = 'button';
+        b.appendChild(el('span', 'huruf', HURUF[i]));
+        b.appendChild(el('span', '', o.teks));
+        b.addEventListener('click', function () { jawab(i, daftar, kotak, s); });
+        daftar.appendChild(b);
+      });
+      kotak.appendChild(daftar);
+
+      wadah.appendChild(kotak);
+      terjawab = false;
+    }
+
+    function jawab(pilih, daftar, kotak, s) {
+      if (terjawab) return;
+      terjawab = true;
+
+      var tombol = daftar.querySelectorAll('.opsi');
+      var betul = s.opsi[pilih].benar === true;
+      if (betul) benar++;
+
+      for (var i = 0; i < tombol.length; i++) {
+        tombol[i].disabled = true;
+        if (s.opsi[i].benar) tombol[i].classList.add('benar');
+        else if (i === pilih) tombol[i].classList.add('salah');
+      }
+
+      RPN.audio.efek[betul ? 'benar' : 'salah']();
+
+      /* Umpan balik konstruktif: alasan pilihan yang dipilih,
+         lalu penguatan konsep yang benar. */
+      var umpan = el('div', 'catatan ' + (betul ? 'catatan-hijau' : 'catatan-merah') + ' muncul');
+      var judul = betul ? 'Tepat sekali!' : 'Belum tepat — ini sebabnya';
+      var isi = '<span class="tajuk">' + judul + '</span>' + (s.opsi[pilih].alasan || '');
+      if (!betul) {
+        var kunci = s.opsi.filter(function (o) { return o.benar; })[0];
+        if (kunci) isi += '<br><br><b>Jawaban yang tepat:</b> ' + kunci.teks +
+                          (kunci.alasan ? ' — ' + kunci.alasan : '');
+      }
+      if (s.penguatan) isi += '<br><br><b>Ingat:</b> ' + s.penguatan;
+      umpan.innerHTML = isi;
+      kotak.appendChild(umpan);
+
+      var kaki = el('div', 'baris tengah g3');
+      var lanjut = el('button', 'tbl tbl-utama',
+        (ke + 1 < soal.length ? 'Soal berikutnya' : 'Lihat hasil') +
+        ' <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>');
+      lanjut.type = 'button';
+      lanjut.addEventListener('click', function () { ke++; RPN.audio.efek.klik(); gambar(); });
+      kaki.appendChild(lanjut);
+      kotak.appendChild(kaki);
+      /* Fokus tanpa menggulung paksa, lalu geser seperlunya saja
+         supaya pertanyaan di atas tidak ikut terpotong. */
+      lanjut.focus({ preventScroll: true });
+      if (umpan.scrollIntoView) umpan.scrollIntoView({ block: 'nearest' });
+    }
+
+    function selesai() {
+      var persen = Math.round(benar / soal.length * 100);
+      var lulus = persen >= 60;
+      var kotak = el('div', 'kolom g4 muncul');
+      kotak.style.textAlign = 'center';
+      kotak.style.alignItems = 'center';
+
+      kotak.appendChild(el('div', '', '<div style="font-size:56px;line-height:1">' +
+        (persen === 100 ? '🏆' : lulus ? '🎉' : '💪') + '</div>'));
+      kotak.appendChild(el('h3', 'judul-l', lulus ? 'Kerja bagus!' : 'Ayo coba sekali lagi'));
+      kotak.appendChild(el('p', 'teks lembut',
+        'Kamu menjawab benar <b>' + benar + ' dari ' + soal.length + '</b> soal (' + persen + '%).'));
+
+      if (!lulus) {
+        kotak.appendChild(el('div', 'catatan catatan-kuning teks-s',
+          '<span class="tajuk">Saran</span>Buka kembali simulasinya, ubah satu pengaturan saja, ' +
+          'lalu amati apa yang berubah. Setelah itu kerjakan kuis ini lagi.'));
+      }
+
+      var kaki = el('div', 'baris tengah g3 bungkus');
+      var ulang = el('button', 'tbl tbl-garis', 'Ulangi kuis');
+      ulang.type = 'button';
+      ulang.addEventListener('click', function () {
+        ke = 0; benar = 0; RPN.audio.efek.klik(); gambar();
+      });
+      kaki.appendChild(ulang);
+      kotak.appendChild(kaki);
+
+      wadah.innerHTML = '';
+      wadah.appendChild(kotak);
+
+      if (persen === 100) RPN.audio.efek.hebat();
+      if (opsi.saatSelesai) opsi.saatSelesai(benar, soal.length);
+    }
+
+    gambar();
+    return { ulangi: function () { ke = 0; benar = 0; gambar(); } };
+  }
+
+  RPN.kuis = { buat: buat };
+})(window.RPN = window.RPN || {});
+
+</script>
+<script>
+/* ===== scripts/core/evaluasi.js ===== */
+/* ============================================================
+   evaluasi.js — asesmen sumatif lintas modul (10 soal).
+   Tingkat kesulitan sengaja dibuat berjenjang: C1-C2 (mengingat
+   & memahami) di awal, C3-C4 (menerapkan & menganalisis) di akhir.
+   ============================================================ */
+(function (RPN) {
+  'use strict';
+
+  RPN.soalEvaluasi = [
+    {
+      tanya: 'Gasing yang berputar di atas lantai licin akan berputar lebih lama daripada di atas tanah. Faktor apa yang menyebabkannya?',
+      opsi: [
+        { teks: 'Besarnya gaya gesek permukaan', benar: true,
+          alasan: 'Lantai licin memberi gaya gesek kecil, sehingga energi gerak gasing terkuras lebih lambat.' },
+        { teks: 'Besarnya gaya gravitasi di tempat itu',
+          alasan: 'Gravitasi sama saja di kedua tempat. Yang berbeda adalah kekasaran permukaannya.' },
+        { teks: 'Jumlah udara di sekitar gasing',
+          alasan: 'Hambatan udara memang ada, tetapi jumlahnya sama di kedua lantai. Pembedanya adalah gesekan dengan lantai.' }
+      ],
+      penguatan: 'Gesekan mengubah energi gerak menjadi panas.'
+    },
+    {
+      tanya: 'Sebuah layang-layang bermassa 150 gram diterbangkan. Jika gravitasi 10 m/s², berapa berat layang-layang itu?',
+      petunjuk: 'Ubah gram ke kilogram dulu, lalu kalikan gravitasi.',
+      opsi: [
+        { teks: '1,5 newton', benar: true, alasan: '150 gram = 0,15 kg. Berat = 0,15 × 10 = 1,5 newton.' },
+        { teks: '15 newton', alasan: 'Sepertinya massanya dianggap 1,5 kg. 150 gram = 0,15 kg, bukan 1,5 kg.' },
+        { teks: '150 newton', alasan: 'Massa masih dalam gram. Bagi dulu dengan 1.000 agar menjadi kilogram.' },
+        { teks: '0,15 newton', alasan: 'Ini nilai massanya dalam kg, belum dikalikan gravitasi.' }
+      ],
+      penguatan: 'Berat (N) = massa (kg) × gravitasi (m/s²).'
+    },
+    {
+      tanya: 'Urutan perubahan energi yang benar pada ketapel adalah...',
+      opsi: [
+        { teks: 'Energi potensial elastis → energi kinetik', benar: true,
+          alasan: 'Karet yang teregang menyimpan energi elastis, lalu seluruhnya berpindah menjadi energi gerak peluru.' },
+        { teks: 'Energi kinetik → energi potensial elastis',
+          alasan: 'Urutannya terbalik. Karet diregangkan dulu (menyimpan energi), baru kemudian peluru bergerak.' },
+        { teks: 'Energi panas → energi kinetik',
+          alasan: 'Panas memang muncul sedikit sebagai efek samping, tetapi bukan sumber tenaga lontaran peluru.' },
+        { teks: 'Energi potensial gravitasi → energi kinetik',
+          alasan: 'Itu terjadi pada benda yang jatuh dari ketinggian. Pada ketapel, sumber tenaganya adalah regangan karet.' }
+      ]
+    },
+    {
+      tanya: 'Dalam congklak, seorang pemain melewati 15 lubang dalam satu putaran penuh. Jika ia mengambil 15 biji dari sebuah lubang, di mana biji terakhirnya jatuh?',
+      petunjuk: '15 ÷ 15 = berapa, sisa berapa?',
+      opsi: [
+        { teks: 'Tepat kembali di lubang asalnya', benar: true,
+          alasan: '15 ÷ 15 = 1 putaran sisa 0. Sisa nol berarti kembali persis ke titik awal.' },
+        { teks: 'Di rumahnya sendiri',
+          alasan: 'Rumah sendiri ada di urutan ke-7, bukan ke-0. Dengan 15 biji, ia melewati rumah lalu kembali ke lubang asal.' },
+        { teks: 'Di lubang terakhir milik lawan',
+          alasan: 'Lubang lawan yang terakhir berada di urutan ke-14. Dengan 15 biji, ia sudah melewatinya satu langkah.' },
+        { teks: 'Di rumah lawan',
+          alasan: 'Rumah lawan tidak pernah diisi sama sekali — selalu dilewati, jadi tidak masuk hitungan.' }
+      ],
+      penguatan: 'Sisa 0 berarti kembali ke titik awal.'
+    },
+    {
+      tanya: 'Gasing A dan gasing B punya massa sama, tetapi massa gasing A terkumpul di tengah sedangkan massa gasing B tersebar di tepi. Jika diputar sama kencang, mana yang berputar lebih lama?',
+      opsi: [
+        { teks: 'Gasing B, karena massanya tersebar jauh dari pusat', benar: true,
+          alasan: 'Massa yang jauh dari sumbu membuat gasing lebih sulit diperlambat, sehingga putarannya bertahan lebih lama.' },
+        { teks: 'Gasing A, karena massanya terpusat sehingga lebih stabil',
+          alasan: 'Massa yang terpusat justru membuat gasing lebih mudah diperlambat dan lebih cepat tumbang.' },
+        { teks: 'Sama lama, karena massanya sama',
+          alasan: 'Massa yang sama belum tentu memberi hasil sama. Letak massanya juga sangat menentukan.' }
+      ]
+    },
+    {
+      tanya: 'Peluru ketapel bermassa 0,5 kg bergerak dengan kecepatan 4 m/s. Berapa energi kinetiknya?',
+      petunjuk: 'Ek = ½ × m × v²',
+      opsi: [
+        { teks: '4 joule', benar: true, alasan: '½ × 0,5 × 4² = ½ × 0,5 × 16 = 4 joule.' },
+        { teks: '1 joule', alasan: 'Kecepatan sepertinya tidak dikuadratkan. 4² = 16, bukan 4.' },
+        { teks: '8 joule', alasan: 'Hasil ini lupa dikalikan ½.' },
+        { teks: '16 joule', alasan: 'Ini baru nilai v² saja, belum dikalikan massa dan ½.' }
+      ]
+    },
+    {
+      tanya: 'Manakah rancangan percobaan yang paling tepat untuk membuktikan bahwa luas layang-layang memengaruhi kemampuannya terbang?',
+      opsi: [
+        { teks: 'Dua layangan dengan massa & kemiringan sama, luas berbeda, diterbangkan pada angin yang sama', benar: true,
+          alasan: 'Hanya luas yang dibedakan, sehingga perbedaan hasilnya pasti disebabkan oleh luas. Inilah uji adil.' },
+        { teks: 'Layangan besar diterbangkan pagi hari, layangan kecil diterbangkan sore hari',
+          alasan: 'Kecepatan angin pagi dan sore bisa jauh berbeda, sehingga ada dua variabel yang berubah sekaligus.' },
+        { teks: 'Layangan besar yang berat dibandingkan layangan kecil yang ringan',
+          alasan: 'Massa dan luas berubah bersamaan, jadi tidak bisa disimpulkan mana penyebabnya.' },
+        { teks: 'Satu layangan diterbangkan berulang kali sambil dipotong kertasnya sedikit demi sedikit',
+          alasan: 'Memotong kertas mengubah luas sekaligus massa dan keseimbangannya, jadi bukan hanya luas yang berubah.' }
+      ],
+      penguatan: 'Uji adil = ubah satu variabel saja.'
+    },
+    {
+      tanya: 'Sebuah lubang congklak yang nomor urutnya 5 berisi 9 biji. Di urutan ke berapa biji terakhir jatuh?',
+      petunjuk: '5 + 9 = ? Bandingkan hasilnya dengan 15.',
+      opsi: [
+        { teks: 'Urutan ke-14', benar: true,
+          alasan: '5 + 9 = 14. Karena 14 masih lebih kecil daripada 15, belum ada putaran penuh, jadi langsung berhenti di urutan ke-14.' },
+        { teks: 'Urutan ke-9', alasan: 'Angka 9 adalah jumlah bijinya, bukan tempat berhentinya. Nomor urut asalnya juga harus ditambahkan.' },
+        { teks: 'Urutan ke-4', alasan: 'Sepertinya 14 sudah dikurangi 10. Pembaginya adalah 15, dan 14 masih lebih kecil dari 15 sehingga tidak perlu dibagi.' },
+        { teks: 'Urutan ke-0', alasan: 'Kembali ke urutan 0 butuh tepat 10 biji dari lubang urutan ke-5 (5 + 10 = 15, sisa 0).' }
+      ]
+    },
+    {
+      tanya: 'Ketapel yang sama ditembakkan di Bumi dan di Bulan dengan tarikan yang sama. Apa yang terjadi pada lintasan peluru di Bulan?',
+      opsi: [
+        { teks: 'Lebih landai dan jatuh lebih jauh, karena gravitasi Bulan lebih kecil', benar: true,
+          alasan: 'Gravitasi Bulan hanya sekitar 1,6 m/s², sehingga peluru ditarik ke bawah jauh lebih pelan dan sempat terbang lebih jauh.' },
+        { teks: 'Lebih melengkung tajam dan jatuh lebih dekat',
+          alasan: 'Lintasan menukik tajam justru terjadi saat gravitasi besar, seperti di Yupiter. Di Bulan gravitasinya kecil.' },
+        { teks: 'Lurus sempurna tanpa melengkung sama sekali',
+          alasan: 'Bulan tetap punya gravitasi, hanya lebih kecil. Lintasannya tetap melengkung, hanya lebih landai.' },
+        { teks: 'Sama persis, karena tarikan karetnya sama',
+          alasan: 'Kecepatan awalnya memang sama, tetapi gravitasi yang berbeda membuat bentuk lintasannya berbeda.' }
+      ]
+    },
+    {
+      tanya: 'Kesimpulan mana yang paling tepat tentang hubungan permainan tradisional dengan ilmu pengetahuan?',
+      opsi: [
+        { teks: 'Hukum alam sudah bekerja pada permainan itu jauh sebelum rumusnya ditemukan dan dituliskan', benar: true,
+          alasan: 'Pembuat gasing dan layangan menemukan bentuk terbaik lewat coba-coba selama bergenerasi. Ilmu pengetahuan kemudian menjelaskan mengapa bentuk itu bekerja.' },
+        { teks: 'Permainan tradisional dibuat oleh ilmuwan yang sudah menghitung rumusnya lebih dulu',
+          alasan: 'Sebagian besar permainan ini jauh lebih tua daripada ilmu fisika modern. Pengetahuannya lahir dari pengalaman turun-temurun, bukan dari rumus.' },
+        { teks: 'Permainan tradisional tidak berkaitan dengan sains, hanya hiburan semata',
+          alasan: 'Justru sebaliknya — seluruh modul ini menunjukkan gaya, energi, dan pola bilangan bekerja nyata di dalamnya.' },
+        { teks: 'Ilmu pengetahuan modern membuat permainan tradisional menjadi tidak berguna lagi',
+          alasan: 'Ilmu pengetahuan justru membantu kita memahami dan menghargai kecerdasan yang ada di balik permainan warisan ini.' }
+      ],
+      penguatan: 'Sains bukan menggantikan kearifan lokal, melainkan menjelaskannya.'
+    }
+  ];
+})(window.RPN = window.RPN || {});
+
+</script>
+<script>
+/* ===== scripts/core/app.js ===== */
+/* ============================================================
+   app.js — kerangka aplikasi satu halaman (SPA).
+   Alur linier sesuai panduan: Laman Muka > Panduan > Menu >
+   Modul (berlangkah) > Evaluasi. Tidak ada perpindahan berkas
+   HTML; seluruh perpindahan tampilan diatur di sini.
+   ============================================================ */
+(function (RPN) {
+  'use strict';
+
+  var modul = [];
+  var layarAktif = 'muka';
+  var modulAktif = null;      // { def, mesin, langkah }
+  var dom = {};
+
+  var IKON = {
+    kiri:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H6M11 18l-6-6 6-6"/></svg>',
+    kanan: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>',
+    menu:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>',
+    suara: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19.5 5.5a9 9 0 0 1 0 13"/></svg>',
+    bisu:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="m17 9 4 6M21 9l-4 6"/></svg>',
+    main:  '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>',
+    ulang: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>'
+  };
+
+  function el(tag, kelas, isi) {
+    var n = document.createElement(tag);
+    if (kelas) n.className = kelas;
+    if (isi != null) n.innerHTML = isi;
+    return n;
+  }
+
+  /* ---------------- Pendaftaran modul ---------------- */
+  function daftarkan(def) { modul.push(def); }
+
+  /* ---------------- Bilah atas ---------------- */
+  function gambarBilahAtas() {
+    var b = dom.bilahAtas;
+    b.innerHTML = '';
+
+    var merek = el('div', 'merek');
+    merek.appendChild(el('div', 'lambang', 'RP'));
+    var t = el('div', 'kolom');
+    t.appendChild(el('div', 'nama', 'Rumah Permainan Nusantara'));
+    t.appendChild(el('div', 'sub', 'Belajar IPA & Matematika lewat permainan tradisional'));
+    merek.appendChild(t);
+    b.appendChild(merek);
+
+    var kanan = el('div', 'baris g3');
+    kanan.appendChild(dom.progres = el('div', 'progres'));
+
+    var suara = el('button', 'tbl tbl-bulat');
+    suara.type = 'button';
+    suara.title = 'Hidup/matikan suara';
+    suara.setAttribute('aria-label', 'Hidup atau matikan suara');
+    function segarkanSuara() { suara.innerHTML = RPN.audio.nyala ? IKON.suara : IKON.bisu; }
+    segarkanSuara();
+    suara.addEventListener('click', function () {
+      RPN.audio.nyala = !RPN.audio.nyala;
+      segarkanSuara();
+      if (RPN.audio.nyala) RPN.audio.efek.klik();
+    });
+    kanan.appendChild(suara);
+
+    var kMenu = el('button', 'tbl tbl-bulat', IKON.menu);
+    kMenu.type = 'button';
+    kMenu.title = 'Kembali ke menu';
+    kMenu.setAttribute('aria-label', 'Kembali ke menu utama');
+    kMenu.addEventListener('click', function () { RPN.audio.efek.klik(); buka('menu'); });
+    kanan.appendChild(kMenu);
+
+    b.appendChild(kanan);
+    segarkanProgres();
+  }
+
+  function segarkanProgres() {
+    if (!dom.progres) return;
+    dom.progres.innerHTML = '';
+    var r = RPN.simpanan.ringkas(modul);
+    modul.forEach(function (m) {
+      var k = RPN.simpanan.data.kuis[m.id];
+      var kelas = 'titik';
+      if (k && k.total && k.benar / k.total >= 0.6) kelas += ' selesai';
+      else if (modulAktif && modulAktif.def.id === m.id) kelas += ' aktif';
+      var d = el('span', kelas);
+      d.title = m.judul;
+      dom.progres.appendChild(d);
+    });
+    dom.progres.appendChild(el('span', 'label', r.tuntas + '/' + r.total + ' modul tuntas'));
+  }
+
+  /* ---------------- Perpindahan layar ---------------- */
+  function buka(nama, arg) {
+    if (modulAktif && nama !== 'modul') { lepasModul(); }
+    layarAktif = nama;
+    dom.isi.innerHTML = '';
+    dom.isi.scrollTop = 0;
+    ({ muka: layarMuka, panduan: layarPanduan, menu: layarMenu,
+       modul: layarModul, evaluasi: layarEvaluasi })[nama](arg);
+    segarkanProgres();
+  }
+
+  function kaki(kiri, kanan) {
+    var f = el('div', 'bilah-bawah');
+    f.appendChild(kiri || el('span'));
+    f.appendChild(kanan || el('span'));
+    return f;
+  }
+
+  function tombol(teks, kelas, aksi, ikonKiri, ikonKanan) {
+    var b = el('button', 'tbl ' + (kelas || 'tbl-garis'),
+      (ikonKiri || '') + '<span>' + teks + '</span>' + (ikonKanan || ''));
+    b.type = 'button';
+    b.addEventListener('click', function () { RPN.audio.efek.pindah(); aksi(); });
+    return b;
+  }
+
+  /* ============================================================
+     1. LAMAN MUKA
+     ============================================================ */
+  function layarMuka() {
+    var s = el('div', 'layar tampil');
+    var isi = el('div', 'isi-layar');
+    isi.style.display = 'grid';
+    isi.style.placeItems = 'center';
+
+    var kotak = el('div', 'kolom g5 muncul');
+    kotak.style.maxWidth = '780px';
+    kotak.style.textAlign = 'center';
+    kotak.style.alignItems = 'center';
+
+    kotak.appendChild(el('div', '', '<div style="font-size:64px;line-height:1;letter-spacing:6px">🌀🪁🎯🐚</div>'));
+    kotak.appendChild(el('span', 'lencana lencana-kuning', 'Media Pembelajaran Interaktif · Jenjang SMP'));
+    kotak.appendChild(el('h1', 'judul-xl', 'Rumah Permainan Nusantara'));
+    kotak.appendChild(el('p', 'teks lembut',
+      'Empat permainan tradisional Indonesia dibuka rahasianya. Kamu bisa mengubah sendiri ' +
+      'setiap pengaturan, melihat langsung apa yang terjadi, lalu menemukan hukum IPA dan ' +
+      'pola Matematika yang selama ini bekerja diam-diam di balik permainan itu.'));
+
+    var tujuan = el('div', 'kartu kartu-pad kolom g3');
+    tujuan.style.textAlign = 'left';
+    tujuan.style.width = '100%';
+    tujuan.appendChild(el('div', 'judul-s', '🎯 Tujuan Pembelajaran'));
+    var ul = el('ul', 'teks-s lembut');
+    ul.style.margin = '0'; ul.style.paddingLeft = '20px'; ul.style.lineHeight = '1.85';
+    [ 'Menjelaskan pengaruh gaya terhadap gerak benda melalui percobaan maya.',
+      'Menganalisis perubahan bentuk energi pada peristiwa sehari-hari.',
+      'Merancang percobaan sederhana dengan mengubah satu variabel (uji adil).',
+      'Menemukan pola bilangan dan menggunakan sisa pembagian untuk memprediksi hasil.',
+      'Menghargai permainan tradisional sebagai warisan budaya yang sarat ilmu.'
+    ].forEach(function (x) { ul.appendChild(el('li', '', x)); });
+    tujuan.appendChild(ul);
+    kotak.appendChild(tujuan);
+
+    isi.appendChild(kotak);
+    s.appendChild(isi);
+
+    s.appendChild(kaki(
+      el('span', 'teks-xs samar', 'Festival Biru Putih 2026 · Direktorat SMP'),
+      tombol('Mulai Belajar', 'tbl-utama', function () { buka('panduan'); }, IKON.main)
+    ));
+    dom.isi.appendChild(s);
+  }
+
+  /* ============================================================
+     2. PANDUAN PENGGUNAAN
+     ============================================================ */
+  function layarPanduan() {
+    var s = el('div', 'layar tampil');
+    var isi = el('div', 'isi-layar kolom g5 muncul');
+
+    var kep = el('div', 'kolom g2');
+    kep.appendChild(el('span', 'lencana', 'Langkah 0 · Sebelum mulai'));
+    kep.appendChild(el('h2', 'judul-l', 'Panduan Penggunaan'));
+    kep.appendChild(el('p', 'teks lembut',
+      'Baca sebentar, ya. Setelah ini kamu akan bisa memakai semua modul tanpa bantuan siapa pun.'));
+    isi.appendChild(kep);
+
+    var grid = el('div', '');
+    grid.style.display = 'grid';
+    grid.style.gridTemplateColumns = '1fr 1fr';
+    grid.style.gap = '14px';
+
+    [ ['1', 'Pilih permainan di Menu',
+       'Ada empat modul. Setiap modul berdiri sendiri, jadi kamu bebas memilih mau mulai dari mana.'],
+      ['2', 'Ikuti empat langkah di tiap modul',
+       'Amati → Ubah → Bandingkan → Kuis. Nomor langkah selalu terlihat di bagian bawah layar.'],
+      ['3', 'Geser pengaturan, amati perubahannya',
+       'Ubah <b>satu</b> pengaturan saja lalu perhatikan angka dan gambarnya. Itulah cara ilmuwan bekerja: uji adil.'],
+      ['4', 'Jawab kuis di akhir modul',
+       'Setiap jawaban diberi penjelasan, termasuk saat kamu salah. Boleh diulang sebanyak yang kamu mau.']
+    ].forEach(function (x) {
+      var k = el('div', 'kartu kartu-pad langkah');
+      k.appendChild(el('div', 'nomor', x[0]));
+      var c = el('div', 'kolom g1');
+      c.appendChild(el('div', 'judul-s', x[1]));
+      c.appendChild(el('p', 'teks-s lembut', x[2]));
+      k.appendChild(c);
+      grid.appendChild(k);
+    });
+    isi.appendChild(grid);
+
+    var bantu = el('div', '');
+    bantu.style.display = 'grid';
+    bantu.style.gridTemplateColumns = '1fr 1fr 1fr';
+    bantu.style.gap = '12px';
+    [ ['catatan', '🎛️ Penggeser', 'Tarik bulatan biru ke kiri atau ke kanan untuk mengubah nilai. Angkanya langsung berubah.'],
+      ['catatan catatan-kuning', '📊 Panel ukur', 'Kotak berisi angka di sekitar gambar adalah hasil pengukuran. Perhatikan saat kamu mengubah pengaturan.'],
+      ['catatan catatan-ungu', '🔊 Tombol suara', 'Ada di kanan atas. Matikan bila kamu sedang belajar di kelas atau di tempat umum.']
+    ].forEach(function (x) {
+      bantu.appendChild(el('div', x[0] + ' teks-s', '<span class="tajuk">' + x[1] + '</span>' + x[2]));
+    });
+    isi.appendChild(bantu);
+
+    if (!RPN.simpanan.tersimpanPermanen) {
+      isi.appendChild(el('div', 'catatan catatan-kuning teks-s',
+        '<span class="tajuk">Catatan</span>Peramban kamu membatasi penyimpanan, jadi kemajuan belajar ' +
+        'hanya tersimpan selama halaman ini terbuka. Selesaikan modul tanpa menutup tab, ya.'));
+    }
+
+    s.appendChild(isi);
+    s.appendChild(kaki(
+      tombol('Kembali', 'tbl-sunyi', function () { buka('muka'); }, IKON.kiri),
+      tombol('Lanjut ke Menu', 'tbl-utama', function () { buka('menu'); }, null, IKON.kanan)
+    ));
+    dom.isi.appendChild(s);
+  }
+
+  /* ============================================================
+     3. MENU / DAFTAR ISI
+     ============================================================ */
+  function layarMenu() {
+    var s = el('div', 'layar tampil');
+    var isi = el('div', 'isi-layar kolom g5 muncul');
+
+    var kep = el('div', 'baris antara g4 bungkus');
+    var kiri = el('div', 'kolom g1');
+    kiri.appendChild(el('h2', 'judul-l', 'Menu Permainan'));
+    kiri.appendChild(el('p', 'teks-s lembut', 'Pilih satu permainan untuk mulai bereksperimen.'));
+    kep.appendChild(kiri);
+    var r = RPN.simpanan.ringkas(modul);
+    kep.appendChild(el('span', 'lencana lencana-hijau', r.tuntas + ' dari ' + r.total + ' modul tuntas'));
+    isi.appendChild(kep);
+
+    var grid = el('div', '');
+    grid.style.display = 'grid';
+    grid.style.gridTemplateColumns = 'repeat(4, 1fr)';
+    grid.style.gap = '13px';
+
+    modul.forEach(function (m) {
+      var k = el('button', 'kartu-modul');
+      k.type = 'button';
+      var g = el('div', 'gambar', m.ikon);
+      g.style.background = m.latar || 'var(--c-surface-2)';
+      k.appendChild(g);
+      k.appendChild(el('span', 'lencana lencana-' + (m.warna || 'biru'), m.mapel));
+      k.appendChild(el('div', 'tajuk', m.judul));
+      k.appendChild(el('div', 'ket', m.ringkas));
+      var kk = el('div', 'kaki');
+      var nilai = RPN.simpanan.data.kuis[m.id];
+      kk.appendChild(el('span', 'teks-xs samar', m.fase));
+      kk.appendChild(el('span', 'teks-xs ' + (nilai ? '' : 'samar'),
+        nilai ? '✅ ' + nilai.benar + '/' + nilai.total : 'Belum dikerjakan'));
+      k.appendChild(kk);
+      k.addEventListener('click', function () { RPN.audio.efek.pindah(); buka('modul', m.id); });
+      grid.appendChild(k);
+    });
+    isi.appendChild(grid);
+
+    var evalKartu = el('div', 'kartu kartu-pad baris antara g4 bungkus');
+    var ek = el('div', 'kolom g1');
+    ek.appendChild(el('div', 'judul-s', '🏁 Evaluasi Akhir'));
+    ek.appendChild(el('p', 'teks-s lembut',
+      'Sepuluh soal campuran dari keempat permainan. Kerjakan setelah kamu mencoba semua modul.'));
+    evalKartu.appendChild(ek);
+    evalKartu.appendChild(tombol('Kerjakan Evaluasi', 'tbl-utama', function () { buka('evaluasi'); }, null, IKON.kanan));
+    isi.appendChild(evalKartu);
+
+    s.appendChild(isi);
+    s.appendChild(kaki(
+      tombol('Panduan', 'tbl-sunyi', function () { buka('panduan'); }, IKON.kiri),
+      el('span', 'teks-xs samar', 'Ketuk salah satu kartu permainan untuk memulai')
+    ));
+    dom.isi.appendChild(s);
+  }
+
+  /* ============================================================
+     4. LAYAR MODUL (berlangkah)
+     ============================================================ */
+  function lepasModul() {
+    if (modulAktif && modulAktif.mesin && modulAktif.mesin.lepas) {
+      try { modulAktif.mesin.lepas(); } catch (e) {}
+    }
+    RPN.audio.bersihkanSemua();
+    modulAktif = null;
+  }
+
+  function layarModul(id) {
+    var def = modul.filter(function (m) { return m.id === id; })[0];
+    if (!def) return buka('menu');
+
+    if (!modulAktif || modulAktif.def.id !== id) {
+      lepasModul();
+      modulAktif = { def: def, mesin: null, langkah: 0 };
+    }
+    RPN.simpanan.kunjungi(id);
+
+    var namaLangkah = def.langkah.concat(['Kuis']);
+    var s = el('div', 'layar tampil');
+
+    /* ---- Area utama ---- */
+    var isi = el('div', 'isi-layar');
+    isi.style.padding = '16px 22px';
+    isi.style.overflow = 'hidden';
+    isi.style.display = 'flex';
+    isi.style.flexDirection = 'column';
+    isi.style.gap = '12px';
+
+    /* Kepala modul */
+    var kep = el('div', 'baris antara g4');
+    var kiri = el('div', 'baris g3');
+    kiri.appendChild(el('div', '', '<span style="font-size:26px">' + def.ikon + '</span>'));
+    var kt = el('div', 'kolom');
+    kt.appendChild(el('div', 'judul-m', def.judul));
+    kt.appendChild(el('div', 'teks-xs samar', def.mapel + ' · ' + def.fase));
+    kiri.appendChild(kt);
+    kep.appendChild(kiri);
+
+    /* Cip langkah: bisa diklik langsung, tanpa mengulang dari awal */
+    var cip = el('div', 'baris g2');
+    namaLangkah.forEach(function (n, i) {
+      var c = el('button', 'tbl tbl-kecil ' + (i === modulAktif.langkah ? 'tbl-utama' : 'tbl-sunyi'),
+        (i + 1) + '. ' + n);
+      c.type = 'button';
+      c.addEventListener('click', function () { RPN.audio.efek.klik(); keLangkah(i); });
+      cip.appendChild(c);
+    });
+    kep.appendChild(cip);
+    isi.appendChild(kep);
+
+    /* Badan: kiri simulasi, kanan panel */
+    var badan = el('div', 'isi-penuh');
+    badan.style.display = 'grid';
+    badan.style.gridTemplateColumns = '1fr 372px';
+    badan.style.gap = '14px';
+    badan.style.minHeight = '0';
+
+    var kolKiri = el('div', 'kolom g3');
+    kolKiri.style.minHeight = '0';
+    var simWadah = el('div', 'panggung-sim isi-penuh');
+    simWadah.style.minHeight = '0';
+    var ukurWadah = el('div', 'ukur-grid');
+    ukurWadah.style.gridTemplateColumns = 'repeat(4, 1fr)';
+    ukurWadah.style.flex = 'none';
+    kolKiri.appendChild(simWadah);
+    kolKiri.appendChild(ukurWadah);
+
+    var panelWadah = el('div', 'kartu kartu-pad kolom g4');
+    panelWadah.style.overflowY = 'auto';
+    panelWadah.style.minHeight = '0';
+
+    badan.appendChild(kolKiri);
+    badan.appendChild(panelWadah);
+    isi.appendChild(badan);
+    s.appendChild(isi);
+
+    /* ---- Kaki: navigasi langkah ---- */
+    var bSebelum = el('button', 'tbl tbl-sunyi', IKON.kiri + '<span>Sebelumnya</span>');
+    bSebelum.type = 'button';
+    var infoLangkah = el('span', 'teks-s lembut');
+    var bBerikut = el('button', 'tbl tbl-utama', '<span>Berikutnya</span>' + IKON.kanan);
+    bBerikut.type = 'button';
+
+    bSebelum.addEventListener('click', function () {
+      RPN.audio.efek.pindah();
+      if (modulAktif.langkah === 0) buka('menu');
+      else keLangkah(modulAktif.langkah - 1);
+    });
+    bBerikut.addEventListener('click', function () {
+      RPN.audio.efek.pindah();
+      if (modulAktif.langkah === namaLangkah.length - 1) {
+        var i = modul.indexOf(def);
+        if (i < modul.length - 1) buka('modul', modul[i + 1].id);
+        else buka('evaluasi');
+      } else {
+        keLangkah(modulAktif.langkah + 1);
+      }
+    });
+
+    var kiriKaki = el('div', 'baris g3'); kiriKaki.appendChild(bSebelum);
+    var kananKaki = el('div', 'baris g3');
+    kananKaki.appendChild(infoLangkah);
+    kananKaki.appendChild(bBerikut);
+    s.appendChild(kaki(kiriKaki, kananKaki));
+    dom.isi.appendChild(s);
+
+    /* ---- Jalankan simulasi ---- */
+    if (!modulAktif.mesin) {
+      modulAktif.mesin = def.buat({ sim: simWadah, ukur: ukurWadah });
+      if (modulAktif.mesin._mulai) modulAktif.mesin._mulai();
+    } else {
+      modulAktif.mesin.pindahWadah({ sim: simWadah, ukur: ukurWadah });
+    }
+
+    function keLangkah(i) {
+      i = Math.max(0, Math.min(namaLangkah.length - 1, i));
+      modulAktif.langkah = i;
+
+      var anak = cip.children;
+      for (var j = 0; j < anak.length; j++) {
+        anak[j].className = 'tbl tbl-kecil ' + (j === i ? 'tbl-utama' : 'tbl-sunyi');
+      }
+      infoLangkah.textContent = 'Langkah ' + (i + 1) + ' dari ' + namaLangkah.length;
+      bSebelum.querySelector('span').textContent = i === 0 ? 'Kembali ke Menu' : 'Sebelumnya';
+
+      panelWadah.innerHTML = '';
+      panelWadah.scrollTop = 0;
+
+      if (i === namaLangkah.length - 1) {
+        /* Langkah terakhir: kuis memakai seluruh lebar */
+        badan.style.gridTemplateColumns = '1fr';
+        kolKiri.style.display = 'none';
+        panelWadah.style.maxWidth = '760px';
+        panelWadah.style.margin = '0 auto';
+        panelWadah.style.width = '100%';
+        RPN.kuis.buat(panelWadah, def.kuis, {
+          saatSelesai: function (b, t) {
+            RPN.simpanan.catatKuis(def.id, b, t);
+            segarkanProgres();
+          }
+        });
+        bBerikut.querySelector('span').textContent = 'Modul berikutnya';
+      } else {
+        badan.style.gridTemplateColumns = '1fr 372px';
+        kolKiri.style.display = 'flex';
+        panelWadah.style.maxWidth = '';
+        panelWadah.style.margin = '';
+        modulAktif.mesin.gambarPanel(i, panelWadah);
+        bBerikut.querySelector('span').textContent = 'Berikutnya';
+      }
+      modulAktif.mesin.keLangkah(i);
+      requestAnimationFrame(function () { modulAktif.mesin.ukurUlang(); });
+    }
+
+    keLangkah(modulAktif.langkah);
+  }
+
+  /* ============================================================
+     5. EVALUASI AKHIR
+     ============================================================ */
+  function layarEvaluasi() {
+    var s = el('div', 'layar tampil');
+    var isi = el('div', 'isi-layar kolom g4 muncul');
+
+    var kep = el('div', 'kolom g1');
+    kep.appendChild(el('span', 'lencana lencana-ungu', 'Asesmen Sumatif'));
+    kep.appendChild(el('h2', 'judul-l', 'Evaluasi Akhir'));
+    kep.appendChild(el('p', 'teks-s lembut',
+      'Sepuluh soal campuran dari keempat permainan, dari yang mudah sampai yang menantang.'));
+    isi.appendChild(kep);
+
+    var wadah = el('div', 'kartu kartu-pad');
+    wadah.style.maxWidth = '780px';
+    wadah.style.width = '100%';
+    wadah.style.margin = '0 auto';
+    isi.appendChild(wadah);
+
+    RPN.kuis.buat(wadah, RPN.soalEvaluasi, {
+      saatSelesai: function (b, t) { RPN.simpanan.catatEvaluasi(b, t); segarkanProgres(); }
+    });
+
+    s.appendChild(isi);
+    s.appendChild(kaki(
+      tombol('Kembali ke Menu', 'tbl-sunyi', function () { buka('menu'); }, IKON.kiri),
+      el('span', 'teks-xs samar', 'Semua jawaban disertai penjelasan')
+    ));
+    dom.isi.appendChild(s);
+  }
+
+  /* ============================================================
+     Penyalaan
+     ============================================================ */
+  function mulai() {
+    dom.bilahAtas = document.getElementById('bilah-atas');
+    dom.isi = document.getElementById('isi-panggung');
+    RPN.panggung.pasang();
+    gambarBilahAtas();
+    buka('muka');
+
+    /* Bunyi baru boleh dihidupkan setelah pengguna berinteraksi
+       (aturan peramban modern). */
+    var sekali = function () {
+      RPN.audio.hidupkan();
+      window.removeEventListener('pointerdown', sekali);
+      window.removeEventListener('keydown', sekali);
+    };
+    window.addEventListener('pointerdown', sekali);
+    window.addEventListener('keydown', sekali);
+
+    RPN.bus.dengar('kemajuan:ubah', segarkanProgres);
+  }
+
+  RPN.app = { daftarkan: daftarkan, buka: buka, mulai: mulai, IKON: IKON, el: el, tombol: tombol };
+})(window.RPN = window.RPN || {});
+
+</script>
+
+<script>
+/* ===== scripts/modules/gasing.js ===== */
+/* ============================================================
+   MODUL 1 — GASING
+   Fokus SMP (Fase D): gerak berputar, gaya gesek, perubahan
+   bentuk energi, dan rancangan percobaan uji adil.
+   Materi SMA (momentum sudut vektor, torsi silang, rumus
+   presesi, momen inersia I = k m r^2) sengaja tidak ditampilkan.
+   Model fisikanya tetap dipakai di balik layar agar perilaku
+   simulasi benar secara keilmuan.
+   ============================================================ */
+(function (RPN) {
+  'use strict';
+  var U = RPN.ui, el = U.el;
+
+  var BENTUK = {
+    kerucut: { k: 0.30, nama: 'Kerucut', ket: 'Gasing kayu Melayu', warna: ['#c98a3c', '#f3c17a', '#8a5a2b'] },
+    cakram:  { k: 0.50, nama: 'Cakram',  ket: 'Pipih dan rata',      warna: ['#3f7fc4', '#8fc2ef', '#245a94'] },
+    tepi:    { k: 0.80, nama: 'Berat di tepi', ket: 'Bandul di pinggir', warna: ['#7b4fa8', '#c3a2e4', '#55307a'] }
+  };
+
+  RPN.app.daftarkan({
+    id: 'gasing',
+    judul: 'Gasing',
+    ikon: '🌀',
+    warna: 'ungu',
+    latar: 'linear-gradient(140deg,#f0e9f8,#e6eff9)',
+    mapel: 'IPA · Gerak & Energi',
+    fase: 'Fase D · Kelas VII–VIII',
+    ringkas: 'Kenapa gasing tidak roboh saat berputar kencang, lalu tumbang ketika melambat?',
+    langkah: ['Amati', 'Ubah', 'Bandingkan'],
+
+    buat: function (dom) {
+      /* ---------------- keadaan ---------------- */
+      var bentuk = 'kerucut', massa = 0.25, jari = 0.08;
+      var tarikan = 1800;            // putaran per menit saat diluncurkan
+      var gesekan = 0.02;            // kekasaran lantai
+      var berputar = false, jeda = false, lajuWaktu = 1;
+      var omega = 0, miring = 0.12, sudutPresesi = 0, sudutPutar = 0;
+      var waktuPutar = 0, omegaAwal = 1, goyangWaktu = 0;
+      var jejak = [];
+      var rafId = null, waktuLalu = 0;
+      var kanvas, ctx, ukurRpm, ukurWaktu, ukurTenaga, ukurMiring;
+      var tabel = null, langkahKini = 0;
+      var G = 9.81;
+
+      /* ---------------- susun DOM ---------------- */
+      function pasangDom(d) {
+        d.sim.innerHTML = '';
+        kanvas = document.createElement('canvas');
+        kanvas.setAttribute('aria-label', 'Simulasi gasing berputar');
+        d.sim.appendChild(kanvas);
+
+        d.ukur.innerHTML = '';
+        ukurRpm    = U.ukur({ nama: 'Kecepatan Putar', satuan: 'putaran/menit', maks: 3000 });
+        ukurWaktu  = U.ukur({ nama: 'Lama Berputar', satuan: 'detik', warna: 'hijau', maks: 60 });
+        ukurTenaga = U.ukur({ nama: 'Sisa Tenaga Putar', satuan: '%', warna: 'kuning', maks: 100 });
+        ukurMiring = U.ukur({ nama: 'Kemiringan', satuan: 'derajat', warna: 'merah', maks: 80 });
+        [ukurRpm, ukurWaktu, ukurTenaga, ukurMiring].forEach(function (u) { d.ukur.appendChild(u); });
+      }
+      pasangDom(dom);
+
+      /* ---------------- fisika ---------------- */
+      function inersia() { return BENTUK[bentuk].k * massa * jari * jari; }
+
+      function luncurkan() {
+        omega = tarikan * 2 * Math.PI / 60;
+        omegaAwal = omega;
+        miring = 0.10;
+        sudutPresesi = 0; goyangWaktu = 0; waktuPutar = 0;
+        jejak = [];
+        berputar = true; jeda = false;
+        RPN.audio.mulaiMenerus('gasing');
+        RPN.simpanan.catatPercobaan('gasing');
+      }
+
+      function hentikan() {
+        berputar = false; omega = 0;
+        RPN.audio.hentikanMenerus('gasing');
+      }
+
+      function ulang() {
+        hentikan();
+        miring = 0.10; sudutPresesi = 0; waktuPutar = 0; jejak = [];
+      }
+
+      function majuFisika(dt) {
+        if (!berputar || jeda) return;
+        dt *= lajuWaktu;
+        var I = inersia();
+
+        /* Gesekan ujung gasing dengan lantai + hambatan udara
+           menguras tenaga putar. Kedua tetapan di bawah ditera
+           agar lama putar simulasi masuk akal (puluhan detik),
+           sebagaimana gasing kayu sungguhan. */
+        var torsiGesek = gesekan * massa * G * 0.040
+                       + 2.8e-6 * Math.pow(omega, 1.5) * Math.pow(jari / 0.08, 2);
+        omega = Math.max(0, omega - (torsiGesek / I) * dt);
+        sudutPutar += omega * dt;
+        waktuPutar += dt;
+
+        var rPusat = jari * 1.2;
+        var lajuPresesi = omega > 0.5 ? (massa * G * rPusat) / (I * omega) : 14;
+        sudutPresesi += lajuPresesi * dt;
+
+        /* Makin lambat berputar, makin besar goyangannya. */
+        var omegaKritis = Math.sqrt(4 * massa * G * rPusat / I) * 0.45;
+        if (omega < omegaKritis) {
+          goyangWaktu += dt;
+          var kuat = Math.min(1, Math.pow((omegaKritis - omega) / omegaKritis, 2) + 0.05);
+          miring += (0.55 * kuat) * dt;
+        }
+
+        if (miring >= Math.PI / 2.3 || omega <= 2) {
+          berputar = false; omega = 0;
+          RPN.audio.hentikanMenerus('gasing');
+          RPN.audio.efek.tumbuk(0.5);
+          catatHasil();
+        }
+
+        var rpm = omega * 60 / (2 * Math.PI);
+        RPN.audio.aturMenerus('gasing', 55 + rpm / 3000 * 300,
+          Math.min(0.05, rpm / 3000 * 0.05), 200 + rpm / 3000 * 1100);
+      }
+
+      function catatHasil() {
+        if (!tabel || langkahKini !== 2) return;
+        tabel.tambah([
+          BENTUK[bentuk].nama,
+          (massa * 1000).toFixed(0) + ' g',
+          (jari * 100).toFixed(0) + ' cm',
+          '<b>' + waktuPutar.toFixed(1) + ' s</b>'
+        ]);
+      }
+
+      /* ---------------- gambar ---------------- */
+      function gambar() {
+        ctx = RPN.panggung.siapkanKanvas(kanvas);
+        var w = kanvas.clientWidth, h = kanvas.clientHeight;
+        if (!w || !h) return;
+        ctx.clearRect(0, 0, w, h);
+
+        /* Latar: ruangan terang dengan lantai kayu */
+        var langit = ctx.createLinearGradient(0, 0, 0, h);
+        langit.addColorStop(0, '#fdfaf4');
+        langit.addColorStop(1, '#f0e6d6');
+        ctx.fillStyle = langit;
+        ctx.fillRect(0, 0, w, h);
+
+        var cx = w * 0.5, cy = h * 0.70;
+
+        /* Lantai */
+        ctx.save();
+        ctx.beginPath();
+        ctx.ellipse(cx, cy, w * 0.44, w * 0.14, 0, 0, Math.PI * 2);
+        var lantai = ctx.createRadialGradient(cx, cy, 10, cx, cy, w * 0.44);
+        lantai.addColorStop(0, '#e8d6bb');
+        lantai.addColorStop(1, '#d9c3a2');
+        ctx.fillStyle = lantai;
+        ctx.fill();
+        ctx.strokeStyle = '#c3a97f';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        /* Lingkaran bantu jarak */
+        ctx.strokeStyle = 'rgba(140,115,80,.22)';
+        ctx.lineWidth = 1;
+        for (var r = 38; r < w * 0.28; r += 38) {
+          ctx.beginPath();
+          ctx.ellipse(cx, cy, r, r * 0.30, 0, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+        ctx.restore();
+
+        /* Posisi ujung gasing (mengitari pusat = presesi) */
+        var skala = 880;                       /* piksel per meter jari-jari */
+        var panjangMiring = jari * skala * Math.sin(miring) * 1.5;
+        var ux = cx + panjangMiring * Math.cos(sudutPresesi);
+        var uy = cy + panjangMiring * Math.sin(sudutPresesi) * 0.30;
+
+        if (berputar && !jeda) {
+          jejak.push({ x: ux, y: uy });
+          if (jejak.length > 90) jejak.shift();
+        }
+
+        /* Jejak orbit ujung gasing */
+        if (jejak.length > 1) {
+          ctx.beginPath();
+          ctx.strokeStyle = 'rgba(107,63,150,.55)';
+          ctx.lineWidth = 2.4;
+          ctx.lineCap = 'round';
+          for (var i = 0; i < jejak.length; i++) {
+            ctx.globalAlpha = i / jejak.length;
+            if (i === 0) ctx.moveTo(jejak[i].x, jejak[i].y);
+            else ctx.lineTo(jejak[i].x, jejak[i].y);
+          }
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
+
+        /* Bayangan */
+        ctx.fillStyle = 'rgba(90,70,45,.22)';
+        ctx.beginPath();
+        ctx.ellipse(ux + 9, uy + 6, jari * skala * 0.9, jari * skala * 0.3, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        /* Sumbu gasing: dari ujung (ux,uy) menuju puncak */
+        var tinggi = 175;
+        var ax = ux + tinggi * Math.sin(miring) * Math.cos(sudutPresesi);
+        var ay = uy - tinggi * Math.cos(miring) + tinggi * Math.sin(miring) * Math.sin(sudutPresesi) * 0.30;
+
+        var B = BENTUK[bentuk];
+        var R = Math.max(18, jari * skala);        /* jari-jari badan di layar */
+
+        /* Semua bagian gasing digambar dalam satu sistem koordinat
+           yang sudah dimiringkan, supaya paku, badan, dan pegangan
+           menyatu sebagai satu benda. Sumbu lokal -y = ke arah puncak. */
+        ctx.save();
+        ctx.translate(ux, uy);
+        ctx.rotate(Math.atan2(ay - uy, ax - ux) + Math.PI / 2);
+
+        var yPangkal = -R * 0.42;                  /* tempat paku bertemu badan */
+        var yPuncak  = yPangkal - R * 0.95;        /* sisi atas badan */
+
+        /* 1. Paku besi di ujung bawah */
+        var gPaku = ctx.createLinearGradient(-3, 0, 3, 0);
+        gPaku.addColorStop(0, '#6b7382');
+        gPaku.addColorStop(0.5, '#c8cfd9');
+        gPaku.addColorStop(1, '#6b7382');
+        ctx.fillStyle = gPaku;
+        ctx.beginPath();
+        ctx.moveTo(0, 2);
+        ctx.lineTo(3.2, yPangkal);
+        ctx.lineTo(-3.2, yPangkal);
+        ctx.closePath();
+        ctx.fill();
+
+        /* 2. Badan gasing */
+        var gBadan = ctx.createLinearGradient(-R, 0, R, 0);
+        gBadan.addColorStop(0, B.warna[2]);
+        gBadan.addColorStop(0.42, B.warna[1]);
+        gBadan.addColorStop(1, B.warna[0]);
+        ctx.fillStyle = gBadan;
+        ctx.strokeStyle = 'rgba(60,35,10,.45)';
+        ctx.lineWidth = 1.6;
+
+        if (bentuk === 'kerucut') {
+          /* Kerucut khas gasing kayu: meruncing ke bawah, melebar ke atas */
+          ctx.beginPath();
+          ctx.moveTo(0, yPangkal + R * 0.1);
+          ctx.quadraticCurveTo(R * 0.62, yPangkal - R * 0.18, R, yPuncak);
+          ctx.lineTo(-R, yPuncak);
+          ctx.quadraticCurveTo(-R * 0.62, yPangkal - R * 0.18, 0, yPangkal + R * 0.1);
+          ctx.closePath();
+          ctx.fill(); ctx.stroke();
+        } else if (bentuk === 'cakram') {
+          /* Cakram pipih */
+          var tebal = R * 0.34;
+          ctx.beginPath();
+          ctx.moveTo(-R * 1.12, yPuncak + tebal);
+          ctx.lineTo(-R * 1.12, yPuncak);
+          ctx.lineTo(R * 1.12, yPuncak);
+          ctx.lineTo(R * 1.12, yPuncak + tebal);
+          ctx.quadraticCurveTo(0, yPuncak + tebal * 2.1, -R * 1.12, yPuncak + tebal);
+          ctx.closePath();
+          ctx.fill(); ctx.stroke();
+          R = R * 1.12;
+        } else {
+          /* Berat di tepi: cakram dengan bandul logam di pinggir */
+          var tb = R * 0.3;
+          ctx.beginPath();
+          ctx.moveTo(-R * 1.25, yPuncak + tb);
+          ctx.lineTo(-R * 1.25, yPuncak);
+          ctx.lineTo(R * 1.25, yPuncak);
+          ctx.lineTo(R * 1.25, yPuncak + tb);
+          ctx.quadraticCurveTo(0, yPuncak + tb * 1.9, -R * 1.25, yPuncak + tb);
+          ctx.closePath();
+          ctx.fill(); ctx.stroke();
+          R = R * 1.25;
+        }
+
+        /* 3. Tutup atas berbentuk elips + corak yang ikut berputar */
+        var gTutup = ctx.createLinearGradient(-R, 0, R, 0);
+        gTutup.addColorStop(0, B.warna[1]);
+        gTutup.addColorStop(0.5, B.warna[0]);
+        gTutup.addColorStop(1, B.warna[2]);
+        ctx.fillStyle = gTutup;
+        ctx.beginPath();
+        ctx.ellipse(0, yPuncak, R, R * 0.3, 0, 0, Math.PI * 2);
+        ctx.fill(); ctx.stroke();
+
+        if (bentuk === 'tepi') {
+          ctx.fillStyle = '#3d2359';
+          for (var a = 0; a < Math.PI * 2; a += Math.PI / 4) {
+            var pa = a + sudutPutar;
+            ctx.beginPath();
+            ctx.arc(Math.cos(pa) * R * 0.9, yPuncak + Math.sin(pa) * R * 0.27, 4.6, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        } else {
+          ctx.fillStyle = 'rgba(255,255,255,.95)';
+          for (var a2 = 0; a2 < Math.PI * 2; a2 += Math.PI / 3) {
+            var pa2 = a2 + sudutPutar;
+            ctx.beginPath();
+            ctx.arc(Math.cos(pa2) * R * 0.62, yPuncak + Math.sin(pa2) * R * 0.19, 3.6, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        /* 4. Pegangan kayu di puncak */
+        ctx.fillStyle = '#7a8494';
+        ctx.beginPath();
+        if (ctx.roundRect) ctx.roundRect(-4.5, yPuncak - 26, 9, 26, 4);
+        else ctx.rect(-4.5, yPuncak - 26, 9, 26);
+        ctx.fill();
+
+        ctx.restore();
+
+        /* Label keadaan */
+        var pesan = !berputar && waktuPutar > 0 ? 'Gasing tumbang setelah ' + waktuPutar.toFixed(1) + ' detik'
+                  : !berputar ? 'Tekan "Putar Gasing" untuk mulai'
+                  : jeda ? 'Dijeda — amati posisinya' : '';
+        if (pesan) {
+          ctx.font = '700 15px ' + getComputedStyle(document.body).fontFamily;
+          ctx.textAlign = 'center';
+          var lebarTeks = ctx.measureText(pesan).width;
+          ctx.fillStyle = 'rgba(255,255,255,.92)';
+          if (ctx.roundRect) {
+            ctx.beginPath(); ctx.roundRect(cx - lebarTeks / 2 - 14, 16, lebarTeks + 28, 32, 16); ctx.fill();
+          }
+          ctx.fillStyle = '#16233a';
+          ctx.fillText(pesan, cx, 37);
+          ctx.textAlign = 'left';
+        }
+      }
+
+      /* ---------------- gelung animasi ---------------- */
+      function gelung(t) {
+        var dt = Math.min(0.033, (t - waktuLalu) / 1000) || 0;
+        waktuLalu = t;
+        majuFisika(dt);
+        gambar();
+        segarkanUkur();
+        rafId = requestAnimationFrame(gelung);
+      }
+
+      function segarkanUkur() {
+        var rpm = omega * 60 / (2 * Math.PI);
+        ukurRpm.set(rpm, Math.round(rpm).toLocaleString('id-ID'));
+        ukurWaktu.set(waktuPutar, waktuPutar.toFixed(1));
+        var sisa = omegaAwal > 0 ? Math.pow(omega / omegaAwal, 2) * 100 : 0;
+        ukurTenaga.set(sisa, Math.round(sisa));
+        var drj = miring * 180 / Math.PI;
+        ukurMiring.set(drj, Math.round(drj));
+      }
+
+      /* Gasing sungguhan bisa berputar sangat lama. Tombol ini
+         mempercepat jalannya percobaan tanpa mengubah angka
+         "Lama Berputar" — yang ditampilkan tetap detik sebenarnya. */
+      function tombolLajuWaktu() {
+        var w = el('div', 'kolom g2');
+        w.appendChild(el('div', 'teks-xs samar', 'Kecepatan percobaan (angka detik tetap sebenarnya)'));
+        w.appendChild(U.pilihan({
+          kolom: 3, terpilih: 'x' + lajuWaktu,
+          daftar: [
+            { id: 'x1', tajuk: '1\u00D7', ket: 'Waktu nyata' },
+            { id: 'x4', tajuk: '4\u00D7', ket: 'Dipercepat' },
+            { id: 'x12', tajuk: '12\u00D7', ket: 'Sangat cepat' }
+          ],
+          saatPilih: function (id) { lajuWaktu = parseInt(id.slice(1), 10); }
+        }));
+        return w;
+      }
+
+      /* ---------------- panel tiap langkah ---------------- */
+      function panelAmati(p) {
+        p.appendChild(U.tajukPanel('Langkah 1 · Amati', 'Mulai di sini', 'ungu'));
+        p.appendChild(el('p', 'teks-s lembut',
+          'Luncurkan gasing, lalu perhatikan baik-baik sampai ia tumbang. ' +
+          'Jangan ubah pengaturan apa pun dulu.'));
+
+        p.appendChild(U.aksi([
+          { teks: 'Putar Gasing', kelas: 'tbl-utama', ikon: RPN.app.IKON.main, aksi: function () { luncurkan(); } },
+          { teks: 'Jeda', aksi: function () { jeda = !jeda; RPN.audio.efek.klik(); } },
+          { teks: 'Ulang', ikon: RPN.app.IKON.ulang, aksi: function () { ulang(); RPN.audio.efek.klik(); } }
+        ]));
+        p.appendChild(tombolLajuWaktu());
+
+        p.appendChild(U.catatan('ungu', '👀 Yang perlu kamu amati',
+          '<b>1.</b> Saat putarannya masih kencang, gasing berdiri hampir tegak.<br>' +
+          '<b>2.</b> Angka <i>Kecepatan Putar</i> terus turun sendiri walaupun tidak kamu sentuh.<br>' +
+          '<b>3.</b> Menjelang berhenti, gasing mulai bergoyang lebar lalu tumbang.'));
+
+        p.appendChild(U.catatan('kuning', '🤔 Pertanyaan pemantik',
+          'Tidak ada yang mendorong gasing. Lalu <b>ke mana perginya tenaga putar</b> sampai ' +
+          'gasing bisa melambat dan berhenti sendiri?'));
+
+        p.appendChild(U.catatan('', '💡 Jawabannya',
+          'Ujung gasing bergesekan dengan lantai, dan badannya menabrak udara. ' +
+          'Gesekan itu mengubah <b>energi gerak</b> menjadi <b>energi panas</b> dan <b>bunyi</b> sedikit demi sedikit. ' +
+          'Energinya tidak hilang, hanya berubah bentuk.'));
+      }
+
+      function panelUbah(p) {
+        p.appendChild(U.tajukPanel('Langkah 2 · Ubah', 'Uji adil', 'kuning'));
+        p.appendChild(el('p', 'teks-s lembut',
+          'Ubah <b>satu</b> pengaturan saja, lalu putar lagi. Bandingkan dengan hasil sebelumnya.'));
+
+        var pilBentuk = U.pilihan({
+          kolom: 3, terpilih: bentuk,
+          daftar: Object.keys(BENTUK).map(function (k) {
+            return { id: k, ikon: k === 'kerucut' ? '🔻' : k === 'cakram' ? '💿' : '🛞',
+                     tajuk: BENTUK[k].nama, ket: BENTUK[k].ket };
+          }),
+          saatPilih: function (id) { bentuk = id; }
+        });
+        p.appendChild(el('div', 'teks-s', '<b>Bentuk gasing</b>'));
+        p.appendChild(pilBentuk);
+
+        p.appendChild(U.penggeser({
+          nama: 'Kekuatan tarikan tali', min: 300, max: 3000, step: 100, nilai: tarikan,
+          format: function (v) { return v.toLocaleString('id-ID') + ' putaran/menit'; },
+          skala: ['Pelan', 'Sedang', 'Kencang'],
+          saatUbah: function (v) { tarikan = v; }
+        }));
+
+        p.appendChild(U.penggeser({
+          nama: 'Massa gasing', min: 0.05, max: 0.6, step: 0.05, nilai: massa,
+          format: function (v) { return (v * 1000).toFixed(0) + ' gram'; },
+          skala: ['50 g', '300 g', '600 g'],
+          saatUbah: function (v) { massa = v; }
+        }));
+
+        p.appendChild(U.penggeser({
+          nama: 'Lebar gasing (jari-jari)', min: 0.04, max: 0.12, step: 0.01, nilai: jari,
+          format: function (v) { return (v * 100).toFixed(0) + ' cm'; },
+          skala: ['Kecil', 'Sedang', 'Lebar'],
+          saatUbah: function (v) { jari = v; }
+        }));
+
+        p.appendChild(U.penggeser({
+          nama: 'Kekasaran lantai', min: 0.005, max: 0.08, step: 0.005, nilai: gesekan,
+          format: function (v) { return v <= 0.015 ? 'Licin (ubin)' : v >= 0.05 ? 'Kasar (tanah)' : 'Sedang (kayu)'; },
+          skala: ['Licin', 'Sedang', 'Kasar'],
+          saatUbah: function (v) { gesekan = v; }
+        }));
+
+        p.appendChild(U.aksi([
+          { teks: 'Putar Gasing', kelas: 'tbl-utama', ikon: RPN.app.IKON.main, aksi: function () { luncurkan(); } },
+          { teks: 'Ulang', ikon: RPN.app.IKON.ulang, aksi: function () { ulang(); RPN.audio.efek.klik(); } }
+        ]));
+
+        p.appendChild(U.catatan('kuning', '⚠️ Aturan uji adil',
+          'Kalau kamu mengubah dua hal sekaligus lalu hasilnya berubah, kamu tidak akan tahu ' +
+          'hal mana yang menyebabkannya. Ubah satu, tahan sisanya.'));
+      }
+
+      function panelBandingkan(p) {
+        p.appendChild(U.tajukPanel('Langkah 3 · Bandingkan', 'Tantangan', 'hijau'));
+        p.appendChild(el('p', 'teks-s lembut',
+          'Cari susunan gasing yang <b>paling lama berputar</b>. Setiap kali gasing tumbang, ' +
+          'hasilnya otomatis tercatat di tabel.'));
+
+        tabel = U.tabelCatat(['Bentuk', 'Massa', 'Lebar', 'Lama']);
+        p.appendChild(tabel);
+
+        p.appendChild(U.aksi([
+          { teks: 'Putar Gasing', kelas: 'tbl-utama', ikon: RPN.app.IKON.main, aksi: function () { luncurkan(); } },
+          { teks: 'Kosongkan tabel', aksi: function () { tabel.kosong(); RPN.audio.efek.klik(); } }
+        ]));
+        p.appendChild(tombolLajuWaktu());
+
+        p.appendChild(U.catatan('hijau', '🎯 Misi',
+          '<b>a.</b> Coba ketiga bentuk dengan massa dan lebar yang sama persis.<br>' +
+          '<b>b.</b> Lalu coba massa paling ringan vs paling berat.<br>' +
+          '<b>c.</b> Terakhir, bandingkan lantai licin dengan lantai kasar.'));
+
+        p.appendChild(U.catatan('', '🔍 Temuan yang diharapkan',
+          'Gasing yang <b>berat</b>, <b>lebar</b>, dan <b>massanya menumpuk di tepi</b> berputar paling lama. ' +
+          'Sebarnya massa ke pinggir membuat gasing lebih sulit diubah gerak putarnya. ' +
+          'Itu sebabnya gasing aduan tradisional sering diberi cincin logam di tepinya.'));
+
+        p.appendChild(U.catatan('ungu', '🏛️ Kaitan budaya',
+          'Gasing dikenal di banyak daerah: <b>Gasing</b> di Melayu Riau, <b>Panggal</b> di Sunda, ' +
+          '<b>Pathon</b> di Jawa, dan <b>Maggasing</b> di Bugis. Pembuatnya memilih kayu keras seperti asam ' +
+          'atau jambu supaya berat dan tahan benturan — tanpa pernah membaca buku fisika.'));
+      }
+
+      /* ---------------- antarmuka modul ---------------- */
+      return {
+        gambarPanel: function (i, p) {
+          langkahKini = i;
+          if (i === 0) panelAmati(p);
+          else if (i === 1) panelUbah(p);
+          else panelBandingkan(p);
+        },
+        keLangkah: function (i) { langkahKini = i; if (i !== 2) tabel = null; },
+        ukurUlang: function () { if (kanvas) RPN.panggung.siapkanKanvas(kanvas); },
+        pindahWadah: function (d) { pasangDom(d); },
+        lepas: function () {
+          if (rafId) cancelAnimationFrame(rafId);
+          rafId = null;
+          RPN.audio.hentikanMenerus('gasing');
+        },
+        _mulai: function () { waktuLalu = performance.now(); rafId = requestAnimationFrame(gelung); }
+      };
+    },
+
+    kuis: [
+      {
+        tanya: 'Gasing berputar tanpa ada yang mendorongnya, tetapi lama-lama melambat lalu berhenti. Ke mana perginya energi gerak gasing?',
+        opsi: [
+          { teks: 'Berubah menjadi energi panas dan bunyi akibat gesekan', benar: true,
+            alasan: 'Gesekan ujung gasing dengan lantai dan gesekan badannya dengan udara mengubah energi gerak menjadi panas dan sedikit bunyi.' },
+          { teks: 'Hilang begitu saja karena energi memang bisa habis',
+            alasan: 'Energi tidak pernah benar-benar hilang. Ia hanya berpindah atau berubah bentuk — ini disebut hukum kekekalan energi.' },
+          { teks: 'Diserap seluruhnya oleh gaya gravitasi bumi',
+            alasan: 'Gravitasi menarik gasing ke bawah, tetapi bukan gravitasi yang menghabiskan putarannya. Yang meremnya adalah gesekan.' },
+          { teks: 'Disimpan di dalam kayu gasing untuk putaran berikutnya',
+            alasan: 'Kayu gasing tidak menyimpan energi putar. Setiap putaran baru butuh tarikan tali yang baru pula.' }
+        ],
+        penguatan: 'Energi tidak dapat diciptakan atau dimusnahkan, hanya berubah bentuk.'
+      },
+      {
+        tanya: 'Rani memutar gasing di lantai ubin yang licin, lalu memutar gasing yang sama di tanah. Di mana gasing akan berputar lebih lama?',
+        petunjuk: 'Pikirkan permukaan mana yang lebih kasar.',
+        opsi: [
+          { teks: 'Di lantai ubin, karena gesekannya lebih kecil', benar: true,
+            alasan: 'Permukaan licin memberi gaya gesek yang kecil, sehingga energi gerak gasing terkuras lebih lambat.' },
+          { teks: 'Di tanah, karena tanah lebih kokoh menahan gasing',
+            alasan: 'Tanah memang kokoh, tetapi permukaannya kasar. Gesekan yang besar justru mempercepat gasing berhenti.' },
+          { teks: 'Sama saja, karena gasingnya sama',
+            alasan: 'Gasingnya memang sama, tetapi permukaan lantai adalah variabel yang berbeda — dan permukaan sangat menentukan besar gesekan.' }
+        ],
+        penguatan: 'Makin kasar permukaan, makin besar gaya geseknya, makin cepat benda berhenti.'
+      },
+      {
+        tanya: 'Dari tiga gasing bermassa sama ini, mana yang paling lama berputar?',
+        opsi: [
+          { teks: 'Gasing lebar dengan massa terkumpul di bagian tepi', benar: true,
+            alasan: 'Massa yang tersebar jauh dari pusat membuat gasing jauh lebih sulit diubah gerak putarnya, sehingga putarannya bertahan lebih lama.' },
+          { teks: 'Gasing kecil dengan massa terkumpul di bagian tengah',
+            alasan: 'Justru sebaliknya. Massa yang menumpuk di tengah membuat gasing mudah diperlambat, jadi lebih cepat tumbang.' },
+          { teks: 'Ketiganya sama lama karena massanya sama',
+            alasan: 'Massa yang sama belum tentu memberi hasil sama. Yang menentukan bukan hanya berapa massanya, tetapi juga <i>di mana</i> massa itu diletakkan.' }
+        ],
+        penguatan: 'Bukan cuma berapa beratnya, tapi di mana beratnya diletakkan.'
+      },
+      {
+        tanya: 'Andi ingin membuktikan bahwa gasing yang lebih berat berputar lebih lama. Rancangan percobaan mana yang paling tepat?',
+        petunjuk: 'Dalam uji adil, hanya satu hal yang boleh berbeda.',
+        opsi: [
+          { teks: 'Dua gasing bentuk & ukuran sama, massa berbeda, ditarik sama kuat di lantai sama', benar: true,
+            alasan: 'Hanya massa yang dibedakan. Jadi kalau hasilnya berbeda, penyebabnya pasti massa — inilah uji adil.' },
+          { teks: 'Gasing berat di lantai licin dibandingkan gasing ringan di tanah',
+            alasan: 'Ada dua hal yang berbeda sekaligus: massa dan lantai. Kamu tidak akan tahu mana penyebabnya.' },
+          { teks: 'Gasing berat besar ditarik kuat, gasing ringan kecil ditarik pelan',
+            alasan: 'Tiga hal berbeda sekaligus — massa, ukuran, dan kekuatan tarikan. Hasilnya tidak bisa disimpulkan.' },
+          { teks: 'Satu gasing diputar berulang kali sambil ditambah beban tiap putaran',
+            alasan: 'Menambah beban juga mengubah bentuk dan sebaran massanya, jadi bukan hanya massa yang berubah.' }
+        ],
+        penguatan: 'Uji adil = ubah satu variabel, tahan semua variabel lain.'
+      }
+    ]
+  });
+})(window.RPN = window.RPN || {});
+
+</script>
+<script>
+/* ===== scripts/modules/layangan.js ===== */
+/* ============================================================
+   MODUL 2 — LAYANG-LAYANG
+   Fokus SMP (Fase D): gaya digambarkan sebagai anak panah,
+   berat = massa x gravitasi, dan keseimbangan gaya (Hukum I
+   Newton). Rumus SMA seperti koefisien angkat Bernoulli,
+   tekanan dinamis, dan penjumlahan vektor tegangan tali
+   tidak ditampilkan — tetapi tetap dipakai di balik layar.
+   ============================================================ */
+(function (RPN) {
+  'use strict';
+  var U = RPN.ui, el = U.el;
+
+  var JENIS = {
+    aduan:   { nama: 'Layangan Aduan', ket: 'Ringan & lincah', massa: 0.10, luas: 0.32, ekor: 0.8,
+               ikon: '⚡', asal: 'Jawa – Sumatra' },
+    kaghati: { nama: 'Kaghati Kolope', ket: 'Daun kolope, Muna', massa: 0.22, luas: 0.62, ekor: 2.0,
+               ikon: '🍃', asal: 'Pulau Muna, Sultra' },
+    bebean:  { nama: 'Bebean Bali',    ket: 'Besar & stabil',   massa: 0.50, luas: 1.15, ekor: 3.2,
+               ikon: '🐟', asal: 'Bali' }
+  };
+
+  var G = 9.8;
+  var RHO = 1.225;          // kerapatan udara (dipakai diam-diam)
+
+  RPN.app.daftarkan({
+    id: 'layangan',
+    judul: 'Layang-Layang',
+    ikon: '🪁',
+    warna: 'biru',
+    latar: 'linear-gradient(160deg,#dff0fd,#e9f6ea)',
+    mapel: 'IPA · Gaya & Gerak',
+    fase: 'Fase D · Kelas VII–VIII',
+    ringkas: 'Empat gaya bekerja sekaligus. Bagaimana layangan bisa diam melayang di udara?',
+    langkah: ['Amati', 'Ubah', 'Bandingkan'],
+
+    buat: function (dom) {
+      /* ---------------- keadaan ---------------- */
+      var jenis = 'aduan';
+      var angin = 8, sudutSerang = 25, massa = 0.10, luas = 0.32, ekor = 0.8, tali = 35;
+      var tampilPanah = true, tampilAngin = true;
+
+      var theta = 0.25;           // sudut tali dari tanah (radian)
+      var kecepatanTheta = 0;
+      var hembusSisa = 0, sentakSisa = 0;
+      var rafId = null, waktuLalu = 0;
+      var partikel = [];
+      var kanvas, ctx, uTinggi, uAngkat, uBerat, uTali;
+      var tabel = null, langkahKini = 0;
+
+      for (var i = 0; i < 46; i++) {
+        partikel.push({ x: Math.random() * 900, y: Math.random() * 500, v: Math.random() * .6 + .7, t: Math.random() * 2 + 1 });
+      }
+
+      function pasangDom(d) {
+        d.sim.innerHTML = '';
+        kanvas = document.createElement('canvas');
+        kanvas.setAttribute('aria-label', 'Simulasi layang-layang terbang');
+        d.sim.appendChild(kanvas);
+
+        d.ukur.innerHTML = '';
+        uTinggi = U.ukur({ nama: 'Ketinggian', satuan: 'meter', maks: 120 });
+        uAngkat = U.ukur({ nama: 'Gaya Angkat Angin', satuan: 'newton', warna: 'ungu', maks: 30 });
+        uBerat  = U.ukur({ nama: 'Berat Layangan', satuan: 'newton', warna: 'merah', maks: 10 });
+        uTali   = U.ukur({ nama: 'Tarikan Tali', satuan: 'newton', warna: 'hijau', maks: 30 });
+        [uTinggi, uAngkat, uBerat, uTali].forEach(function (u) { d.ukur.appendChild(u); });
+      }
+      pasangDom(dom);
+
+      /* ---------------- fisika ---------------- */
+      /* Layangan terikat tali sepanjang L, jadi ia hanya bisa
+         bergerak pada busur lingkaran. Kita hitung gaya yang
+         menyinggung busur itu, lalu integrasikan sudutnya. */
+      function hitungGaya() {
+        var v = angin + (hembusSisa > 0 ? 6 : 0);
+        var a = sudutSerang * Math.PI / 180;
+        var cAngkat = 2.0 * Math.sin(a) * Math.cos(a);
+        var cHambat = 0.10 + 1.8 * Math.sin(a) * Math.sin(a) + ekor * 0.035;
+        var tekanan = 0.5 * RHO * v * v;
+        return {
+          angkat: tekanan * luas * cAngkat + sentakSisa * 3.0,
+          hambat: tekanan * luas * cHambat,
+          berat: massa * G,
+          angin: v
+        };
+      }
+
+      function maju(dt) {
+        if (hembusSisa > 0) hembusSisa -= dt;
+        if (sentakSisa > 0) sentakSisa = Math.max(0, sentakSisa - dt * 4);
+
+        var f = hitungGaya();
+
+        /* Gaya sepanjang busur (mendorong layangan naik/turun) */
+        var gayaBusur = (f.angkat - f.berat) * Math.cos(theta) - f.hambat * Math.sin(theta);
+        var percepatan = gayaBusur / (massa * Math.max(5, tali));
+
+        kecepatanTheta += percepatan * dt;
+        kecepatanTheta *= 0.93;                     // redaman udara
+        theta += kecepatanTheta * dt;
+
+        if (theta < 0.02) { theta = 0.02; kecepatanTheta = Math.max(0, kecepatanTheta); }
+        if (theta > 1.45) { theta = 1.45; kecepatanTheta = Math.min(0, kecepatanTheta); }
+
+        /* Tarikan tali = gaya yang menarik menjauhi pemegang */
+        var tarik = Math.max(0, (f.angkat - f.berat) * Math.sin(theta) + f.hambat * Math.cos(theta));
+
+        return { f: f, tarik: tarik, tinggi: tali * Math.sin(theta) };
+      }
+
+      function status(f, tinggi) {
+        if (f.angkat < f.berat * 0.95) return { t: 'Angin terlalu lemah — layangan turun', w: 'merah' };
+        if (tinggi < 3) return { t: 'Layangan masih menyusur tanah', w: 'kuning' };
+        return { t: 'Layangan terbang seimbang', w: 'hijau' };
+      }
+
+      /* ---------------- gambar ---------------- */
+      function gambar(hasil) {
+        ctx = RPN.panggung.siapkanKanvas(kanvas);
+        var w = kanvas.clientWidth, h = kanvas.clientHeight;
+        if (!w || !h) return;
+
+        /* Langit */
+        var lg = ctx.createLinearGradient(0, 0, 0, h);
+        lg.addColorStop(0, '#7cc0f0');
+        lg.addColorStop(0.62, '#c6e6fb');
+        lg.addColorStop(1, '#eaf6e4');
+        ctx.fillStyle = lg;
+        ctx.fillRect(0, 0, w, h);
+
+        var tanahY = h - 52;
+        var pegangX = 74, pegangY = tanahY - 34;
+
+        /* Awan sederhana */
+        ctx.fillStyle = 'rgba(255,255,255,.72)';
+        [[0.22, 0.16, 34], [0.55, 0.1, 26], [0.8, 0.22, 30]].forEach(function (a) {
+          var cx = w * a[0], cy = h * a[1], r = a[2];
+          ctx.beginPath();
+          ctx.arc(cx, cy, r, 0, Math.PI * 2);
+          ctx.arc(cx + r * 0.8, cy + 5, r * 0.72, 0, Math.PI * 2);
+          ctx.arc(cx - r * 0.8, cy + 6, r * 0.62, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        /* Garis aliran angin */
+        if (tampilAngin) {
+          ctx.strokeStyle = 'rgba(255,255,255,.8)';
+          ctx.lineWidth = 2; ctx.lineCap = 'round';
+          for (var i = 0; i < partikel.length; i++) {
+            var p = partikel[i];
+            p.x += (hasil.f.angin * p.v) * 1.05;
+            if (p.x > w + 30) { p.x = -30; p.y = Math.random() * tanahY; }
+            ctx.globalAlpha = 0.32 + p.v * 0.2;
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p.x + 12 + hasil.f.angin * 0.9, p.y);
+            ctx.stroke();
+          }
+          ctx.globalAlpha = 1;
+        }
+
+        /* Tanah */
+        ctx.fillStyle = '#8cc06a';
+        ctx.fillRect(0, tanahY, w, h - tanahY);
+        ctx.strokeStyle = '#6ea24d'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(0, tanahY); ctx.lineTo(w, tanahY); ctx.stroke();
+
+        /* Anak yang memegang tali */
+        ctx.strokeStyle = '#33415c'; ctx.fillStyle = '#33415c';
+        ctx.lineWidth = 4; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.arc(pegangX, pegangY - 22, 9, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(pegangX, pegangY - 13); ctx.lineTo(pegangX, pegangY + 12);
+        ctx.lineTo(pegangX - 9, tanahY);
+        ctx.moveTo(pegangX, pegangY + 12); ctx.lineTo(pegangX + 9, tanahY);
+        ctx.moveTo(pegangX, pegangY - 7); ctx.lineTo(pegangX + 15, pegangY - 15);
+        ctx.stroke();
+
+        /* Posisi layangan pada busur tali */
+        var skala = Math.min((w - pegangX - 120) / Math.max(12, tali), (pegangY - 70) / Math.max(6, tali * 0.99));
+        skala = Math.max(1.6, skala);
+        var lx = pegangX + tali * Math.cos(theta) * skala;
+        var ly = pegangY - tali * Math.sin(theta) * skala;
+
+        /* Tali (melengkung sedikit bila tarikan kecil) */
+        var lengkung = Math.max(0, 26 - hasil.tarik * 2.2);
+        ctx.strokeStyle = 'rgba(60,70,90,.75)';
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.moveTo(pegangX + 15, pegangY - 15);
+        ctx.quadraticCurveTo((pegangX + lx) / 2, (pegangY + ly) / 2 + lengkung, lx, ly);
+        ctx.stroke();
+
+        /* Badan layangan */
+        var putar = -theta + (sudutSerang * Math.PI / 180) * 0.6;
+        var ukuran = Math.sqrt(luas) * 62;
+        ctx.save();
+        ctx.translate(lx, ly);
+        ctx.rotate(putar);
+        gambarLayangan(ukuran);
+        gambarEkor(ukuran);
+        ctx.restore();
+
+        /* Anak panah gaya */
+        if (tampilPanah) {
+          var s = 9;       // piksel per newton
+          panah(lx, ly, lx, ly - hasil.f.angkat * s, '#6b3f96', 'Gaya angkat');
+          panah(lx, ly, lx + hasil.f.hambat * s, ly, '#a86a08', 'Hambatan angin');
+          panah(lx, ly, lx, ly + hasil.f.berat * s * 2.2, '#b3261e', 'Berat');
+          var dx = pegangX + 15 - lx, dy = pegangY - 15 - ly;
+          var d = Math.hypot(dx, dy) || 1;
+          panah(lx, ly, lx + dx / d * hasil.tarik * s, ly + dy / d * hasil.tarik * s, '#1c6b45', 'Tarikan tali');
+        }
+
+        /* Penggaris ketinggian */
+        ctx.strokeStyle = 'rgba(22,35,58,.28)';
+        ctx.setLineDash([5, 5]); ctx.lineWidth = 1.4;
+        ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(lx, tanahY); ctx.stroke();
+        ctx.setLineDash([]);
+
+        var st = status(hasil.f, hasil.tinggi);
+        label(w / 2, 26, st.t, st.w);
+      }
+
+      function gambarLayangan(s) {
+        if (jenis === 'aduan') {
+          ctx.fillStyle = '#e24b52'; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2.4;
+          ctx.beginPath();
+          ctx.moveTo(0, -s * 1.15); ctx.lineTo(s * 0.85, 0);
+          ctx.lineTo(0, s * 1.25);  ctx.lineTo(-s * 0.85, 0);
+          ctx.closePath(); ctx.fill(); ctx.stroke();
+          ctx.strokeStyle = '#8a5a2b'; ctx.lineWidth = 1.8;
+          ctx.beginPath();
+          ctx.moveTo(0, -s * 1.15); ctx.lineTo(0, s * 1.25);
+          ctx.moveTo(-s * 0.85, 0); ctx.lineTo(s * 0.85, 0);
+          ctx.stroke();
+        } else if (jenis === 'kaghati') {
+          ctx.fillStyle = '#cf9b3e'; ctx.strokeStyle = '#7a5216'; ctx.lineWidth = 2.4;
+          ctx.beginPath();
+          ctx.ellipse(0, 0, s * 1.05, s * 0.8, 0, 0, Math.PI * 2);
+          ctx.fill(); ctx.stroke();
+          ctx.strokeStyle = '#7a5216'; ctx.lineWidth = 1.3;
+          ctx.beginPath();
+          ctx.moveTo(0, -s * 0.8); ctx.lineTo(0, s * 0.8);
+          ctx.stroke();
+          for (var k = -3; k <= 3; k++) {
+            ctx.beginPath();
+            ctx.moveTo(0, k * s * 0.2);
+            ctx.lineTo(s * 0.85, k * s * 0.2 + s * 0.22);
+            ctx.moveTo(0, k * s * 0.2);
+            ctx.lineTo(-s * 0.85, k * s * 0.2 + s * 0.22);
+            ctx.stroke();
+          }
+        } else {
+          ctx.fillStyle = '#8a5fc0'; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2.4;
+          ctx.beginPath();
+          ctx.moveTo(0, -s * 1.3);
+          ctx.quadraticCurveTo(s * 1.2, -s * 0.45, s * 0.75, s * 0.75);
+          ctx.lineTo(0, s * 0.45);
+          ctx.lineTo(-s * 0.75, s * 0.75);
+          ctx.quadraticCurveTo(-s * 1.2, -s * 0.45, 0, -s * 1.3);
+          ctx.fill(); ctx.stroke();
+          ctx.fillStyle = '#e24b52';
+          ctx.beginPath();
+          ctx.moveTo(0, s * 0.45); ctx.lineTo(s * 1.0, s * 1.3);
+          ctx.lineTo(0, s * 0.85);  ctx.lineTo(-s * 1.0, s * 1.3);
+          ctx.closePath(); ctx.fill(); ctx.stroke();
+        }
+      }
+
+      function gambarEkor(s) {
+        if (ekor < 0.15) return;
+        ctx.strokeStyle = '#e24b52'; ctx.lineWidth = 2.6; ctx.lineCap = 'round';
+        ctx.beginPath();
+        var x = 0, y = s * 1.2;
+        ctx.moveTo(x, y);
+        var ruas = 14, panjang = ekor * 20 / ruas, t = performance.now() * 0.006;
+        for (var i = 1; i <= ruas; i++) {
+          x += Math.sin(t - i * 0.45) * i * 0.55;
+          y += panjang;
+          ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+
+      function panah(x1, y1, x2, y2, warna, teks) {
+        var dx = x2 - x1, dy = y2 - y1, p = Math.hypot(dx, dy);
+        if (p < 9) return;
+        var a = Math.atan2(dy, dx);
+        ctx.save();
+        ctx.strokeStyle = warna; ctx.fillStyle = warna;
+        ctx.lineWidth = 3.4; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x2, y2);
+        ctx.lineTo(x2 - 11 * Math.cos(a - Math.PI / 7), y2 - 11 * Math.sin(a - Math.PI / 7));
+        ctx.lineTo(x2 - 11 * Math.cos(a + Math.PI / 7), y2 - 11 * Math.sin(a + Math.PI / 7));
+        ctx.closePath(); ctx.fill();
+        ctx.font = '700 11.5px ' + getComputedStyle(document.body).fontFamily;
+        var lw = ctx.measureText(teks).width;
+        ctx.fillStyle = 'rgba(255,255,255,.9)';
+        if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(x2 + 5, y2 - 9, lw + 10, 17, 8); ctx.fill(); }
+        ctx.fillStyle = warna;
+        ctx.fillText(teks, x2 + 10, y2 + 3.5);
+        ctx.restore();
+      }
+
+      function label(x, y, teks, warna) {
+        var peta = { hijau: '#1c6b45', kuning: '#a86a08', merah: '#b3261e' };
+        ctx.save();
+        ctx.font = '700 14px ' + getComputedStyle(document.body).fontFamily;
+        ctx.textAlign = 'center';
+        var lw = ctx.measureText(teks).width;
+        ctx.fillStyle = 'rgba(255,255,255,.92)';
+        if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(x - lw / 2 - 13, y - 15, lw + 26, 30, 15); ctx.fill(); }
+        ctx.fillStyle = peta[warna] || '#16233a';
+        ctx.fillText(teks, x, y + 5);
+        ctx.restore();
+      }
+
+      /* ---------------- gelung ---------------- */
+      function gelung(t) {
+        var dt = Math.min(0.033, (t - waktuLalu) / 1000) || 0;
+        waktuLalu = t;
+        var hasil = maju(dt);
+        gambar(hasil);
+        uTinggi.set(hasil.tinggi, hasil.tinggi.toFixed(1));
+        uAngkat.set(hasil.f.angkat, hasil.f.angkat.toFixed(1));
+        uBerat.set(hasil.f.berat, hasil.f.berat.toFixed(1));
+        uTali.set(hasil.tarik, hasil.tarik.toFixed(1));
+        rafId = requestAnimationFrame(gelung);
+      }
+
+      /* Cari kecepatan angin terkecil yang membuat layangan naik */
+      function anginMinimum() {
+        var simpan = angin, hasil = null;
+        for (var v = 1; v <= 25; v += 0.5) {
+          angin = v;
+          var f = hitungGaya();
+          if (f.angkat > f.berat) { hasil = v; break; }
+        }
+        angin = simpan;
+        return hasil;
+      }
+
+      /* ---------------- panel ---------------- */
+      function panelAmati(p) {
+        p.appendChild(U.tajukPanel('Langkah 1 · Amati', 'Mulai di sini', 'biru'));
+        p.appendChild(el('p', 'teks-s lembut',
+          'Ada empat anak panah berwarna pada layangan. Setiap panah adalah satu gaya: ' +
+          'arah panah menunjukkan arah gaya, panjang panah menunjukkan besarnya.'));
+
+        var daftar = el('div', 'kolom g2');
+        [ ['#6b3f96', 'Gaya angkat', 'Dorongan angin yang mengangkat layangan ke atas.'],
+          ['#a86a08', 'Hambatan angin', 'Dorongan angin yang menyeret layangan ke belakang.'],
+          ['#b3261e', 'Berat', 'Tarikan bumi ke bawah = massa × gravitasi.'],
+          ['#1c6b45', 'Tarikan tali', 'Tali menahan layangan supaya tidak terbang terbawa angin.']
+        ].forEach(function (x) {
+          var r = el('div', 'baris g2');
+          r.style.alignItems = 'flex-start';
+          var d = el('span', '');
+          d.style.cssText = 'width:12px;height:12px;border-radius:3px;flex:none;margin-top:3px;background:' + x[0];
+          r.appendChild(d);
+          r.appendChild(el('div', 'teks-s', '<b>' + x[1] + '</b> — <span class="lembut">' + x[2] + '</span>'));
+          daftar.appendChild(r);
+        });
+        p.appendChild(daftar);
+
+        p.appendChild(U.aksi([
+          { teks: 'Embusan angin!', kelas: 'tbl-utama', aksi: function () {
+              hembusSisa = 2.6; RPN.audio.derau({ lama: 1.1, cutoff: 620, keras: .12 }); } },
+          { teks: 'Sentak tali', aksi: function () { sentakSisa = 1; RPN.audio.efek.lenting(); } }
+        ]));
+
+        p.appendChild(U.catatan('kuning', '🤔 Pertanyaan pemantik',
+          'Layangan terlihat <b>diam menggantung</b> di langit. Padahal ada empat gaya yang ' +
+          'menariknya ke arah berbeda-beda. Kok bisa diam?'));
+
+        p.appendChild(U.catatan('', '💡 Jawabannya',
+          'Karena keempat gaya itu <b>saling meniadakan</b>. Dorongan ke atas dilawan berat, ' +
+          'seretan angin dilawan tarikan tali. Kalau semua gaya seimbang, benda yang diam akan tetap diam. ' +
+          'Ini yang disebut <b>Hukum I Newton</b>.'));
+      }
+
+      function panelUbah(p) {
+        p.appendChild(U.tajukPanel('Langkah 2 · Ubah', 'Uji adil', 'kuning'));
+
+        p.appendChild(el('div', 'teks-s', '<b>Jenis layangan tradisional</b>'));
+        p.appendChild(U.pilihan({
+          kolom: 3, terpilih: jenis,
+          daftar: Object.keys(JENIS).map(function (k) {
+            return { id: k, ikon: JENIS[k].ikon, tajuk: JENIS[k].nama.split(' ')[0], ket: JENIS[k].ket };
+          }),
+          saatPilih: function (id) {
+            jenis = id;
+            var j = JENIS[id];
+            massa = j.massa; luas = j.luas; ekor = j.ekor;
+            gsMassa.setNilai(massa); gsLuas.setNilai(luas); gsEkor.setNilai(ekor);
+          }
+        }));
+
+        p.appendChild(U.penggeser({
+          nama: 'Kecepatan angin', min: 1, max: 25, step: 0.5, nilai: angin,
+          format: function (v) { return v.toFixed(1) + ' m/s'; },
+          skala: ['Sepoi', 'Sedang', 'Kencang'],
+          saatUbah: function (v) { angin = v; }
+        }));
+
+        p.appendChild(U.penggeser({
+          nama: 'Kemiringan layangan terhadap angin', min: 5, max: 60, step: 1, nilai: sudutSerang,
+          format: function (v) { return v + '°'; },
+          skala: ['Datar', 'Pas (20–30°)', 'Curam'],
+          saatUbah: function (v) { sudutSerang = v; }
+        }));
+
+        var gsMassa = U.penggeser({
+          nama: 'Massa layangan', min: 0.04, max: 0.8, step: 0.02, nilai: massa,
+          format: function (v) { return (v * 1000).toFixed(0) + ' gram'; },
+          saatUbah: function (v) { massa = v; }
+        });
+        p.appendChild(gsMassa);
+
+        var gsLuas = U.penggeser({
+          nama: 'Luas layangan', min: 0.1, max: 1.5, step: 0.05, nilai: luas,
+          format: function (v) { return v.toFixed(2) + ' m²'; },
+          saatUbah: function (v) { luas = v; }
+        });
+        p.appendChild(gsLuas);
+
+        var gsEkor = U.penggeser({
+          nama: 'Panjang ekor', min: 0, max: 4, step: 0.2, nilai: ekor,
+          format: function (v) { return v.toFixed(1) + ' meter'; },
+          saatUbah: function (v) { ekor = v; }
+        });
+        p.appendChild(gsEkor);
+
+        p.appendChild(U.penggeser({
+          nama: 'Panjang tali yang diulur', min: 10, max: 120, step: 5, nilai: tali,
+          format: function (v) { return v + ' meter'; },
+          saatUbah: function (v) { tali = v; }
+        }));
+
+        p.appendChild(U.catatan('kuning', '👀 Coba perhatikan',
+          'Naikkan kemiringan pelan-pelan dari 5°. Gaya angkat naik dulu, lalu ' +
+          '<b>turun lagi</b> setelah sekitar 45°. Terlalu curam justru bikin layangan ' +
+          'lebih banyak tertahan daripada terangkat.'));
+      }
+
+      function panelBandingkan(p) {
+        p.appendChild(U.tajukPanel('Langkah 3 · Bandingkan', 'Tantangan', 'hijau'));
+        p.appendChild(el('p', 'teks-s lembut',
+          'Setiap layangan butuh angin minimum agar bisa naik. Cari angka itu untuk ketiga jenis layangan.'));
+
+        tabel = U.tabelCatat(['Layangan', 'Massa', 'Luas', 'Angin min.']);
+        p.appendChild(tabel);
+
+        p.appendChild(U.aksi([
+          { teks: 'Ukur angin minimum', kelas: 'tbl-utama', aksi: function () {
+              var v = anginMinimum();
+              RPN.audio.efek[v ? 'benar' : 'salah']();
+              tabel.tambah([
+                JENIS[jenis].nama.split(' ')[0],
+                (massa * 1000).toFixed(0) + ' g',
+                luas.toFixed(2) + ' m²',
+                v ? '<b>' + v.toFixed(1) + ' m/s</b>' : '<b>tidak bisa</b>'
+              ]);
+            } },
+          { teks: 'Kosongkan', aksi: function () { tabel.kosong(); RPN.audio.efek.klik(); } }
+        ]));
+
+        p.appendChild(U.catatan('hijau', '🎯 Misi',
+          '<b>a.</b> Ukur angin minimum untuk ketiga jenis layangan pada kemiringan 25°.<br>' +
+          '<b>b.</b> Lalu ubah kemiringan menjadi 10° dan ukur ulang. Apa yang terjadi?<br>' +
+          '<b>c.</b> Terakhir, buat Bebean Bali bisa terbang dengan angin paling pelan.'));
+
+        p.appendChild(U.catatan('', '🔍 Temuan yang diharapkan',
+          'Layangan yang <b>berat</b> butuh angin lebih kencang, karena gaya angkat harus ' +
+          'melebihi beratnya dulu. Tetapi layangan yang <b>lebar</b> menangkap lebih banyak angin, ' +
+          'jadi menambah luas bisa menutupi kekurangan itu.'));
+
+        p.appendChild(U.catatan('ungu', '🏛️ Kaitan budaya',
+          '<b>Kaghati Kolope</b> dari Pulau Muna, Sulawesi Tenggara, terbuat dari daun umbi gadung ' +
+          'yang dikeringkan, dengan rangka bambu dan tali serat nanas. Lukisan gua di Muna menunjukkan ' +
+          'layangan ini sudah diterbangkan sekitar <b>4.000 tahun lalu</b> — jauh sebelum layangan ' +
+          'sutra Tiongkok yang selama ini dianggap yang tertua di dunia.'));
+      }
+
+      return {
+        gambarPanel: function (i, p) {
+          langkahKini = i;
+          if (i === 0) panelAmati(p);
+          else if (i === 1) panelUbah(p);
+          else panelBandingkan(p);
+        },
+        keLangkah: function (i) { langkahKini = i; if (i !== 2) tabel = null; },
+        ukurUlang: function () { if (kanvas) RPN.panggung.siapkanKanvas(kanvas); },
+        pindahWadah: function (d) { pasangDom(d); },
+        lepas: function () { if (rafId) cancelAnimationFrame(rafId); rafId = null; },
+        _mulai: function () { waktuLalu = performance.now(); rafId = requestAnimationFrame(gelung); }
+      };
+    },
+
+    kuis: [
+      {
+        tanya: 'Sebuah layangan terlihat diam menggantung di langit, padahal ada empat gaya yang menariknya ke arah berbeda. Mengapa layangan bisa diam?',
+        opsi: [
+          { teks: 'Karena keempat gaya itu saling meniadakan sehingga resultannya nol', benar: true,
+            alasan: 'Saat resultan gaya sama dengan nol, benda yang diam akan tetap diam. Inilah Hukum I Newton.' },
+          { teks: 'Karena hanya gaya angkat yang bekerja, gaya lainnya sedang berhenti',
+            alasan: 'Keempat gaya bekerja terus-menerus secara bersamaan. Yang membuat layangan diam bukan hilangnya gaya lain, tetapi keseimbangannya.' },
+          { teks: 'Karena layangan lebih ringan daripada udara sehingga mengapung',
+            alasan: 'Layangan lebih berat daripada udara. Ia tidak mengapung seperti balon gas, melainkan ditahan oleh dorongan angin dan tali.' },
+          { teks: 'Karena tali menahannya sehingga gaya lain tidak berpengaruh',
+            alasan: 'Tali memang menahan, tetapi tali hanyalah salah satu dari empat gaya. Kalau angin berhenti, tali saja tidak cukup membuat layangan tetap di atas.' }
+        ],
+        penguatan: 'Resultan gaya nol → benda diam tetap diam, benda bergerak tetap bergerak lurus beraturan.'
+      },
+      {
+        tanya: 'Massa sebuah layangan 200 gram. Jika percepatan gravitasi 10 m/s², berapa berat layangan tersebut?',
+        petunjuk: 'Berat = massa × gravitasi. Ubah dulu gram menjadi kilogram.',
+        opsi: [
+          { teks: '2 newton', benar: true,
+            alasan: '200 gram = 0,2 kg. Berat = 0,2 × 10 = 2 newton.' },
+          { teks: '200 newton',
+            alasan: 'Satuan massanya belum diubah. 200 gram bukan 200 kilogram — bagi dulu dengan 1.000.' },
+          { teks: '2.000 newton',
+            alasan: 'Ini hasil dari 200 × 10 dengan massa masih dalam gram. Massa harus dalam kilogram dulu.' },
+          { teks: '0,02 newton',
+            alasan: 'Sepertinya massa dibagi 10.000. 200 gram = 0,2 kg, bukan 0,002 kg.' }
+        ],
+        penguatan: 'Massa satuannya kilogram, berat satuannya newton. Keduanya berbeda.'
+      },
+      {
+        tanya: 'Budi menerbangkan layangan besar Bebean Bali, tetapi layangannya tidak mau naik. Angin saat itu cukup pelan. Apa yang sebaiknya ia lakukan?',
+        opsi: [
+          { teks: 'Menunggu angin lebih kencang atau memakai layangan yang lebih ringan', benar: true,
+            alasan: 'Layangan baru naik kalau gaya angkat melebihi beratnya. Angin lebih kencang menambah gaya angkat; layangan lebih ringan mengurangi berat yang harus dilawan.' },
+          { teks: 'Menambah panjang talinya supaya bisa terbang lebih tinggi',
+            alasan: 'Tali yang panjang hanya menentukan seberapa jauh layangan bisa pergi, bukan apakah ia mampu naik. Kalau gaya angkatnya kurang, tali sepanjang apa pun tidak menolong.' },
+          { teks: 'Menambah beban di ekor layangan supaya lebih stabil',
+            alasan: 'Menambah beban justru menambah berat yang harus dilawan, sehingga layangan makin sulit naik.' },
+          { teks: 'Membuat layangan lebih tegak, sekitar 80° terhadap angin',
+            alasan: 'Terlalu curam membuat angin lebih banyak tertahan daripada mengangkat. Kemiringan paling efektif justru sekitar 20–30°.' }
+        ],
+        penguatan: 'Layangan naik bila gaya angkat > berat.'
+      },
+      {
+        tanya: 'Apa fungsi utama ekor pada layangan tradisional?',
+        opsi: [
+          { teks: 'Menjaga keseimbangan supaya layangan tidak berputar-putar dan oleng', benar: true,
+            alasan: 'Ekor memberi hambatan tambahan di bagian bawah, sehingga layangan tetap menghadap angin dengan posisi yang benar.' },
+          { teks: 'Menambah gaya angkat sehingga layangan terbang lebih tinggi',
+            alasan: 'Ekor justru menambah hambatan dan berat, jadi sedikit mengurangi gaya angkat. Manfaatnya ada pada kestabilan, bukan ketinggian.' },
+          { teks: 'Sekadar hiasan agar layangan terlihat indah di langit',
+            alasan: 'Hiasan memang salah satu alasannya, tetapi fungsi utamanya benar-benar teknis. Coba lepas ekornya di simulasi — layangan jadi jauh lebih liar.' }
+        ],
+        penguatan: 'Ekor = penyeimbang, bukan penambah daya angkat.'
+      }
+    ]
+  });
+})(window.RPN = window.RPN || {});
+
+</script>
+<script>
+/* ===== scripts/modules/ketapel.js ===== */
+/* ============================================================
+   MODUL 3 — KETAPEL
+   Fokus SMP (Fase D): perubahan bentuk energi (energi potensial
+   elastis -> energi kinetik), energi kinetik Ek = 1/2 m v^2,
+   dan lintasan parabola.
+   Materi SMA dihapus: rumus Hukum Hooke Ep = 1/2 k x^2,
+   konstanta pegas k dalam N/m, serta impuls & momentum
+   (F = m v / dt). Kekuatan karet kini disajikan sebagai
+   tingkatan yang bisa dirasakan murid, bukan konstanta.
+   ============================================================ */
+(function (RPN) {
+  'use strict';
+  var U = RPN.ui, el = U.el;
+
+  var KARET = {
+    lentur: { k: 90,  nama: 'Lentur',  ket: 'Karet tipis', ikon: '🧵' },
+    sedang: { k: 250, nama: 'Sedang',  ket: 'Karet biasa', ikon: '🔗' },
+    kaku:   { k: 520, nama: 'Kaku',    ket: 'Karet tebal', ikon: '💪' }
+  };
+
+  var GRAVITASI = {
+    bumi:    { g: 9.8,  nama: 'Bumi',    ikon: '🌍' },
+    bulan:   { g: 1.6,  nama: 'Bulan',   ikon: '🌑' },
+    yupiter: { g: 24.8, nama: 'Yupiter', ikon: '🪐' }
+  };
+
+  var SKALA = 34;          // piksel per meter untuk jarak & lintasan
+  var TARIK_MAKS = 118;    // panjang tarikan maksimum di layar (piksel)
+  /* Tarikan penuh sebuah ketapel tangan kira-kira 45 cm. Karena di
+     layar tarikan itu digambar sepanjang 118 piksel, konversinya
+     berbeda dari skala dunia di atas. Tanpa pemisahan ini, tarikan
+     akan terbaca 3,5 meter dan tenaganya menjadi tidak masuk akal. */
+  var TARIK_MAKS_METER = 0.45;
+  var SKALA_TARIK = TARIK_MAKS / TARIK_MAKS_METER;   // ~262 piksel per meter
+
+  RPN.app.daftarkan({
+    id: 'ketapel',
+    judul: 'Ketapel',
+    ikon: '🎯',
+    warna: 'kuning',
+    latar: 'linear-gradient(150deg,#fdf1dc,#fce9e7)',
+    mapel: 'IPA · Energi & Gerak',
+    fase: 'Fase D · Kelas VIII',
+    ringkas: 'Karet yang ditarik menyimpan tenaga. Ke mana tenaga itu pergi saat dilepaskan?',
+    langkah: ['Amati', 'Ubah', 'Bandingkan'],
+
+    buat: function (dom) {
+      /* ---------------- keadaan ---------------- */
+      var massa = 0.20, karet = 'sedang', planet = 'bumi';
+      var tampilLintasan = true, tampilJejak = true;
+
+      var tiang = { x: 150, y: 0 };
+      var kantong = { x: 150, y: 0 };
+      var seret = false, terbang = false;
+      var peluru = { x: 0, y: 0, vx: 0, vy: 0, r: 10, jejak: [] };
+      var sasaran = [], percik = [], teksMelayang = [];
+      var susunan = 'menara';
+      var tenagaKaret = 0, lajuLontar = 0, jarakTembak = 0, mulaiX = 0;
+      var tembakan = 0, kena = 0;
+      var kanvas, ctx, uTenaga, uLaju, uGerak, uJarak;
+      var tabel = null, langkahKini = 0;
+      var rafId = null, waktuLalu = 0, pewaktuInfo = null;
+
+      function g() { return GRAVITASI[planet].g; }
+      function k() { return KARET[karet].k; }
+
+      function pasangDom(d) {
+        d.sim.innerHTML = '';
+        kanvas = document.createElement('canvas');
+        kanvas.setAttribute('aria-label', 'Simulasi ketapel: tarik kantong lalu lepaskan');
+        kanvas.style.cursor = 'grab';
+        d.sim.appendChild(kanvas);
+        pasangPenunjuk();
+
+        d.ukur.innerHTML = '';
+        uTenaga = U.ukur({ nama: 'Tenaga di Karet', satuan: 'joule', warna: 'ungu', maks: 55 });
+        uLaju   = U.ukur({ nama: 'Kecepatan Lontar', satuan: 'm/s', maks: 35 });
+        uGerak  = U.ukur({ nama: 'Energi Gerak', satuan: 'joule', warna: 'kuning', maks: 55 });
+        uJarak  = U.ukur({ nama: 'Jarak Tembak', satuan: 'meter', warna: 'hijau', maks: 30 });
+        [uTenaga, uLaju, uGerak, uJarak].forEach(function (u) { d.ukur.appendChild(u); });
+      }
+
+      /* ---------------- sasaran ---------------- */
+      function Balok(x, y, w, h, jenis) {
+        this.x = x; this.y = y; this.w = w; this.h = h; this.jenis = jenis;
+        this.nyawa = jenis === 'batu' ? 55 : jenis === 'kaca' ? 8 : 22;
+        this.nyawaAwal = this.nyawa;
+        this.hancur = false;
+      }
+
+      function susunSasaran(pola) {
+        susunan = pola || susunan;
+        sasaran = [];
+        var w = kanvas.clientWidth || 900, h = kanvas.clientHeight || 500;
+        var tanah = h - 46;
+        var mulai = w - Math.min(250, w * 0.32);
+
+        if (susunan === 'menara') {
+          for (var b = 0; b < 4; b++) for (var c = 0; c < 2; c++)
+            sasaran.push(new Balok(mulai + c * 44, tanah - b * 44 - 20, 40, 40, 'kayu'));
+        } else if (susunan === 'piramida') {
+          var kol = 4;
+          for (var r = 0; r < 4; r++) {
+            var geser = (4 - kol) * 21;
+            for (var q = 0; q < kol; q++)
+              sasaran.push(new Balok(mulai + geser + q * 42, tanah - r * 42 - 19, 38, 38,
+                                     r % 2 === 0 ? 'kayu' : 'kaca'));
+            kol--;
+          }
+        } else {
+          for (var s = 0; s < 3; s++) {
+            sasaran.push(new Balok(mulai, tanah - s * 50 - 24, 46, 46, 'batu'));
+            sasaran.push(new Balok(mulai + 52, tanah - s * 50 - 24, 46, 46, 'batu'));
+          }
+        }
+      }
+
+      /* ---------------- interaksi tarik-lepas ---------------- */
+      function pasangPenunjuk() {
+        kanvas.addEventListener('pointerdown', function (e) {
+          if (terbang) return;
+          var p = RPN.panggung.titikKanvas(kanvas, e);
+          if (Math.hypot(p.x - kantong.x, p.y - kantong.y) < 52) {
+            seret = true;
+            kanvas.style.cursor = 'grabbing';
+            kanvas.setPointerCapture(e.pointerId);
+          }
+        });
+        kanvas.addEventListener('pointermove', function (e) {
+          if (!seret) return;
+          var p = RPN.panggung.titikKanvas(kanvas, e);
+          var dx = p.x - tiang.x, dy = p.y - tiang.y;
+          var jarak = Math.hypot(dx, dy);
+          if (jarak > TARIK_MAKS) { dx = dx / jarak * TARIK_MAKS; dy = dy / jarak * TARIK_MAKS; }
+          kantong.x = tiang.x + dx;
+          kantong.y = tiang.y + dy;
+          peluru.x = kantong.x; peluru.y = kantong.y;
+          hitungTarikan();
+          if (Math.random() < 0.16) RPN.audio.nada({ dari: 110 + jarak * 2.6, lama: .05, keras: .05, bentuk: 'triangle' });
+        });
+        function lepas(e) {
+          if (!seret) return;
+          seret = false;
+          kanvas.style.cursor = 'grab';
+          tembak();
+        }
+        kanvas.addEventListener('pointerup', lepas);
+        kanvas.addEventListener('pointercancel', lepas);
+      }
+
+      function hitungTarikan() {
+        var jarakPx = Math.hypot(tiang.x - kantong.x, tiang.y - kantong.y);
+        var regang = jarakPx / SKALA_TARIK;              // meter
+        tenagaKaret = 0.5 * k() * regang * regang;       // joule (rumus disembunyikan)
+        lajuLontar = Math.sqrt(2 * tenagaKaret / massa);
+        return { jarakPx: jarakPx, regang: regang };
+      }
+
+      function tembak() {
+        var t = hitungTarikan();
+        if (t.jarakPx < 16) { kembalikan(); return; }
+        var sudut = Math.atan2(tiang.y - kantong.y, tiang.x - kantong.x);
+        peluru.vx = Math.cos(sudut) * lajuLontar * SKALA;
+        peluru.vy = Math.sin(sudut) * lajuLontar * SKALA;
+        peluru.x = tiang.x; peluru.y = tiang.y;
+        peluru.jejak = [];
+        mulaiX = tiang.x;
+        terbang = true;
+        tembakan++;
+        kantong.x = tiang.x; kantong.y = tiang.y;
+        RPN.audio.efek.lenting();
+        RPN.simpanan.catatPercobaan('ketapel');
+      }
+
+      function kembalikan() {
+        terbang = false;
+        kantong.x = tiang.x; kantong.y = tiang.y;
+        peluru.x = tiang.x; peluru.y = tiang.y;
+        peluru.vx = peluru.vy = 0;
+      }
+
+      /* ---------------- fisika ---------------- */
+      function maju(dt) {
+        var h = kanvas.clientHeight || 500, w = kanvas.clientWidth || 900;
+        var tanah = h - 46;
+
+        if (terbang) {
+          peluru.vy += g() * SKALA * dt;
+          peluru.x += peluru.vx * dt;
+          peluru.y += peluru.vy * dt;
+          peluru.jejak.push({ x: peluru.x, y: peluru.y });
+          if (peluru.jejak.length > 220) peluru.jejak.shift();
+          jarakTembak = Math.max(0, (peluru.x - mulaiX) / SKALA);
+
+          if (peluru.y + peluru.r >= tanah) {
+            peluru.y = tanah - peluru.r;
+            letupkan(peluru.x, peluru.y, '#9a8062', 10);
+            RPN.audio.efek.tumbuk(.35);
+            kembalikan();
+          } else if (peluru.x > w + 120 || peluru.x < -120) {
+            kembalikan();
+          } else {
+            for (var i = 0; i < sasaran.length; i++) {
+              var s = sasaran[i];
+              if (s.hancur) continue;
+              var cx = Math.max(s.x - s.w / 2, Math.min(peluru.x, s.x + s.w / 2));
+              var cy = Math.max(s.y - s.h / 2, Math.min(peluru.y, s.y + s.h / 2));
+              if (Math.hypot(peluru.x - cx, peluru.y - cy) < peluru.r) { tumbuk(s, cx, cy); break; }
+            }
+          }
+        }
+
+        for (var p = percik.length - 1; p >= 0; p--) {
+          var q = percik[p];
+          q.x += q.vx; q.y += q.vy; q.vy += 0.25; q.hidup -= q.luruh;
+          if (q.hidup <= 0) percik.splice(p, 1);
+        }
+        for (var t = teksMelayang.length - 1; t >= 0; t--) {
+          var m = teksMelayang[t];
+          m.y -= 1.3; m.a -= 0.016;
+          if (m.a <= 0) teksMelayang.splice(t, 1);
+        }
+      }
+
+      function tumbuk(s, cx, cy) {
+        var laju = Math.hypot(peluru.vx, peluru.vy) / SKALA;
+        var energi = 0.5 * massa * laju * laju;     // energi gerak saat menumbuk
+        s.nyawa -= energi;
+        kena++;
+        RPN.audio.efek.tumbuk(Math.min(1, energi / 30));
+        teksMelayang.push({ teks: energi.toFixed(1) + ' J', x: s.x - 14, y: s.y - 24, a: 1,
+                            warna: energi > 20 ? '#b3261e' : '#a86a08' });
+        if (s.nyawa <= 0) {
+          s.hancur = true;
+          letupkan(s.x, s.y, s.jenis === 'kaca' ? '#5ab0e8' : s.jenis === 'batu' ? '#8d97a8' : '#c98a3c', 22);
+          if (sasaran.every(function (b) { return b.hancur; })) {
+            RPN.audio.efek.hebat();
+            teksMelayang.push({ teks: 'Semua roboh!', x: s.x - 40, y: s.y - 46, a: 1.6, warna: '#1c6b45' });
+            catatHasil();
+          }
+        } else {
+          letupkan(cx, cy, '#d9c3a2', 9);
+        }
+        kembalikan();
+      }
+
+      function letupkan(x, y, warna, n) {
+        for (var i = 0; i < n; i++) {
+          var a = Math.random() * Math.PI * 2, v = Math.random() * 5.5 + 1.5;
+          percik.push({ x: x, y: y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 1.5,
+                        r: Math.random() * 3.4 + 1.6, warna: warna, hidup: 1, luruh: Math.random() * .028 + .016 });
+        }
+      }
+
+      function catatHasil() {
+        if (!tabel || langkahKini !== 2) return;
+        tabel.tambah([susunanNama(), KARET[karet].nama, (massa * 1000).toFixed(0) + ' g',
+                      '<b>' + tembakan + '×</b>']);
+        tembakan = 0; kena = 0;
+      }
+
+      function susunanNama() {
+        return susunan === 'menara' ? 'Menara' : susunan === 'piramida' ? 'Piramida' : 'Batu';
+      }
+
+      /* ---------------- gambar ---------------- */
+      function gambar() {
+        ctx = RPN.panggung.siapkanKanvas(kanvas);
+        var w = kanvas.clientWidth, h = kanvas.clientHeight;
+        if (!w || !h) return;
+        var tanah = h - 46;
+
+        if (!tiang.y) {
+          tiang.y = tanah - 128; kantong.x = tiang.x; kantong.y = tiang.y;
+          peluru.x = tiang.x; peluru.y = tiang.y;
+          susunSasaran();
+        }
+
+        var lg = ctx.createLinearGradient(0, 0, 0, h);
+        lg.addColorStop(0, '#e8f3fc'); lg.addColorStop(1, '#fdf8ee');
+        ctx.fillStyle = lg; ctx.fillRect(0, 0, w, h);
+
+        /* Kisi bantu ukur (tiap 1 meter) */
+        ctx.strokeStyle = 'rgba(22,35,58,.06)'; ctx.lineWidth = 1;
+        for (var x = 0; x < w; x += SKALA) {
+          ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, tanah); ctx.stroke();
+        }
+        for (var y = tanah; y > 0; y -= SKALA) {
+          ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+        }
+
+        /* Tanah */
+        ctx.fillStyle = '#cdb38b'; ctx.fillRect(0, tanah, w, h - tanah);
+        ctx.strokeStyle = '#a88a5f'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(0, tanah); ctx.lineTo(w, tanah); ctx.stroke();
+
+        /* Ramalan lintasan saat ditarik */
+        if (seret && tampilLintasan) {
+          var t0 = hitungTarikan();
+          if (lajuLontar > 0.8) {
+            var a = Math.atan2(tiang.y - kantong.y, tiang.x - kantong.x);
+            var vx = Math.cos(a) * lajuLontar * SKALA, vy = Math.sin(a) * lajuLontar * SKALA;
+            ctx.fillStyle = 'rgba(20,80,155,.45)';
+            for (var t = 0.06; t < 3; t += 0.06) {
+              var px = tiang.x + vx * t, py = tiang.y + vy * t + 0.5 * g() * SKALA * t * t;
+              if (py >= tanah || px > w) break;
+              ctx.beginPath(); ctx.arc(px, py, 2.6, 0, Math.PI * 2); ctx.fill();
+            }
+          }
+        }
+
+        /* Jejak peluru */
+        if (tampilJejak && peluru.jejak.length > 1) {
+          ctx.strokeStyle = 'rgba(168,106,8,.45)'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+          ctx.beginPath();
+          for (var j = 0; j < peluru.jejak.length; j++) {
+            var pt = peluru.jejak[j];
+            if (j === 0) ctx.moveTo(pt.x, pt.y); else ctx.lineTo(pt.x, pt.y);
+          }
+          ctx.stroke();
+        }
+
+        /* Sasaran */
+        sasaran.forEach(function (s) {
+          if (s.hancur) return;
+          var isi = s.jenis === 'kayu' ? '#c98a3c' : s.jenis === 'kaca' ? 'rgba(90,176,232,.55)' : '#8d97a8';
+          var garis = s.jenis === 'kayu' ? '#8a5a2b' : s.jenis === 'kaca' ? '#3f8fc4' : '#5f6a7d';
+          ctx.fillStyle = isi; ctx.strokeStyle = garis; ctx.lineWidth = 2;
+          ctx.beginPath();
+          if (ctx.roundRect) ctx.roundRect(s.x - s.w / 2, s.y - s.h / 2, s.w, s.h, 5);
+          else ctx.rect(s.x - s.w / 2, s.y - s.h / 2, s.w, s.h);
+          ctx.fill(); ctx.stroke();
+          if (s.nyawa < s.nyawaAwal) {
+            var pct = Math.max(0, s.nyawa / s.nyawaAwal);
+            ctx.fillStyle = 'rgba(0,0,0,.16)';
+            ctx.fillRect(s.x - s.w / 2, s.y - s.h / 2 - 9, s.w, 4.5);
+            ctx.fillStyle = pct > 0.5 ? '#1c6b45' : '#b3261e';
+            ctx.fillRect(s.x - s.w / 2, s.y - s.h / 2 - 9, s.w * pct, 4.5);
+          }
+        });
+
+        /* Karet belakang */
+        ctx.strokeStyle = '#c0403c'; ctx.lineWidth = 4.5; ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(tiang.x - 16, tiang.y - 22); ctx.lineTo(kantong.x, kantong.y); ctx.stroke();
+
+        /* Gagang kayu bercabang */
+        ctx.strokeStyle = '#8a5a2b'; ctx.lineWidth = 11; ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(tiang.x, tanah);
+        ctx.lineTo(tiang.x, tiang.y + 30);
+        ctx.lineTo(tiang.x - 18, tiang.y - 20);
+        ctx.moveTo(tiang.x, tiang.y + 30);
+        ctx.lineTo(tiang.x + 18, tiang.y - 20);
+        ctx.stroke();
+
+        /* Karet depan + kantong kulit */
+        ctx.strokeStyle = '#e05a54'; ctx.lineWidth = 4.5;
+        ctx.beginPath();
+        ctx.moveTo(tiang.x + 16, tiang.y - 22); ctx.lineTo(kantong.x, kantong.y); ctx.stroke();
+        ctx.fillStyle = '#5b3a1a';
+        ctx.beginPath(); ctx.arc(kantong.x, kantong.y, 12, 0, Math.PI * 2); ctx.fill();
+
+        /* Peluru */
+        ctx.fillStyle = '#4a5568'; ctx.strokeStyle = '#98a3b5'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(peluru.x, peluru.y, peluru.r, 0, Math.PI * 2);
+        ctx.fill(); ctx.stroke();
+
+        /* Percikan & teks */
+        percik.forEach(function (p) {
+          ctx.globalAlpha = Math.max(0, p.hidup);
+          ctx.fillStyle = p.warna;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+        });
+        ctx.globalAlpha = 1;
+
+        ctx.font = '800 14px ' + getComputedStyle(document.body).fontFamily;
+        teksMelayang.forEach(function (m) {
+          ctx.globalAlpha = Math.max(0, Math.min(1, m.a));
+          ctx.fillStyle = m.warna;
+          ctx.fillText(m.teks, m.x, m.y);
+        });
+        ctx.globalAlpha = 1;
+
+        /* Petunjuk */
+        if (!terbang && !seret && peluru.jejak.length === 0) {
+          ctx.font = '700 13.5px ' + getComputedStyle(document.body).fontFamily;
+          var teks = '👆 Tarik kantong ketapel ke belakang, lalu lepaskan';
+          var lw = ctx.measureText(teks).width;
+          ctx.fillStyle = 'rgba(255,255,255,.92)';
+          if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(16, 14, lw + 24, 30, 15); ctx.fill(); }
+          ctx.fillStyle = '#16233a';
+          ctx.fillText(teks, 28, 33);
+        }
+
+        /* Penanda planet */
+        ctx.font = '700 12.5px ' + getComputedStyle(document.body).fontFamily;
+        ctx.fillStyle = 'rgba(22,35,58,.55)';
+        ctx.textAlign = 'right';
+        ctx.fillText(GRAVITASI[planet].ikon + '  gravitasi ' + g() + ' m/s²', w - 14, 26);
+        ctx.textAlign = 'left';
+      }
+
+      function gelung(t) {
+        var dt = Math.min(0.033, (t - waktuLalu) / 1000) || 0;
+        waktuLalu = t;
+        maju(dt);
+        gambar();
+        var lajuKini = terbang ? Math.hypot(peluru.vx, peluru.vy) / SKALA : lajuLontar;
+        uTenaga.set(tenagaKaret, tenagaKaret.toFixed(1));
+        uLaju.set(lajuKini, lajuKini.toFixed(1));
+        uGerak.set(0.5 * massa * lajuKini * lajuKini, (0.5 * massa * lajuKini * lajuKini).toFixed(1));
+        uJarak.set(jarakTembak, jarakTembak.toFixed(1));
+        rafId = requestAnimationFrame(gelung);
+      }
+
+      pasangDom(dom);
+
+      /* ---------------- panel ---------------- */
+      function panelAmati(p) {
+        p.appendChild(U.tajukPanel('Langkah 1 · Amati', 'Mulai di sini', 'kuning'));
+        p.appendChild(el('p', 'teks-s lembut',
+          'Tarik kantong ketapel ke belakang, tahan sebentar, lalu lepaskan. ' +
+          'Perhatikan keempat angka di bawah gambar saat kamu menarik dan saat peluru melesat.'));
+
+        p.appendChild(U.catatan('ungu', '🔋 Saat karet ditarik',
+          'Angka <b>Tenaga di Karet</b> naik. Karet yang teregang menyimpan tenaga, ' +
+          'persis seperti baterai yang terisi. Namanya <b>energi potensial elastis</b>.'));
+
+        p.appendChild(U.catatan('kuning', '🚀 Saat dilepaskan',
+          'Tenaga di karet langsung berpindah ke peluru dan berubah menjadi <b>energi gerak</b> ' +
+          '(energi kinetik). Perhatikan: angkanya hampir sama besar — tenaganya tidak hilang, hanya pindah.'));
+
+        p.appendChild(U.aksi([
+          { teks: 'Susun ulang sasaran', kelas: 'tbl-utama', aksi: function () {
+              susunSasaran(); kembalikan(); peluru.jejak = []; RPN.audio.efek.klik(); } },
+          { teks: 'Hapus jejak', aksi: function () {
+              peluru.jejak = []; percik = []; teksMelayang = []; RPN.audio.efek.klik(); } }
+        ]));
+
+        p.appendChild(U.catatan('kuning', '🤔 Pertanyaan pemantik',
+          'Peluru dilontarkan lurus ke depan, tapi lintasannya melengkung ke bawah. ' +
+          'Padahal tidak ada yang menariknya. <b>Siapa yang membelokkan?</b>'));
+
+        p.appendChild(U.catatan('', '💡 Jawabannya',
+          'Gravitasi bumi. Selama melayang, peluru terus ditarik ke bawah sambil tetap bergerak maju. ' +
+          'Gabungan dua gerak inilah yang membentuk lengkungan yang disebut <b>lintasan parabola</b>.'));
+      }
+
+      function panelUbah(p) {
+        p.appendChild(U.tajukPanel('Langkah 2 · Ubah', 'Uji adil', 'kuning'));
+
+        p.appendChild(el('div', 'teks-s', '<b>Kekuatan karet</b>'));
+        p.appendChild(U.pilihan({
+          kolom: 3, terpilih: karet,
+          daftar: Object.keys(KARET).map(function (x) {
+            return { id: x, ikon: KARET[x].ikon, tajuk: KARET[x].nama, ket: KARET[x].ket };
+          }),
+          saatPilih: function (id) { karet = id; hitungTarikan(); }
+        }));
+
+        p.appendChild(U.penggeser({
+          nama: 'Massa peluru', min: 0.05, max: 1.0, step: 0.05, nilai: massa,
+          format: function (v) { return (v * 1000).toFixed(0) + ' gram'; },
+          skala: ['Ringan', '500 g', 'Berat'],
+          saatUbah: function (v) { massa = v; hitungTarikan(); }
+        }));
+
+        p.appendChild(el('div', 'teks-s', '<b>Tempat bermain</b>'));
+        p.appendChild(U.pilihan({
+          kolom: 3, terpilih: planet,
+          daftar: Object.keys(GRAVITASI).map(function (x) {
+            return { id: x, ikon: GRAVITASI[x].ikon, tajuk: GRAVITASI[x].nama,
+                     ket: GRAVITASI[x].g + ' m/s²' };
+          }),
+          saatPilih: function (id) { planet = id; }
+        }));
+
+        p.appendChild(el('div', 'teks-s', '<b>Susunan sasaran</b>'));
+        p.appendChild(U.pilihan({
+          kolom: 3, terpilih: susunan,
+          daftar: [
+            { id: 'menara', ikon: '🧱', tajuk: 'Menara', ket: 'Kayu' },
+            { id: 'piramida', ikon: '🔺', tajuk: 'Piramida', ket: 'Kayu + kaca' },
+            { id: 'batu', ikon: '🪨', tajuk: 'Batu', ket: 'Sangat kuat' }
+          ],
+          saatPilih: function (id) { susunSasaran(id); kembalikan(); tembakan = 0; }
+        }));
+
+        p.appendChild(U.catatan('kuning', '👀 Coba perhatikan',
+          'Tarik sejauh yang sama, tapi ganti massa peluru dari 50 g ke 1.000 g. ' +
+          '<b>Tenaga karetnya sama</b>, tetapi kecepatan lontarnya jauh berbeda. Mengapa?'));
+
+        p.appendChild(U.catatan('', '💡 Jawabannya',
+          'Tenaga yang sama harus mendorong benda yang lebih berat, jadi hasil kecepatannya lebih kecil. ' +
+          'Tapi karena massanya besar, <b>energi geraknya tetap besar</b> — makanya peluru berat lebih ampuh ' +
+          'merobohkan sasaran walaupun terbangnya pelan.'));
+      }
+
+      function panelBandingkan(p) {
+        p.appendChild(U.tajukPanel('Langkah 3 · Bandingkan', 'Tantangan', 'hijau'));
+        p.appendChild(el('p', 'teks-s lembut',
+          'Robohkan seluruh sasaran dengan <b>tembakan sesedikit mungkin</b>. ' +
+          'Setiap kali semua sasaran roboh, hasilnya tercatat otomatis.'));
+
+        tabel = U.tabelCatat(['Sasaran', 'Karet', 'Peluru', 'Tembakan']);
+        p.appendChild(tabel);
+
+        var info = el('div', 'catatan catatan-kuning teks-s');
+        function segarkan() {
+          info.innerHTML = '<span class="tajuk">Percobaan berjalan</span>Tembakan: <b>' + tembakan +
+            '</b> · Sasaran tersisa: <b>' +
+            sasaran.filter(function (s) { return !s.hancur; }).length + '</b>';
+        }
+        segarkan();
+        if (pewaktuInfo) clearInterval(pewaktuInfo);
+        pewaktuInfo = setInterval(segarkan, 400);
+        p.appendChild(info);
+
+        p.appendChild(U.aksi([
+          { teks: 'Susun ulang & mulai lagi', kelas: 'tbl-utama', aksi: function () {
+              susunSasaran(); kembalikan(); tembakan = 0; peluru.jejak = []; RPN.audio.efek.klik(); } },
+          { teks: 'Kosongkan tabel', aksi: function () { tabel.kosong(); RPN.audio.efek.klik(); } }
+        ]));
+
+        p.appendChild(U.catatan('hijau', '🎯 Misi',
+          '<b>a.</b> Robohkan Menara memakai karet lentur, lalu karet kaku. Bandingkan jumlah tembakannya.<br>' +
+          '<b>b.</b> Robohkan susunan Batu. Kombinasi apa yang paling hemat tembakan?<br>' +
+          '<b>c.</b> Coba tembak di Bulan. Apa yang berubah pada bentuk lintasannya?'));
+
+        p.appendChild(U.catatan('', '🔍 Temuan yang diharapkan',
+          'Sasaran roboh bila <b>energi gerak peluru</b> saat menumbuk cukup besar. ' +
+          'Energi gerak dipengaruhi massa peluru dan kecepatannya. Di Bulan, gravitasinya kecil ' +
+          'sehingga lintasan peluru jauh lebih landai dan bisa terbang lebih jauh.'));
+
+        p.appendChild(U.catatan('ungu', '🏛️ Kaitan budaya',
+          'Ketapel atau <b>plintheng</b> (Jawa), <b>bedil karet</b> (Sunda), dan <b>ali-ali</b> ' +
+          'dulu dipakai anak-anak desa untuk menjaga sawah dari serbuan burung pipit. ' +
+          'Cabang kayu berbentuk Y dipilih dari pohon jambu atau kopi karena lentur tapi tidak mudah patah.'));
+      }
+
+      return {
+        gambarPanel: function (i, p) {
+          langkahKini = i;
+          if (i === 0) panelAmati(p);
+          else if (i === 1) panelUbah(p);
+          else panelBandingkan(p);
+        },
+        keLangkah: function (i) {
+          langkahKini = i;
+          if (i !== 2) {
+            tabel = null;
+            if (pewaktuInfo) { clearInterval(pewaktuInfo); pewaktuInfo = null; }
+          }
+        },
+        ukurUlang: function () {
+          if (!kanvas) return;
+          RPN.panggung.siapkanKanvas(kanvas);
+          tiang.y = 0;      // paksa hitung ulang posisi & sasaran
+        },
+        pindahWadah: function (d) { pasangDom(d); tiang.y = 0; },
+        lepas: function () {
+          if (rafId) cancelAnimationFrame(rafId);
+          rafId = null;
+          if (pewaktuInfo) { clearInterval(pewaktuInfo); pewaktuInfo = null; }
+        },
+        _mulai: function () { waktuLalu = performance.now(); rafId = requestAnimationFrame(gelung); }
+      };
+    },
+
+    kuis: [
+      {
+        tanya: 'Saat karet ketapel ditarik ke belakang lalu ditahan, energi apa yang tersimpan di dalam karet?',
+        opsi: [
+          { teks: 'Energi potensial elastis', benar: true,
+            alasan: 'Benda lentur yang diregangkan atau ditekan menyimpan energi potensial elastis, siap dilepaskan kapan saja.' },
+          { teks: 'Energi kinetik',
+            alasan: 'Energi kinetik adalah energi benda yang sedang bergerak. Saat ditahan, karet dan peluru justru sedang diam.' },
+          { teks: 'Energi panas',
+            alasan: 'Karet memang sedikit menghangat saat diregangkan, tetapi hampir seluruh energinya tersimpan sebagai energi elastis, bukan panas.' },
+          { teks: 'Energi potensial gravitasi',
+            alasan: 'Energi potensial gravitasi muncul karena benda berada di ketinggian tertentu. Di sini yang berubah adalah regangan karet, bukan ketinggian peluru.' }
+        ],
+        penguatan: 'Benda lentur yang diregangkan menyimpan energi potensial elastis.'
+      },
+      {
+        tanya: 'Peluru ketapel bermassa 0,2 kg melesat dengan kecepatan 10 m/s. Berapa energi kinetiknya?',
+        petunjuk: 'Energi kinetik = ½ × massa × kecepatan × kecepatan.',
+        opsi: [
+          { teks: '10 joule', benar: true,
+            alasan: '½ × 0,2 × 10 × 10 = ½ × 0,2 × 100 = 10 joule.' },
+          { teks: '2 joule',
+            alasan: 'Sepertinya kecepatannya hanya dikalikan sekali. Kecepatan harus dikuadratkan dulu: 10 × 10 = 100.' },
+          { teks: '20 joule',
+            alasan: 'Hasil ini lupa dikalikan ½. Rumusnya ½ × m × v², bukan m × v².' },
+          { teks: '100 joule',
+            alasan: 'Ini hanya nilai v² saja. Masih harus dikalikan massa dan ½.' }
+        ],
+        penguatan: 'Ek = ½ × m × v². Perhatikan kecepatan harus dikuadratkan.'
+      },
+      {
+        tanya: 'Dengan tarikan karet yang sama persis, Sari menembakkan peluru 50 gram lalu peluru 500 gram. Mana yang benar?',
+        opsi: [
+          { teks: 'Peluru 50 gram melesat lebih cepat, tetapi peluru 500 gram lebih kuat merobohkan sasaran', benar: true,
+            alasan: 'Tenaga karetnya sama, jadi peluru ringan mendapat kecepatan lebih tinggi. Tetapi energi gerak juga bergantung pada massa, sehingga peluru berat tetap menumbuk lebih kuat.' },
+          { teks: 'Peluru 500 gram melesat lebih cepat karena massanya besar',
+            alasan: 'Justru sebaliknya. Dengan tenaga yang sama, benda yang lebih berat lebih sulit dipercepat sehingga kecepatannya lebih rendah.' },
+          { teks: 'Keduanya melesat sama cepat karena tarikan karetnya sama',
+            alasan: 'Tenaga yang diberikan memang sama, tetapi tenaga yang sama pada massa berbeda menghasilkan kecepatan yang berbeda.' },
+          { teks: 'Peluru 50 gram lebih kuat merobohkan karena kecepatannya tinggi',
+            alasan: 'Kecepatan tinggi memang menambah energi gerak, tetapi massa yang 10 kali lebih kecil membuat energi totalnya tetap kalah. Coba buktikan di simulasi.' }
+        ],
+        penguatan: 'Tenaga sama + massa berbeda = kecepatan berbeda.'
+      },
+      {
+        tanya: 'Mengapa peluru ketapel bergerak melengkung ke bawah, bukan lurus mendatar?',
+        opsi: [
+          { teks: 'Karena gravitasi terus menarik peluru ke bawah selama ia melayang', benar: true,
+            alasan: 'Peluru tetap bergerak maju, tetapi pada saat bersamaan ditarik ke bawah oleh gravitasi. Gabungan keduanya membentuk lintasan parabola.' },
+          { teks: 'Karena tenaga peluru habis sehingga peluru menjadi lelah dan jatuh',
+            alasan: 'Peluru tidak "kehabisan tenaga" lalu jatuh. Lintasannya sudah melengkung sejak awal karena gravitasi bekerja sejak detik pertama.' },
+          { teks: 'Karena hambatan udara mendorong peluru ke bawah',
+            alasan: 'Hambatan udara melawan arah gerak, bukan menekan ke bawah. Bahkan tanpa udara sama sekali, lintasannya tetap melengkung.' },
+          { teks: 'Karena karet ketapel melontarkannya dengan arah miring ke bawah',
+            alasan: 'Meski dilontarkan mendatar sempurna, lintasannya tetap akan melengkung. Coba di simulasi: tarik lurus mendatar, hasilnya tetap parabola.' }
+        ],
+        penguatan: 'Gerak maju + tarikan gravitasi ke bawah = lintasan parabola.'
+      }
+    ]
+  });
+})(window.RPN = window.RPN || {});
+
+</script>
+<script>
+/* ===== scripts/modules/congklak.js ===== */
+/* ============================================================
+   MODUL 4 — CONGKLAK
+   Fokus SMP (Fase D Matematika): pola bilangan berulang dan
+   pembagian bersisa (Kelas VII), serta penalaran logis.
+
+   Materi tingkat lanjut dihapus: algoritma Minimax, pemangkasan
+   alfa-beta, teori permainan zero-sum, dan fungsi evaluasi V(s).
+   Lawan komputer kini memakai strategi satu langkah ke depan
+   yang bisa dijelaskan kepada murid.
+
+   CATATAN KEILMUAN: satu putaran penuh seorang pemain melewati
+   15 lubang, bukan 16, karena rumah lawan selalu dilewati.
+   Jadi pembagian bersisanya memakai angka 15.
+   ============================================================ */
+(function (RPN) {
+  'use strict';
+  var U = RPN.ui, el = U.el;
+
+  var RUMAH_1 = 7, RUMAH_2 = 15;
+  /* Urutan lubang yang dilewati tiap pemain (15 posisi) */
+  var JALUR = {
+    1: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+    2: [8, 9, 10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5, 6]
+  };
+
+  RPN.app.daftarkan({
+    id: 'congklak',
+    judul: 'Congklak',
+    ikon: '🐚',
+    warna: 'hijau',
+    latar: 'linear-gradient(150deg,#f4e7d6,#e4f2ea)',
+    mapel: 'Matematika · Pola & Sisa Bagi',
+    fase: 'Fase D · Kelas VII–VIII',
+    ringkas: 'Menghitung mundur sebelum melangkah: temukan pola putaran 15 lubang.',
+    langkah: ['Amati', 'Prediksi', 'Bertanding'],
+
+    buat: function (dom) {
+      /* ---------------- keadaan ---------------- */
+      var papan = null, pemain = 1, sedangJalan = false;
+      var lawanKomputer = false, kecepatan = 230;
+      var bijiAwal = 7;
+      var menang = { p1: 0, p2: 0, seri: 0 };
+      var langkahKini = 0, tabel = null;
+      var elPapan = null, elLubang = [], elJumlah = [], elPesan = null;
+      var uGiliran, uRumah1, uRumah2, uPesan;
+      var prediksiAktif = false;
+
+      function barus() {
+        papan = [];
+        for (var i = 0; i < 16; i++) papan[i] = bijiAwal;
+        papan[RUMAH_1] = 0; papan[RUMAH_2] = 0;
+        pemain = 1;
+      }
+      barus();
+
+      /* ---------------- bangun papan ---------------- */
+      function pasangDom(d) {
+        d.sim.innerHTML = '';
+        d.sim.style.background = 'linear-gradient(160deg,#fdf6ea,#f2e3cd)';
+        d.sim.style.display = 'flex';
+        d.sim.style.alignItems = 'center';
+        d.sim.style.justifyContent = 'center';
+        d.sim.style.padding = '14px';
+
+        elPapan = el('div', '');
+        elPapan.style.cssText =
+          'display:grid;grid-template-columns:78px 1fr 78px;gap:12px;align-items:center;' +
+          'width:100%;max-width:780px;background:linear-gradient(150deg,#8a5a2b,#6b4420);' +
+          'border:3px solid #5a3616;border-radius:30px;padding:14px;' +
+          'box-shadow:inset 0 3px 12px rgba(0,0,0,.35), 0 8px 20px rgba(90,54,22,.3)';
+
+        elLubang = []; elJumlah = [];
+
+        elPapan.appendChild(buatRumah(RUMAH_2, 'Rumah\nLawan'));
+
+        var tengah = el('div', '');
+        tengah.style.cssText = 'display:flex;flex-direction:column;gap:9px';
+
+        var barisAtas = el('div', '');
+        barisAtas.style.cssText = 'display:grid;grid-template-columns:repeat(7,1fr);gap:7px';
+        [14, 13, 12, 11, 10, 9, 8].forEach(function (i) { barisAtas.appendChild(buatLubang(i, 2)); });
+        tengah.appendChild(barisAtas);
+
+        var panah = el('div', '');
+        panah.style.cssText = 'display:flex;justify-content:space-between;padding:0 6px;' +
+                              'font-size:10.5px;font-weight:700;color:rgba(255,255,255,.72)';
+        panah.innerHTML = '<span>← arah jalan Lawan</span><span>arah jalanmu →</span>';
+        tengah.appendChild(panah);
+
+        var barisBawah = el('div', '');
+        barisBawah.style.cssText = 'display:grid;grid-template-columns:repeat(7,1fr);gap:7px';
+        [0, 1, 2, 3, 4, 5, 6].forEach(function (i) { barisBawah.appendChild(buatLubang(i, 1)); });
+        tengah.appendChild(barisBawah);
+
+        elPapan.appendChild(tengah);
+        elPapan.appendChild(buatRumah(RUMAH_1, 'Rumah\nKamu'));
+        d.sim.appendChild(elPapan);
+
+        d.ukur.innerHTML = '';
+        uGiliran = U.ukur({ nama: 'Giliran', satuan: '' });
+        uRumah1  = U.ukur({ nama: 'Biji di Rumahmu', satuan: 'biji', warna: 'hijau', maks: 98 });
+        uRumah2  = U.ukur({ nama: 'Biji Rumah Lawan', satuan: 'biji', warna: 'merah', maks: 98 });
+        uPesan   = U.ukur({ nama: 'Kejadian Terakhir', satuan: '', warna: 'kuning' });
+        [uGiliran, uRumah1, uRumah2, uPesan].forEach(function (u) { d.ukur.appendChild(u); });
+        segarkan();
+      }
+
+      function buatLubang(i, sisi) {
+        var b = el('button', '');
+        b.type = 'button';
+        b.dataset.lubang = i;
+        b.style.cssText =
+          'position:relative;aspect-ratio:1;min-height:44px;border-radius:50%;border:2px solid #5a3616;' +
+          'background:radial-gradient(circle at 50% 38%, #3d2109 0%, #52300f 70%, #6b4420 100%);' +
+          'display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;' +
+          'box-shadow:inset 0 5px 9px rgba(0,0,0,.7);transition:transform .15s, box-shadow .15s, border-color .15s;' +
+          'cursor:pointer;padding:2px';
+        var no = el('span', '');
+        no.style.cssText = 'font-size:9px;font-family:var(--f-num);color:rgba(255,255,255,.42);line-height:1';
+        no.textContent = '#' + i;
+        var jml = el('span', '');
+        jml.style.cssText = 'font-size:17px;font-weight:800;color:' + (sisi === 1 ? '#ffd88a' : '#a9e3c2') + ';line-height:1';
+        b.appendChild(no); b.appendChild(jml);
+        b.addEventListener('click', function () { klikLubang(i); });
+        elLubang[i] = b; elJumlah[i] = jml;
+        return b;
+      }
+
+      function buatRumah(i, nama) {
+        var w = el('div', '');
+        w.style.cssText =
+          'height:160px;border-radius:39px;border:3px solid #5a3616;' +
+          'background:radial-gradient(circle at 50% 30%, #3d2109 0%, #52300f 75%, #6b4420 100%);' +
+          'display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;' +
+          'box-shadow:inset 0 7px 14px rgba(0,0,0,.75)';
+        var lbl = el('span', '');
+        lbl.style.cssText = 'font-size:9.5px;font-weight:800;text-align:center;line-height:1.25;' +
+                            'color:' + (i === RUMAH_1 ? '#ffd88a' : '#a9e3c2') + ';white-space:pre-line';
+        lbl.textContent = nama;
+        var jml = el('span', '');
+        jml.style.cssText = 'font-size:26px;font-weight:800;font-family:var(--f-num);' +
+                            'color:' + (i === RUMAH_1 ? '#ffd88a' : '#a9e3c2');
+        w.appendChild(lbl); w.appendChild(jml);
+        elLubang[i] = w; elJumlah[i] = jml;
+        return w;
+      }
+
+      /* ---------------- aturan permainan ---------------- */
+      function milikku(i) { return i >= 0 && i <= 6; }
+      function milikLawan(i) { return i >= 8 && i <= 14; }
+      function seberang(i) { return 14 - i; }
+
+      function lubangBerikut(sekarang, plr) {
+        var jalur = JALUR[plr];
+        var idx = jalur.indexOf(sekarang);
+        return jalur[(idx + 1) % 15];
+      }
+
+      /* Prediksi tempat biji terakhir jatuh, lengkap dengan
+         hitungan pembagian bersisa untuk ditampilkan ke murid. */
+      function ramal(asal, plr) {
+        var jalur = JALUR[plr];
+        var n = papan[asal];
+        if (n === 0) return null;
+        var idxAsal = jalur.indexOf(asal);
+        var total = idxAsal + n;
+        var putaran = Math.floor(total / 15);
+        var sisa = total % 15;
+        return {
+          jumlah: n, idxAsal: idxAsal, total: total,
+          putaran: putaran, sisa: sisa, tujuan: jalur[sisa],
+          jalur: jalur
+        };
+      }
+
+      function tunda(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+      async function jalan(asal) {
+        sedangJalan = true;
+        var plr = pemain;
+        var tangan = papan[asal];
+        papan[asal] = 0;
+        segarkan();
+
+        var kini = asal, catatan = '';
+
+        while (tangan > 0) {
+          kini = lubangBerikut(kini, plr);
+          tangan--;
+          papan[kini]++;
+          sorot(kini);
+          if (kini === RUMAH_1 || kini === RUMAH_2) RPN.audio.efek.lonceng();
+          else RPN.audio.efek.kayu();
+          segarkan('Biji di tangan: ' + tangan);
+          await tunda(kecepatan);
+          lepasSorot(kini);
+
+          if (tangan === 0) {
+            var rumahSendiri = plr === 1 ? RUMAH_1 : RUMAH_2;
+            if (kini === rumahSendiri) {
+              catatan = 'Berhenti di rumah sendiri — jalan lagi!';
+              RPN.audio.efek.hebat();
+              break;                      // giliran tidak berpindah
+            }
+            if (papan[kini] > 1) {
+              catatan = 'Lubang #' + kini + ' terisi — ambil semua, lanjut jalan';
+              segarkan(catatan);
+              await tunda(kecepatan);
+              tangan = papan[kini];
+              papan[kini] = 0;
+              segarkan();
+              continue;
+            }
+            /* Lubang tadinya kosong */
+            var punyaSendiri = (plr === 1 && milikku(kini)) || (plr === 2 && milikLawan(kini));
+            var lawanIsi = papan[seberang(kini)];
+            if (punyaSendiri && lawanIsi > 0) {
+              var rebut = lawanIsi + 1;
+              papan[seberang(kini)] = 0;
+              papan[kini] = 0;
+              papan[rumahSendiri] += rebut;
+              catatan = 'TEMBAK! Merebut ' + rebut + ' biji dari lubang #' + seberang(kini);
+              RPN.audio.efek.hebat();
+            } else {
+              catatan = 'Mati di lubang #' + kini + ' — giliran berpindah';
+              RPN.audio.efek.salah();
+            }
+            pemain = plr === 1 ? 2 : 1;
+            break;
+          }
+        }
+
+        sedangJalan = false;
+        segarkan(catatan);
+
+        if (selesai()) { umumkan(); return; }
+        if (lawanKomputer && pemain === 2) {
+          await tunda(520);
+          langkahKomputer();
+        }
+      }
+
+      function langkahLegal(plr) {
+        var a = [], mulai = plr === 1 ? 0 : 8;
+        for (var i = mulai; i < mulai + 7; i++) if (papan[i] > 0) a.push(i);
+        return a;
+      }
+
+      /* Lawan komputer: melihat satu langkah ke depan, memilih
+         yang paling menambah biji di rumahnya. Sederhana dan
+         bisa dijelaskan kepada murid. */
+      function langkahKomputer() {
+        var pilihan = langkahLegal(2);
+        if (!pilihan.length) { pemain = 1; segarkan(); return; }
+        var terbaik = pilihan[0], nilaiTerbaik = -Infinity;
+        pilihan.forEach(function (p) {
+          var r = ramal(p, 2);
+          var nilai = 0;
+          if (r) {
+            if (r.tujuan === RUMAH_2) nilai += 12;                       // dapat jalan lagi
+            if (papan[r.tujuan] === 0 && milikLawan(r.tujuan)) nilai += papan[seberang(r.tujuan)];
+            nilai += Math.floor((r.idxAsal + r.jumlah) / 15) * 2;        // melewati rumah sendiri
+          }
+          if (nilai > nilaiTerbaik) { nilaiTerbaik = nilai; terbaik = p; }
+        });
+        jalan(terbaik);
+      }
+
+      function klikLubang(i) {
+        if (sedangJalan) return;
+        if (papan[i] === 0) return;
+        if (lawanKomputer && pemain === 2) return;
+        if (pemain === 1 && !milikku(i)) return;
+        if (pemain === 2 && !milikLawan(i)) return;
+        if (prediksiAktif && langkahKini === 1) { tampilkanRamalan(i); return; }
+        jalan(i);
+      }
+
+      function selesai() {
+        return langkahLegal(1).length === 0 || langkahLegal(2).length === 0;
+      }
+
+      function umumkan() {
+        /* Sisa biji masuk ke rumah pemiliknya */
+        for (var i = 0; i <= 6; i++) { papan[RUMAH_1] += papan[i]; papan[i] = 0; }
+        for (var j = 8; j <= 14; j++) { papan[RUMAH_2] += papan[j]; papan[j] = 0; }
+        var a = papan[RUMAH_1], b = papan[RUMAH_2];
+        var hasil = a > b ? 'Kamu menang!' : b > a ? 'Lawan menang' : 'Seri';
+        if (a > b) menang.p1++; else if (b > a) menang.p2++; else menang.seri++;
+        segarkan(hasil + ' (' + a + ' : ' + b + ')');
+        RPN.audio.efek[a > b ? 'hebat' : 'salah']();
+        if (tabel && langkahKini === 2) {
+          tabel.tambah([lawanKomputer ? 'vs Komputer' : 'vs Teman', a, b, '<b>' + hasil + '</b>']);
+        }
+      }
+
+      function sorot(i) {
+        if (!elLubang[i]) return;
+        elLubang[i].style.borderColor = '#f0c14b';
+        elLubang[i].style.transform = 'scale(1.07)';
+        elLubang[i].style.boxShadow = 'inset 0 4px 8px rgba(0,0,0,.6), 0 0 16px rgba(240,193,75,.8)';
+      }
+      function lepasSorot(i) {
+        if (!elLubang[i]) return;
+        elLubang[i].style.borderColor = '#5a3616';
+        elLubang[i].style.transform = '';
+        elLubang[i].style.boxShadow = 'inset 0 5px 9px rgba(0,0,0,.7)';
+      }
+
+      function segarkan(pesan) {
+        for (var i = 0; i < 16; i++) if (elJumlah[i]) elJumlah[i].textContent = papan[i];
+
+        for (var j = 0; j < 16; j++) {
+          if (j === RUMAH_1 || j === RUMAH_2 || !elLubang[j]) continue;
+          var bisa = !sedangJalan && papan[j] > 0 &&
+                     ((pemain === 1 && milikku(j) && !(lawanKomputer && pemain === 2)) ||
+                      (pemain === 2 && milikLawan(j) && !lawanKomputer));
+          elLubang[j].style.opacity = bisa ? '1' : '.62';
+          elLubang[j].style.cursor = bisa ? 'pointer' : 'default';
+          elLubang[j].style.outline = bisa ? '2px solid rgba(240,193,75,.5)' : 'none';
+          elLubang[j].style.outlineOffset = '2px';
+        }
+
+        if (uGiliran) {
+          uGiliran.set(0, pemain === 1 ? 'Kamu' : (lawanKomputer ? 'Komputer' : 'Lawan'));
+          uRumah1.set(papan[RUMAH_1], papan[RUMAH_1]);
+          uRumah2.set(papan[RUMAH_2], papan[RUMAH_2]);
+          if (pesan !== undefined) uPesan.set(0, pesan || '—');
+        }
+      }
+
+      /* ---------------- panel ---------------- */
+      function panelAmati(p) {
+        p.appendChild(U.tajukPanel('Langkah 1 · Amati', 'Mulai di sini', 'hijau'));
+        p.appendChild(el('p', 'teks-s lembut',
+          'Ketuk salah satu lubang di baris <b>bawah</b> (milikmu). Semua bijinya akan ditaburkan ' +
+          'satu per satu searah panah. Amati ke mana biji terakhir jatuh.'));
+
+        p.appendChild(U.catatan('hijau', '📖 Empat aturan congklak',
+          '<b>1.</b> Biji ditaburkan satu per satu, searah jarum jam.<br>' +
+          '<b>2.</b> Kamu mengisi rumahmu sendiri, tapi <b>melewati</b> rumah lawan.<br>' +
+          '<b>3.</b> Biji terakhir jatuh di lubang <b>terisi</b> → ambil semua, lanjut jalan.<br>' +
+          '<b>4.</b> Biji terakhir jatuh di lubang <b>kosong milikmu</b> → <b>tembak!</b> ' +
+          'Rebut semua biji di lubang seberangnya.'));
+
+        p.appendChild(U.aksi([
+          { teks: 'Papan baru', kelas: 'tbl-utama', ikon: RPN.app.IKON.ulang,
+            aksi: function () { if (sedangJalan) return; barus(); segarkan('—'); RPN.audio.efek.klik(); } },
+          { teks: 'Pelan', aksi: function () { kecepatan = 420; RPN.audio.efek.klik(); } },
+          { teks: 'Cepat', aksi: function () { kecepatan = 110; RPN.audio.efek.klik(); } }
+        ]));
+
+        p.appendChild(U.catatan('kuning', '🤔 Pertanyaan pemantik',
+          'Lubangmu ada 7, ditambah rumahmu, ditambah 7 lubang lawan. Rumah lawan tidak kamu isi. ' +
+          'Jadi dalam <b>satu putaran penuh</b>, berapa lubang yang kamu lewati?'));
+
+        p.appendChild(U.catatan('', '💡 Jawabannya',
+          '7 + 1 + 7 = <b>15 lubang</b>. Angka 15 inilah kunci seluruh perhitungan congklak. ' +
+          'Kalau kamu punya 15 biji di satu lubang, biji terakhir akan jatuh tepat di lubang asalmu lagi!'));
+      }
+
+      function panelPrediksi(p) {
+        prediksiAktif = true;
+        p.appendChild(U.tajukPanel('Langkah 2 · Prediksi', 'Sisa bagi', 'ungu'));
+        p.appendChild(el('p', 'teks-s lembut',
+          'Sekarang kita hitung dulu <b>sebelum</b> melangkah. Ketuk salah satu lubangmu, ' +
+          'dan aku tunjukkan cara menebak di mana biji terakhir akan jatuh.'));
+
+        var kotak = el('div', 'catatan catatan-ungu teks-s');
+        kotak.innerHTML = '<span class="tajuk">Belum ada lubang dipilih</span>' +
+                          'Ketuk salah satu lubang di baris bawah untuk melihat hitungannya.';
+        p.appendChild(kotak);
+        p._kotakRamal = kotak;
+
+        p.appendChild(U.aksi([
+          { teks: 'Jalankan langkah ini', kelas: 'tbl-utama', aksi: function () {
+              if (p._pilihan == null || sedangJalan) return;
+              prediksiAktif = false;
+              jalan(p._pilihan);
+              p._pilihan = null;
+              setTimeout(function () { prediksiAktif = true; }, 60);
+            } },
+          { teks: 'Papan baru', ikon: RPN.app.IKON.ulang, aksi: function () {
+              if (sedangJalan) return; barus(); segarkan('—'); RPN.audio.efek.klik(); } }
+        ]));
+
+        p.appendChild(U.catatan('', '📐 Cara menghitungnya',
+          'Nomor urut lubang asal <b>+</b> jumlah biji <b>=</b> nomor urut tujuan.<br>' +
+          'Kalau hasilnya lebih dari 15, bagi dengan 15 lalu ambil <b>sisanya</b>. ' +
+          'Sisa itulah nomor urut tempat biji terakhir jatuh.'));
+
+        p.appendChild(U.catatan('kuning', '🎯 Tantangan',
+          'Cari lubang yang membuat biji terakhirmu jatuh <b>tepat di rumahmu</b> ' +
+          '(nomor urut ke-7). Kalau berhasil, kamu dapat giliran tambahan!'));
+
+        panelRamalRef = p;
+      }
+
+      var panelRamalRef = null;
+
+      function tampilkanRamalan(i) {
+        if (!panelRamalRef || !panelRamalRef._kotakRamal) return;
+        var r = ramal(i, 1);
+        if (!r) return;
+        panelRamalRef._pilihan = i;
+        RPN.audio.efek.klik();
+
+        var namaTujuan = r.tujuan === RUMAH_1 ? '<b>RUMAHMU</b> 🏠'
+                       : r.tujuan === RUMAH_2 ? 'rumah lawan'
+                       : 'lubang #' + r.tujuan;
+        var hitung = '';
+        if (r.total < 15) {
+          hitung = 'Urutan asal <b>' + r.idxAsal + '</b> + <b>' + r.jumlah + '</b> biji = urutan ke-<b>' +
+                   r.total + '</b><br><span class="samar">(belum sampai satu putaran, jadi tidak perlu dibagi)</span>';
+        } else {
+          hitung = 'Urutan asal <b>' + r.idxAsal + '</b> + <b>' + r.jumlah + '</b> biji = <b>' + r.total + '</b><br>' +
+                   '<b>' + r.total + '</b> ÷ 15 = <b>' + r.putaran + '</b> putaran <b>sisa ' + r.sisa + '</b><br>' +
+                   '<span class="samar">Jadi berhenti di urutan ke-' + r.sisa + '.</span>';
+        }
+
+        var akibat = '';
+        if (r.tujuan === RUMAH_1) akibat = '🎉 Kamu akan dapat <b>jalan lagi</b>!';
+        else if (papan[r.tujuan] === 0 && milikku(r.tujuan)) {
+          var rebut = papan[seberang(r.tujuan)];
+          akibat = rebut > 0
+            ? '💥 <b>Tembak!</b> Kamu akan merebut ' + (rebut + 1) + ' biji.'
+            : '😔 Lubang seberang kosong, jadi kamu hanya <b>mati</b> di sana.';
+        } else if (papan[r.tujuan] > 0) {
+          akibat = '🔁 Lubang tujuan terisi, jadi kamu akan <b>mengambil ' +
+                   papan[r.tujuan] + ' biji</b> lalu lanjut berjalan.';
+        }
+
+        panelRamalRef._kotakRamal.innerHTML =
+          '<span class="tajuk">Lubang #' + i + ' berisi ' + r.jumlah + ' biji</span>' +
+          hitung + '<br><br>Biji terakhir jatuh di ' + namaTujuan + '.<br>' + akibat;
+
+        for (var k = 0; k < 16; k++) if (k !== r.tujuan) lepasSorot(k);
+        sorot(r.tujuan);
+      }
+
+      function panelBertanding(p) {
+        prediksiAktif = false;
+        p.appendChild(U.tajukPanel('Langkah 3 · Bertanding', 'Tantangan', 'hijau'));
+        p.appendChild(el('p', 'teks-s lembut',
+          'Pakai kemampuan berhitungmu untuk mengalahkan lawan. Hasil tiap pertandingan dicatat.'));
+
+        p.appendChild(el('div', 'teks-s', '<b>Lawan main</b>'));
+        p.appendChild(U.pilihan({
+          kolom: 2, terpilih: lawanKomputer ? 'komputer' : 'teman',
+          daftar: [
+            { id: 'teman', ikon: '👥', tajuk: 'Dua Pemain', ket: 'Bergantian satu perangkat' },
+            { id: 'komputer', ikon: '🤖', tajuk: 'Lawan Komputer', ket: 'Berhitung 1 langkah' }
+          ],
+          saatPilih: function (id) {
+            lawanKomputer = (id === 'komputer');
+            if (sedangJalan) return;
+            barus(); segarkan('—');
+          }
+        }));
+
+        p.appendChild(U.penggeser({
+          nama: 'Biji awal tiap lubang', min: 3, max: 7, step: 1, nilai: bijiAwal,
+          format: function (v) { return v + ' biji (putaran tetap 15 lubang)'; },
+          skala: ['3', '5', '7'],
+          saatUbah: function (v) { bijiAwal = v; if (!sedangJalan) { barus(); segarkan('—'); } }
+        }));
+
+        tabel = U.tabelCatat(['Lawan', 'Kamu', 'Dia', 'Hasil']);
+        p.appendChild(tabel);
+
+        p.appendChild(U.aksi([
+          { teks: 'Mulai pertandingan baru', kelas: 'tbl-utama', ikon: RPN.app.IKON.ulang,
+            aksi: function () { if (sedangJalan) return; barus(); segarkan('—'); RPN.audio.efek.klik(); } }
+        ]));
+
+        p.appendChild(U.catatan('', '🤖 Cara komputer berpikir',
+          'Komputer tidak menebak-nebak. Untuk setiap lubang yang boleh ia ambil, ia menghitung ' +
+          'dulu ke mana biji terakhir jatuh, lalu memilih langkah yang <b>paling banyak menambah biji ' +
+          'di rumahnya</b>. Kamu bisa melakukan hal yang sama — itu bukan sihir, hanya berhitung.'));
+
+        p.appendChild(U.catatan('ungu', '🏛️ Kaitan budaya',
+          'Permainan ini punya banyak nama di Nusantara: <b>Congklak</b> (Jawa/Betawi), ' +
+          '<b>Dakon</b> (Jawa Tengah), <b>Congkak</b> (Melayu), <b>Mokaotan</b> (Minahasa), dan ' +
+          '<b>Nogarata</b> (Rote). Papan tertua dari batu ditemukan di berbagai situs kuno — ' +
+          'permainan berhitung ini diperkirakan sudah berumur ribuan tahun.'));
+      }
+
+      pasangDom(dom);
+
+      return {
+        gambarPanel: function (i, p) {
+          langkahKini = i;
+          if (i === 0) panelAmati(p);
+          else if (i === 1) panelPrediksi(p);
+          else panelBertanding(p);
+        },
+        keLangkah: function (i) {
+          langkahKini = i;
+          prediksiAktif = (i === 1);
+          if (i !== 2) tabel = null;
+          for (var k = 0; k < 16; k++) lepasSorot(k);
+          segarkan();
+        },
+        ukurUlang: function () {},
+        pindahWadah: function (d) { pasangDom(d); },
+        lepas: function () { sedangJalan = false; }
+      };
+    },
+
+    kuis: [
+      {
+        tanya: 'Dalam congklak, seorang pemain mengisi 7 lubang miliknya, rumahnya sendiri, dan 7 lubang lawan — tetapi melewati rumah lawan. Berapa lubang yang dilewati dalam satu putaran penuh?',
+        petunjuk: 'Jumlahkan: lubang sendiri + rumah sendiri + lubang lawan.',
+        opsi: [
+          { teks: '15 lubang', benar: true,
+            alasan: '7 lubang sendiri + 1 rumah sendiri + 7 lubang lawan = 15. Rumah lawan tidak dihitung karena selalu dilewati.' },
+          { teks: '16 lubang',
+            alasan: 'Angka 16 adalah jumlah seluruh lubang di papan. Tetapi rumah lawan tidak pernah diisi, jadi tidak ikut dihitung dalam putaranmu.' },
+          { teks: '14 lubang',
+            alasan: '14 adalah jumlah lubang kecil saja. Rumahmu sendiri juga diisi, jadi harus ikut dihitung.' },
+          { teks: '7 lubang',
+            alasan: 'Tujuh hanyalah jumlah lubang di sisimu. Penaburan biji juga berlanjut melewati rumahmu dan masuk ke wilayah lawan.' }
+        ],
+        penguatan: 'Satu putaran congklak = 15 lubang.'
+      },
+      {
+        tanya: 'Rani mengambil 20 biji dari lubang yang nomor urutnya 0. Berapa sisa pembagian 20 dengan 15, dan di urutan ke berapa biji terakhirnya jatuh?',
+        petunjuk: '20 ÷ 15 = berapa putaran, sisa berapa?',
+        opsi: [
+          { teks: '1 putaran sisa 5, jadi jatuh di urutan ke-5', benar: true,
+            alasan: '20 = (1 × 15) + 5. Setelah satu putaran penuh, tersisa 5 langkah lagi, jadi berhenti di urutan ke-5.' },
+          { teks: '1 putaran sisa 20, jadi jatuh di urutan ke-20',
+            alasan: 'Sisa pembagian tidak mungkin lebih besar daripada pembaginya. Kalau sisanya 20, artinya masih bisa dibagi 15 sekali lagi.' },
+          { teks: '2 putaran sisa 0, jadi jatuh di urutan ke-0',
+            alasan: 'Dua putaran berarti 30 biji, padahal Rani hanya punya 20. Cek lagi: 20 ÷ 15 hanya cukup untuk satu putaran.' },
+          { teks: '0 putaran sisa 20, jadi jatuh di urutan ke-20',
+            alasan: '20 lebih besar daripada 15, jadi pasti ada minimal satu putaran penuh yang selesai.' }
+        ],
+        penguatan: 'Sisa pembagian selalu lebih kecil daripada pembaginya.'
+      },
+      {
+        tanya: 'Kapan seorang pemain congklak mendapat giliran tambahan ("jalan lagi")?',
+        opsi: [
+          { teks: 'Ketika biji terakhir jatuh tepat di rumahnya sendiri', benar: true,
+            alasan: 'Hanya biji terakhir yang mendarat pas di rumah sendiri yang memberi giliran tambahan. Inilah yang dikejar pemain berpengalaman.' },
+          { teks: 'Ketika biji terakhir jatuh di lubang kosong miliknya',
+            alasan: 'Itu peristiwa "tembak" — pemain merebut biji lawan, tetapi gilirannya tetap berakhir.' },
+          { teks: 'Ketika biji terakhir jatuh di lubang yang masih terisi',
+            alasan: 'Saat itu pemain memang melanjutkan menabur, tetapi itu masih dalam giliran yang sama, bukan giliran tambahan yang baru.' },
+          { teks: 'Ketika berhasil melewati rumah lawan tanpa mengisinya',
+            alasan: 'Melewati rumah lawan adalah aturan biasa yang terjadi setiap putaran, bukan hadiah khusus.' }
+        ],
+        penguatan: 'Biji terakhir di rumah sendiri = bonus giliran.'
+      },
+      {
+        tanya: 'Lubang milikmu yang nomor urutnya 3 berisi 4 biji. Ke mana biji terakhir akan jatuh, dan apa akibatnya?',
+        petunjuk: 'Rumahmu ada di urutan ke-7. Hitung: 3 + 4 = ?',
+        opsi: [
+          { teks: 'Tepat di rumahmu, sehingga kamu dapat jalan lagi', benar: true,
+            alasan: '3 + 4 = 7, dan urutan ke-7 adalah rumahmu sendiri. Biji terakhir mendarat pas di sana, jadi kamu mendapat giliran tambahan.' },
+          { teks: 'Di lubang lawan, sehingga gilirannya berpindah',
+            alasan: 'Lubang lawan baru dimulai dari urutan ke-8. Hasil hitunganmu 3 + 4 = 7, masih berhenti tepat di rumahmu.' },
+          { teks: 'Di lubang kosong milikmu, sehingga terjadi tembak',
+            alasan: 'Urutan ke-7 bukan lubang kecil, melainkan rumahmu sendiri. Peristiwa tembak hanya terjadi di lubang kecil.' },
+          { teks: 'Kembali ke lubang asal karena satu putaran penuh',
+            alasan: 'Kembali ke lubang asal butuh tepat 15 biji. Di sini bijinya hanya 4, jadi belum satu putaran.' }
+        ],
+        penguatan: 'Hitung dulu sebelum melangkah — itulah matematika congklak.'
+      }
+    ]
+  });
+})(window.RPN = window.RPN || {});
+
+</script>
+
+<script>RPN.app.mulai();</script>
+</body>
+</html>

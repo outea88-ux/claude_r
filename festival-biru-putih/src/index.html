@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Rumah Permainan Nusantara — Media Pembelajaran Interaktif SMP</title>
+
+<!-- ====== Metadata karya (sesuai Lampiran atribut panduan) ====== -->
+<meta name="description" content="Media pembelajaran interaktif jenjang SMP: empat permainan tradisional Indonesia (gasing, layang-layang, ketapel, congklak) dibedah menjadi percobaan maya IPA dan Matematika Fase D.">
+<meta name="author" content="">
+<meta name="mata-pelajaran" content="IPA dan Matematika">
+<meta name="fase" content="Fase D (Kelas VII-IX)">
+<meta name="unit" content="Gerak dan Gaya; Usaha dan Energi; Bilangan dan Pola">
+<meta name="color-scheme" content="light">
+
+<!-- Seluruh gaya dan skrip berada di dalam berkas ini / folder aset lokal.
+     Tidak ada satu pun rujukan ke internet. -->
+<link rel="stylesheet" href="styles/tokens.css">
+<link rel="stylesheet" href="styles/base.css">
+<link rel="stylesheet" href="styles/components.css">
+</head>
+<body>
+
+<!-- Pesan bila perangkat dipegang tegak pada layar kecil -->
+<div id="putar-hp">
+  <div class="isi">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#f0c14b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="7" width="18" height="10" rx="2"/>
+      <path d="M12 3v2M12 19v2"/>
+      <path d="M7.5 10.5 5 13l2.5 2.5"/>
+    </svg>
+    <h2>Putar perangkatmu</h2>
+    <p>Media ini dirancang dengan tampilan lebar 16:9. Putar ponsel ke posisi mendatar agar semua bagian terlihat jelas.</p>
+  </div>
+</div>
+
+<!-- Panggung berukuran tetap 1280x720, diskalakan agar pas di layar apa pun -->
+<div id="panggung-wrap">
+  <div id="panggung">
+    <header id="bilah-atas" class="bilah-atas"></header>
+    <div id="isi-panggung" class="isi-penuh kolom"></div>
+  </div>
+</div>
+
+<noscript>
+  <div style="padding:32px;font-family:system-ui,sans-serif;color:#fff;text-align:center">
+    <h2>JavaScript perlu diaktifkan</h2>
+    <p>Media pembelajaran ini berjalan sepenuhnya di dalam peramban dan membutuhkan JavaScript.</p>
+  </div>
+</noscript>
+
+<!-- Skrip biasa (bukan modul ES) supaya berkas ini tetap bisa dibuka
+     langsung dari cakram tanpa server web. -->
+<script src="scripts/core/bus.js"></script>
+<script src="scripts/core/stage.js"></script>
+<script src="scripts/core/audio.js"></script>
+<script src="scripts/core/store.js"></script>
+<script src="scripts/core/ui.js"></script>
+<script src="scripts/core/quiz.js"></script>
+<script src="scripts/core/evaluasi.js"></script>
+<script src="scripts/core/app.js"></script>
+
+<script src="scripts/modules/gasing.js"></script>
+<script src="scripts/modules/layangan.js"></script>
+<script src="scripts/modules/ketapel.js"></script>
+<script src="scripts/modules/congklak.js"></script>
+
+<script>RPN.app.mulai();</script>
+</body>
+</html>

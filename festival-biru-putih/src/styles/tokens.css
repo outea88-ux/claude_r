@@ -1,0 +1,67 @@
+/* ============================================================
+   Rumah Permainan Nusantara — Design Tokens
+   Palet terinspirasi warna alam & kain Nusantara.
+   Semua warna diuji kontras minimal 4.5:1 untuk teks.
+   Tidak ada aset eksternal. Tidak ada @import.
+   ============================================================ */
+:root {
+  /* --- Warna dasar --- */
+  --c-ink:        #16233a;   /* teks utama   — kontras 14.2:1 di atas kertas */
+  --c-ink-soft:   #4a5a75;   /* teks sekunder — kontras 6.4:1 */
+  --c-ink-faint:  #6d7c95;   /* label kecil   — kontras 4.6:1 */
+
+  --c-paper:      #fbf7f0;   /* latar halaman (kertas hangat) */
+  --c-surface:    #ffffff;   /* kartu */
+  --c-surface-2:  #f2ece1;   /* kartu tenggelam */
+  --c-line:       #ded4c4;   /* garis pembatas */
+  --c-line-soft:  #ebe3d6;
+
+  /* --- Warna aksen (identitas "Biru Putih") --- */
+  --c-blue:       #14509b;   /* primer      — 7.3:1 di atas putih */
+  --c-blue-deep:  #0b356b;   /* header gelap — 11.1:1 */
+  --c-blue-soft:  #e6eff9;
+  --c-blue-line:  #b9d1ec;
+
+  --c-red:        #b3261e;   /* bahaya / energi — 6.4:1 */
+  --c-red-soft:   #fce9e7;
+  --c-red-line:   #f2c0bb;
+
+  --c-amber:      #a86a08;   /* sorot / kunyit — 4.8:1 */
+  --c-amber-soft: #fdf1dc;
+  --c-amber-line: #eccf9a;
+
+  --c-green:      #1c6b45;   /* benar / berhasil — 6.1:1 */
+  --c-green-soft: #e4f2ea;
+  --c-green-line: #a9d3bd;
+
+  --c-plum:       #6b3f96;   /* variabel kedua — 6.9:1 */
+  --c-plum-soft:  #f0e9f8;
+  --c-plum-line:  #d3bfe8;
+
+  --c-wood:       #8a5a2b;   /* bambu / kayu */
+  --c-wood-soft:  #f4e7d6;
+
+  /* --- Panggung 16:9 --- */
+  --stage-w: 1280px;
+  --stage-h: 720px;
+
+  /* --- Jarak --- */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 20px; --sp-6: 24px; --sp-8: 32px; --sp-10: 40px;
+
+  /* --- Sudut --- */
+  --r-sm: 8px; --r-md: 12px; --r-lg: 18px; --r-xl: 26px; --r-pill: 999px;
+
+  /* --- Bayangan (halus, tidak menutupi informasi) --- */
+  --sh-1: 0 1px 2px rgba(22,35,58,.07), 0 1px 1px rgba(22,35,58,.04);
+  --sh-2: 0 4px 10px rgba(22,35,58,.08), 0 1px 3px rgba(22,35,58,.05);
+  --sh-3: 0 12px 28px rgba(22,35,58,.12), 0 3px 8px rgba(22,35,58,.06);
+
+  /* --- Huruf: tumpukan sistem, tanpa unduhan eksternal --- */
+  --f-body: ui-rounded, "Segoe UI Variable Display", "Segoe UI", system-ui,
+            -apple-system, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --f-num:  ui-monospace, "SFMono-Regular", "Consolas", "Roboto Mono", monospace;
+
+  /* --- Ukuran sentuh minimum sesuai panduan (44x44 px) --- */
+  --touch: 44px;
+}

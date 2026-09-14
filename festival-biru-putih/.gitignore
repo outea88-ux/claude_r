@@ -1,0 +1,3 @@
+# Hasil build yang bisa dibuat ulang dengan: node tools/build.mjs
+dist/web/
+dist/_paket/
