@@ -63,7 +63,14 @@ festival-biru-putih/
 │           ├── layangan.js
 │           ├── ketapel.js
 │           └── congklak.js
-├── tools/build.mjs                Pembangun paket + pemeriksa kemandirian
+├── tools/
+│   ├── build.mjs                  Pembangun paket + pemeriksa kemandirian
+│   └── rekam-layar.mjs            Perekam cuplikan aplikasi untuk video
+├── video/
+│   ├── 01-landasan-dan-rancangan.md   Teori & struktur video demonstrasi
+│   ├── 02-prompt-sesi-flow.md         10 sesi prompt Google Flow (8 detik)
+│   ├── 03-naskah-narasi.md            Naskah narasi + teks layar
+│   └── rekaman-layar/                 10 klip aplikasi, 1080p 30fps H.264
 └── docs/
     ├── 01-analisis-panduan.md     Analisis panduan lomba & kepatuhan
     ├── 02-peta-kurikulum.md       Pemetaan CP Fase D & materi yang dibuang
@@ -123,7 +130,7 @@ sendiri. Contoh kerangkanya ada di
 ## Sebelum diunggah ke panitia
 
 - [ ] Isi nama kreator pada `<meta name="author">` di `src/index.html`
-- [ ] Buat video demonstrasi MP4 maksimal 3 menit (wajib untuk kategori Lab Maya)
+- [ ] Rampungkan video demonstrasi (rekaman aplikasi sudah siap di `video/rekaman-layar/`; jalankan sesi Flow dan rekam narasi — lihat [`video/README.md`](video/README.md))
 - [ ] Tanda tangani Surat Pernyataan & Integritas bermeterai Rp10.000 (Lampiran 1 panduan)
 - [ ] Siapkan keterangan penggunaan AI beserta dokumen desain (prompting)
 - [ ] Jalankan `node tools/build.mjs` dan unggah `dist/RumahPermainanNusantara.zip`

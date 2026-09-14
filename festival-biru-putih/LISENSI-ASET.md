@@ -20,7 +20,9 @@ gambar, suara, video, huruf, atau pustaka pihak ketiga di dalam paket.
 
 ## Keterangan penggunaan kecerdasan buatan
 
-Tidak ada gambar, suara, atau video hasil generator AI dalam karya ini.
+### Berkas program (index.html dan seluruh isinya)
+
+Tidak ada gambar, suara, atau video hasil generator AI di dalam berkas program.
 
 Kode program, naskah materi, dan butir soal disusun dengan bantuan asisten AI,
 kemudian ditinjau, diuji, dan disunting oleh pengembang. Model fisika pada
@@ -30,6 +32,30 @@ yang dicatat di `docs/02-peta-kurikulum.md`.
 
 Dokumen desain proses pengembangan dilampirkan terpisah sesuai ketentuan
 panduan.
+
+### Video demonstrasi
+
+Video demonstrasi terdiri atas dua jenis bahan yang berbeda dan harus
+dibedakan dengan jelas:
+
+| Bahan | Sumber | Keterangan |
+|---|---|---|
+| Cuplikan aplikasi | **Bukan AI** | Rekaman layar sungguhan dari `dist/offline/index.html`, direkam otomatis dengan `tools/rekam-layar.mjs` |
+| Klip suasana (B-roll) | **Dibangkitkan AI** | Google Flow (model Veo). Menampilkan anak bermain permainan tradisional, bukan tampilan aplikasi |
+| Narasi suara | **Bukan AI** | Direkam langsung oleh pengembang |
+| Teks & grafis layar | **Bukan AI** | Ditambahkan saat penyuntingan |
+
+Seluruh prompt yang dipakai untuk membangkitkan klip B-roll tercatat lengkap di
+`video/02-prompt-sesi-flow.md`. Dokumen itu berfungsi sebagai dokumen desain
+(prompting) yang diwajibkan panduan.
+
+Klip yang dibangkitkan Google Flow membawa penanda SynthID — penanda tak
+terlihat yang menyatakan konten dibangkitkan AI dan bertahan setelah
+penyuntingan. Penanda ini sengaja tidak dihilangkan.
+
+Tidak ada satu pun klip AI yang menampilkan antarmuka aplikasi. Seluruh
+tampilan karya yang muncul di video berasal dari rekaman layar yang
+sebenarnya.
 
 ## Rujukan budaya
 
