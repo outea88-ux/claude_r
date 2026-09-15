@@ -1,0 +1,15 @@
+# Lingkungan Python
+.venv/
+
+# Artefak antara produksi audio (bisa dibangun ulang dari naskah)
+build/
+
+# Audio hasil produksi: besar, jangan masuk riwayat git.
+# Transkrip dan manifest tetap dilacak (lihat !-rule di bawah).
+output/*.mp3
+output/*.m4b
+output/*.wav
+
+# Python
+__pycache__/
+*.pyc
