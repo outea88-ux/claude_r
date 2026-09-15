@@ -162,6 +162,28 @@ sini supaya jelas.
 
 ---
 
+## Memecah hasil akhir
+
+```bash
+python build_audio.py split
+```
+
+Memecah berkas akhir di **batas segmen** jadi beberapa mp3 yang masing-masing
+tetap bisa diputar sendiri (bukan pecahan biner yang harus disatukan lagi),
+dengan tag nomor trek. Dipakai di sini karena batas unggah 30 MiB sementara
+berkas utuhnya 68 MiB. Hasilnya tiga bagian ±22,7 MB:
+
+| Bagian | Segmen | Isi | Durasi |
+|---|---|---|---|
+| 1 | 01–15 | pembuka, prolog, dan hampir seluruh kosakata | 33,3 menit |
+| 2 | 16–28 | sisa kosakata, tiga celah, teori, rumusan masalah | 32,7 menit |
+| 3 | 29–41 | desain, pengolahan data, antisipasi penguji, latihan | 32,8 menit |
+
+Jumlah durasi ketiganya 5.930,93 detik versus 5.930,81 detik berkas utuh —
+selisih 0,12 detik dari padding encoder di dua titik sambung.
+
+---
+
 ## Hasil pemeriksaan mutu (Tahap 5)
 
 Laporan lengkap ada di `output/qc_report.txt`. Ringkasnya:

@@ -885,6 +885,57 @@ def run_master(apply_rate: bool) -> dict:
 
 
 # --------------------------------------------------------------------------
+# Tambahan - pecah jadi beberapa bagian yang bisa diputar sendiri-sendiri
+# --------------------------------------------------------------------------
+def run_split(max_mb: float = 28.0) -> list:
+    """Pecah hasil akhir di batas segmen jadi bagian <= max_mb.
+
+    Berguna kalau berkas utuh kena batas unggah. Tiap bagian tetap berupa
+    mp3 utuh yang bisa diputar sendiri, bukan pecahan biner.
+    """
+    manifest = json.loads((OUTPUT / "manifest.json").read_text(encoding="utf-8"))
+    mastered = BUILD / "mastered.wav"
+    if not mastered.exists():
+        sys.exit("build/mastered.wav tidak ada - jalankan 'master' lebih dulu.")
+    stem = "bahan_belajar_disertasi_herman"
+    if manifest["backend"] != "edge":
+        stem += f"_{manifest['backend']}"
+
+    total = manifest["total_duration_sec"]
+    bytes_per_sec = 96_000 / 8
+    n_parts = max(1, int((total * bytes_per_sec) / (max_mb * 1024 * 1024)) + 1)
+    target = total / n_parts
+
+    # Titik potong digeser ke batas segmen terdekat supaya tidak memotong kalimat.
+    cuts, segs = [0.0], manifest["segments"]
+    for k in range(1, n_parts):
+        ideal = k * target
+        best = min(segs, key=lambda s: abs(s["start"] - ideal))
+        if best["start"] > cuts[-1] + 60:
+            cuts.append(best["start"])
+    cuts.append(total)
+
+    made = []
+    for i in range(len(cuts) - 1):
+        start, end = cuts[i], cuts[i + 1]
+        first = next(s["number"] for s in segs if s["start"] >= start - 0.01)
+        last = max(s["number"] for s in segs if s["start"] < end - 0.01)
+        dest = OUTPUT / f"{stem}_bagian{i + 1}_seg{first:02d}-{last:02d}.mp3"
+        run(["ffmpeg", "-v", "error", "-y", "-i", str(mastered),
+             "-ss", f"{start:.3f}", "-to", f"{end:.3f}",
+             "-c:a", "libmp3lame", "-b:a", "96k", "-ar", str(SAMPLE_RATE), "-ac", "1",
+             "-metadata", f"title={TAG_TITLE} - bagian {i + 1} (SEG {first:02d}-{last:02d})",
+             "-metadata", f"artist={TAG_ARTIST}", "-metadata", f"album={TAG_ALBUM}",
+             "-metadata", f"track={i + 1}/{len(cuts) - 1}", "-metadata", f"date={TAG_YEAR}",
+             "-id3v2_version", "3", str(dest)])
+        mb = dest.stat().st_size / 1024 / 1024
+        print(f"  {dest.name}  {mb:.1f} MB  "
+              f"({(end - start) / 60:.1f} menit, SEG {first:02d}-{last:02d})")
+        made.append(dest)
+    return made
+
+
+# --------------------------------------------------------------------------
 # Tahap 5 - pemeriksaan mutu
 # --------------------------------------------------------------------------
 FORBIDDEN_MARKERS = ("===", "[[", "|", "**")
@@ -1023,7 +1074,7 @@ def run_qc(seed: int = 7) -> int:
 # --------------------------------------------------------------------------
 def main() -> int:
     ap = argparse.ArgumentParser(description="Produksi audio bahan belajar disertasi.")
-    ap.add_argument("stage", choices=["plan", "synth", "master", "qc", "all"])
+    ap.add_argument("stage", choices=["plan", "synth", "master", "qc", "split", "all"])
     ap.add_argument("--backend", choices=sorted(BACKENDS), default="edge",
                     help="mesin TTS (default: edge)")
     ap.add_argument("--apply-rate", dest="apply_rate", action="store_true", default=None,
@@ -1049,6 +1100,9 @@ def main() -> int:
     if args.stage in ("master", "all"):
         print("\n== TAHAP 4: sambung dan kuasai audio ==")
         run_master(apply_rate)
+    if args.stage == "split":
+        print("== Pecah hasil akhir jadi beberapa bagian ==")
+        run_split()
     if args.stage in ("qc", "all"):
         print()
         return run_qc()
