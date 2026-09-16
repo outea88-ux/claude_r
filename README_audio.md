@@ -220,3 +220,42 @@ penutur yang membaca dengan tenang memang punya rentang dinamika sempit.
   pitch-nya, bukan temponya.
 - **Transkrip memakai teks asli.** Kata "syap" nol kali di `transkrip.srt`;
   yang muncul "SHAP", "S-M-P", "X-G-Boost" seperti di naskah.
+
+---
+
+## Berkas audio tidak disimpan di repo
+
+Yang dilacak git hanya keluaran teks — `transkrip.srt`, `transkrip.txt`,
+`manifest.json`, dan `qc_report.txt`, totalnya sekitar 183 KB. Audionya
+sendiri pernah dikirim lewat branch ini, lalu dicabut dari riwayat setelah
+diunduh, supaya repo tidak menanggung 116 MB permanen untuk berkas yang
+bisa dibangun ulang kapan saja.
+
+### Membangun ulang
+
+Versi neural — inilah yang sebaiknya Anda pakai, dan cuma perlu satu
+perintah di mesin sendiri (di luar sandbox, karena edge-tts butuh akses
+WebSocket ke `speech.platform.bing.com`):
+
+```bash
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+python build_audio.py all
+```
+
+Hasilnya `output/bahan_belajar_disertasi_herman.mp3` (±72 menit, dua
+penutur sungguhan) beserta `.m4b` berbab, transkrip, dan manifest.
+
+Versi cadangan, kalau edge-tts tidak bisa dijangkau:
+
+```bash
+python build_audio.py plan
+python build_audio.py synth --backend gtrans
+python build_audio.py master
+python build_audio.py qc
+python build_audio.py split          # opsional, kalau perlu bagian kecil
+```
+
+Tahap `synth` menyimpan tiap potongan dan melewati yang berkasnya sudah
+ada, jadi aman diulang kalau putus di tengah — tidak ada yang perlu
+disintesis dua kali.
