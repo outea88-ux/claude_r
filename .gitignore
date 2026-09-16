@@ -1,0 +1,22 @@
+# Lingkungan Python
+.venv/
+
+# Artefak antara produksi audio (bisa dibangun ulang dari naskah)
+build/
+
+# Audio hasil produksi: besar, jangan masuk riwayat git.
+# Transkrip dan manifest tetap dilacak (lihat !-rule di bawah).
+output/*.mp3
+output/*.m4b
+output/*.wav
+
+# Kecuali berkas kiriman: kartu unduhan di chat tidak berfungsi di sisi
+# pengguna, jadi audionya dikirim lewat repo. Kalau nanti tidak diperlukan,
+# ketiga bagian ini bisa dicabut dari riwayat (branch ini dibuat untuk tugas
+# ini, jadi force-push aman).
+!output/bahan_belajar_disertasi_herman_gtrans_bagian*.mp3
+!output/bahan_belajar_disertasi_herman_gtrans.m4b
+
+# Python
+__pycache__/
+*.pyc
