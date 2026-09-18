@@ -1,0 +1,42 @@
+
+==================================================================
+TAHAP 5 - PEMERIKSAAN MUTU
+==================================================================
+
+1. Durasi total: 98.85 menit (98m 50s) - rentang syarat 68-82 menit
+   DI LUAR RENTANG (backend=gtrans)
+   Catatan: rentang 68-82 menit dikalibrasi untuk suara neural edge-tts (~140 kata/menit).
+   Keutuhan segmen diperiksa terpisah di butir 2 - tidak ada segmen hilang atau ganda.
+
+2. Potongan bicara: rencana 136, terbangun 136; hening 106; segmen 41/41
+   LULUS - tidak ada selisih
+
+3. Marker teknis di build/text_spoken/:
+   Total temuan: 0
+   LULUS - nol hasil
+
+4. Cuplikan tiga segmen acak (200 karakter pertama versi terucap):
+
+   --- SEG 10 ---
+   Sekarang istilah yang menjadi salah satu kebaruan penelitian ini: method effect. Definisinya: varians sistematis dalam jawaban responden yang disebabkan oleh metode pengukurannya sendiri — termasuk fo
+   Tidak ada akronim yang lolos dari kamus.
+
+   --- SEG 21 ---
+   Bagian empat. Teori yang mendasari. Setiap bangunan metode butuh fondasi teori. Ada empat kelompok teori yang menopang penelitian ini. Kita mulai dari teori tentang mutu sekolah itu sendiri. Mutu seko
+   Tidak ada akronim yang lolos dari kamus.
+
+   --- SEG 26 ---
+   Rumusan masalah lima. Sejauh mana pola prediksi dan kontribusi fitur dari model mesyin lerning konvensional tetap konsisten ketika model dibangun ulang menggunakan pendekatan yang menghormati struktur
+   Tidak ada akronim yang lolos dari kamus.
+
+   Sapuan seluruh naskah: tidak ada akronim lolos
+
+5. Pengukuran EBU R128 pada berkas akhir:
+   Integrated : -16.4 LUFS   (target -16)
+   LRA        : 2.6 LU    (batas atas 11; LRA rendah wajar untuk satu penutur)
+   True peak  : -1.6 dBFS (batas -1.5)
+   LULUS - dalam toleransi 1 LU dari target
+
+==================================================================
+RINGKASAN: seluruh butir LULUS
+==================================================================

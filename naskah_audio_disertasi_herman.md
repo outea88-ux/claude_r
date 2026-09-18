@@ -1,0 +1,1200 @@
+# NASKAH AUDIO BAHAN BELAJAR
+## "Prediktor Mutu SMP di Indonesia melalui Explainable Machine Learning"
+### Proposal Disertasi Herman — PEP UNY 2026 (acuan: dokumen V8, 7 September 2026)
+
+---
+
+## CATATAN UNTUK MESIN (BUKAN UNTUK DIBACA)
+
+**Estimasi durasi:** ±75 menit (termasuk jeda hening) pada kecepatan 140 kata per menit.
+**Jumlah segmen:** 41.
+**Bahasa:** Indonesia. Istilah teknis tetap Inggris, dengan pelafalan diatur lewat kamus di file prompt.
+
+### Konvensi marker
+
+1. **Hanya teks di dalam blok segmen yang dibacakan.** Semua baris di luar blok segmen — termasuk seluruh bagian ini — diabaikan.
+2. Blok segmen dibuka oleh baris berformat:
+   `=== SEG 07 | voice=ARDI | rate=-4% | pitch=+0Hz | Judul Segmen ===`
+   dan ditutup oleh baris `=== END ===`.
+3. `[[PAUSE 1.5]]` berarti sisipkan hening 1,5 detik di titik itu. Marker ini memotong segmen menjadi dua permintaan TTS terpisah.
+4. `[[SFX chime]]` berarti sisipkan nada penanda bab. Opsional — boleh diganti hening 1,2 detik.
+5. Angka sudah ditulis dalam bentuk kata. Jangan dikonversi balik ke digit.
+6. `voice=ARDI` → `id-ID-ArdiNeural`. `voice=GADIS` → `id-ID-GadisNeural`.
+
+### Peta bab
+
+| Bagian | Segmen | Isi | ±Menit |
+|---|---|---|---|
+| 0 | 01–02 | Pembuka dan peta jalan | 4 |
+| 1 | 03–06 | Prolog: masalah yang dihadapi | 7 |
+| 2 | 07–16 | Kosakata dasar: semua istilah dari nol | 16 |
+| 3 | 17–20 | Tiga celah penelitian dan posisi terhadap studi lain | 8 |
+| 4 | 21–24 | Teori yang mendasari | 8 |
+| 5 | 25–27 | Rumusan masalah, tujuan, hipotesis | 7 |
+| 6 | 28–30 | Desain, data, dan pembagian sampel | 6 |
+| 7 | 31–35 | Proses pengolahan data dan tools | 11 |
+| 8 | 36–37 | Luaran, manfaat, keterbatasan, etika | 4 |
+| 9 | 38–39 | Antisipasi pertanyaan penguji | 5 |
+| 10 | 40–41 | Rekap dan latihan mengingat | 5 |
+
+---
+
+=== SEG 01 | voice=ARDI | rate=-6% | pitch=+0Hz | Cold open ===
+
+Bayangkan Anda memegang satu berkas data yang memuat hampir seluruh Sekolah Menengah Pertama di Indonesia. Bukan sampel. Bukan perkiraan. Hampir semuanya. Empat belas ribu seratus dua puluh satu satuan pendidikan, masing-masing dengan empat puluh empat indikator mutu.
+
+[[PAUSE 1.0]]
+
+Pertanyaannya sederhana, tapi jawabannya belum ada. Dari empat puluh empat indikator itu, mana yang benar-benar menentukan mutu sebuah sekolah? Dan seberapa yakin kita boleh percaya pada jawaban itu?
+
+[[PAUSE 1.2]]
+
+Itulah yang dikerjakan penelitian ini.
+
+=== END ===
+
+=== SEG 02 | voice=ARDI | rate=-2% | pitch=+0Hz | Orientasi dan peta jalan ===
+
+Selamat datang. Rekaman ini adalah bahan belajar untuk proposal disertasi berjudul: Prediktor Mutu S-M-P di Indonesia melalui Explainable Machine Learning. Sub-judulnya: Diagnosis Pengukuran dan Validasi Multilevel pada Data Asesmen Nasional. Disusun oleh Herman, Program Studi Penelitian dan Evaluasi Pendidikan, Universitas Negeri Yogyakarta.
+
+[[PAUSE 0.8]]
+
+Sebelum kita mulai, dua hal perlu diluruskan.
+
+Pertama, ini adalah proposal. Artinya, penelitiannya belum dijalankan. Jadi ketika nanti saya menyebut kata "hasil", yang saya maksud adalah luaran yang diharapkan, hipotesis yang diajukan, dan kriteria keputusan yang sudah ditetapkan di muka. Bukan temuan yang sudah ada di tangan.
+
+Kedua, rekaman ini disusun dengan asumsi Anda belum tahu apa-apa. Setiap istilah teknis akan saya perkenalkan dulu sebelum dipakai. Kalau Anda sudah paham sebagian, anggap bagian itu sebagai penyegaran.
+
+[[PAUSE 1.0]]
+
+Perjalanan kita akan melewati sepuluh bagian.
+
+Bagian satu, masalah apa yang sebenarnya sedang dihadapi.
+Bagian dua, kosakata dasar. Ini bagian terpanjang, dan sengaja begitu. Kalau bagian ini masuk, sisanya jadi mudah.
+Bagian tiga, tiga celah yang mau diisi penelitian ini.
+Bagian empat, teori yang menopang.
+Bagian lima, rumusan masalah, tujuan, dan hipotesis.
+Bagian enam, desain penelitian dan datanya.
+Bagian tujuh, proses pengolahan data dan alat yang dipakai.
+Bagian delapan, luaran, manfaat, keterbatasan, dan etika.
+Bagian sembilan, antisipasi pertanyaan penguji.
+Bagian sepuluh, rekap dan latihan mengingat.
+
+[[PAUSE 1.0]]
+
+Satu kalimat yang saya minta Anda pegang sejak sekarang, karena seluruh penelitian ini sebenarnya berputar di sekitar kalimat itu:
+
+[[PAUSE 0.6]]
+
+Dua lapis validitas, mengapit satu mesin prediktif utama.
+
+[[PAUSE 1.2]]
+
+Kita mulai.
+
+[[SFX chime]]
+
+=== END ===
+
+=== SEG 03 | voice=ARDI | rate=-2% | pitch=+0Hz | Masalah besar: ketimpangan mutu ===
+
+Bagian satu. Masalahnya apa.
+
+Ketimpangan mutu pendidikan antarwilayah adalah salah satu tantangan struktural paling mendesak dalam pembangunan sumber daya manusia di Indonesia. Ini bukan pernyataan retoris. Undang-Undang Nomor Dua Puluh Tahun Dua Ribu Tiga tentang Sistem Pendidikan Nasional secara eksplisit menempatkan peningkatan mutu satuan pendidikan sebagai prioritas kebijakan nasional.
+
+Tapi setelah dua dekade lebih, disparitas mutu sekolah antarwilayah tetap signifikan. Dan pola ketimpangannya konsisten mencerminkan ketimpangan kondisi sosial, ekonomi, dan infrastruktur daerah.
+
+[[PAUSE 0.8]]
+
+Pemerintah merespons dengan membangun alat pemetaan. Namanya Asesmen Nasional. Asesmen Nasional tahun dua ribu dua puluh lima, yang diselenggarakan Kementerian Pendidikan Dasar dan Menengah, menghasilkan empat puluh empat indikator mutu pada level satuan pendidikan dari data Kepala Sekolah. Cakupannya sekitar empat belas ribu seratus dua puluh satu S-M-P dan M-Ts se-Indonesia.
+
+Perhatikan angka itu. Empat belas ribu. Itu bukan sampel penelitian. Itu mendekati sensus penuh.
+
+[[PAUSE 1.0]]
+
+Nah, di sinilah masalahnya dimulai.
+
+=== END ===
+
+=== SEG 04 | voice=ARDI | rate=-2% | pitch=+0Hz | Data besar, pemanfaatan kecil ===
+
+Data sebesar itu, sejauh ini, masih dimanfaatkan dengan cara yang sangat sederhana.
+
+Cara pertama: pendekatan deskriptif-agregat. Artinya, data dirata-ratakan, dibuat peringkat, dibuat grafik batang per provinsi, lalu selesai. Berguna untuk laporan, tapi tidak menjawab pertanyaan "faktor apa yang paling menentukan".
+
+Cara kedua: regresi klasik. Mengikuti tradisi penelitian sebelumnya di Indonesia, capaian delapan Standar Nasional Pendidikan dipakai sebagai prediktor mutu sekolah, lalu diuji dengan regresi linear.
+
+[[PAUSE 0.8]]
+
+Kedua cara ini punya keterbatasan yang sama. Empat puluh empat indikator itu sebenarnya adalah sebuah ruang fitur berdimensi tinggi. Istilah "ruang fitur berdimensi tinggi" hanya berarti: banyak sekali variabel yang bisa saling berinteraksi dengan cara yang rumit dan tidak lurus.
+
+Regresi linear, sesuai namanya, mengasumsikan hubungan yang lurus. Naik satu, naik sekian. Padahal hubungan di dunia pendidikan sering tidak begitu. Bisa jadi kepemimpinan instruksional kepala sekolah baru berpengaruh setelah iklim keamanan mencapai ambang tertentu. Itu namanya interaksi. Dan itu tidak tertangkap regresi biasa kecuali dimodelkan secara eksplisit satu per satu.
+
+[[PAUSE 1.0]]
+
+Jadi potensi empat puluh empat indikator ini sebagai bahan pemodelan prediktif yang non-linear, belum tereksploitasi sama sekali.
+
+=== END ===
+
+=== SEG 05 | voice=ARDI | rate=-2% | pitch=+0Hz | Solusi yang tersedia dan jebakannya ===
+
+Ada solusi yang tersedia. Namanya explainable machine learning, atau X-A-I.
+
+Kombinasi yang paling matang saat ini adalah model ensemble — Random Forest dan X-G-Boost — dipasangkan dengan teknik interpretasi bernama SHAP. Kombinasi ini mampu menangkap pola non-linear dan interaksi antarfitur yang tidak tertangkap regresi linear, sekaligus tetap bisa dijelaskan kepada pengambil kebijakan.
+
+[[PAUSE 0.8]]
+
+Tapi di sinilah muncul tiga jebakan, dan ketiganya inilah yang membentuk seluruh arsitektur penelitian ini.
+
+Jebakan pertama: penerapan X-A-I dalam riset pendidikan selama ini terkonsentrasi di level siswa individual. Bahkan studi yang paling dekat secara struktural — penerapan machine learning multilevel pada mikrodata S-A-E-B di Brasil, yang mengintegrasikan data siswa, guru, sekolah, dan kepala sekolah — tetap menjadikan siswa, bukan sekolah, sebagai unit analisis akhir. Padahal kebijakan pendidikan dijalankan pada level sekolah, bukan pada level satu siswa.
+
+[[PAUSE 0.6]]
+
+Jebakan kedua, dan ini yang paling halus: validitas alat ukurnya sendiri belum diperiksa. Ada temuan diagnostik awal terhadap struktur empat puluh empat indikator itu. Analisis faktor eksploratori menunjukkan bahwa indikator-indikator tersebut mengelompok lebih mengikuti kemiripan tipe atau format pertanyaannya, bukan mengikuti kemiripan domain konten yang diklaim secara resmi. Kalau ini benar, maka memakai skor domain resmi sebagai bahan pemodelan sama saja dengan mewariskan cacat pengukuran ke dalam model prediksi.
+
+[[PAUSE 0.6]]
+
+Jebakan ketiga: struktur data yang bersarang. Sekolah tidak berdiri sendiri-sendiri. Sekolah berada di dalam kabupaten atau kota. Dua sekolah di kabupaten yang sama lebih mirip satu sama lain dibanding dua sekolah yang berjauhan. Model machine learning konvensional mengasumsikan semua observasi saling bebas. Asumsi itu dilanggar di sini. Akibatnya, estimasi bisa bias dan klaim generalisasi bisa keliru.
+
+[[PAUSE 1.0]]
+
+Tiga jebakan. Tiga celah. Dan penelitian ini mengisi ketiganya sekaligus dalam satu studi.
+
+=== END ===
+
+=== SEG 06 | voice=ARDI | rate=-2% | pitch=+0Hz | Jembatan ke bagian kosakata ===
+
+Sebelum kita bahas bagaimana ketiga celah itu diisi, kita perlu berhenti sejenak.
+
+Bagian berikutnya adalah kamus. Saya akan jelaskan setiap istilah teknis dari nol, satu per satu, dengan analogi yang mudah dipegang. Ini bagian terpanjang dalam rekaman ini, sekitar enam belas menit.
+
+Kalau Anda hanya punya waktu untuk mendengarkan satu bagian saja, dengarkan bagian ini. Karena setelah kosakatanya masuk, seluruh sisa penelitian ini akan terasa seperti cerita yang masuk akal, bukan tumpukan singkatan.
+
+[[SFX chime]]
+
+=== END ===
+
+=== SEG 07 | voice=ARDI | rate=-2% | pitch=+0Hz | Kosakata 1: Asesmen Nasional dan data Kepala Sekolah ===
+
+Bagian dua. Kosakata dasar.
+
+Kita mulai dari sumber datanya. Asesmen Nasional adalah program evaluasi yang diselenggarakan Kementerian Pendidikan Dasar dan Menengah untuk memetakan mutu pendidikan pada tingkat satuan pendidikan, wilayah, dan nasional.
+
+Ini penting dibedakan dari Ujian Nasional. Ujian Nasional menilai pencapaian individual peserta didik. Asesmen Nasional dirancang sebagai alat diagnostik sistem. Yang dinilai bukan si anak, melainkan kualitas input, proses, dan lingkungan belajar sekolahnya.
+
+[[PAUSE 0.8]]
+
+Asesmen Nasional melibatkan tiga kelompok responden: siswa, guru, dan kepala sekolah. Masing-masing mengisi instrumen yang berbeda.
+
+Penelitian ini hanya memakai satu di antaranya sebagai sumber prediktor, yaitu data Kepala Sekolah. Dalam dokumen ini sering disingkat Kasek.
+
+Data Kasek memuat empat puluh empat indikator yang mengukur enam dimensi mutu sekolah. Saya sebutkan satu per satu, karena angka-angkanya sering ditanyakan.
+
+Satu, iklim keamanan sekolah, sepuluh indikator.
+Dua, iklim kebhinekaan, dua belas indikator.
+Tiga, inklusivitas, enam indikator.
+Empat, kepemimpinan instruksional kepala sekolah, empat indikator.
+Lima, kualitas pembelajaran, tujuh indikator.
+Enam, Satuan Pendidikan Aman Bencana, disingkat S-P-A-B, lima indikator. Domain ini baru muncul di tahun dua ribu dua puluh lima.
+
+Sepuluh, dua belas, enam, empat, tujuh, lima. Jumlahnya empat puluh empat.
+
+[[PAUSE 0.8]]
+
+Satu detail kecil yang sering ditanyakan. Buku kode Asesmen Nasional dua ribu dua puluh lima sebenarnya memuat empat puluh enam indikator non-S-M-K. Kenapa yang dipakai hanya empat puluh empat?
+
+Karena dua indikator tidak tersedia sama sekali pada dataset S-M-P dan M-Ts. Nilainya hilang seratus persen. Dua indikator itu adalah indikator tentang pengetahuan mengenai definisi dan bentuk kekerasan seksual, dan indikator tentang praktik pengajaran untuk siswa dengan disabilitas. Karena kosong total, keduanya tidak diikutsertakan. Sisanya empat puluh empat indikator yang valid.
+
+=== END ===
+
+=== SEG 08 | voice=ARDI | rate=-2% | pitch=+0Hz | Kosakata 2: fitur, target, dan bahaya sirkularitas ===
+
+Sekarang dua istilah paling dasar dalam pemodelan prediktif: fitur dan target.
+
+Target, sering ditulis dengan huruf Y, adalah hal yang ingin kita tebak.
+Fitur, sering ditulis dengan huruf X, adalah bahan yang kita pakai untuk menebak.
+
+Analoginya begini. Kalau Anda ingin menebak harga sebuah rumah, maka harga adalah Y. Luas tanah, jumlah kamar, dan jarak ke jalan raya adalah X.
+
+[[PAUSE 0.8]]
+
+Dalam penelitian ini, apa Y-nya dan apa X-nya?
+
+Y adalah capaian Literasi dan Numerasi pada level sekolah. Ini skor kontinu, hasil agregasi capaian siswa dari Asesmen Nasional dua ribu dua puluh lima. Skor ini dipakai sebagai proksi mutu sekolah.
+
+X adalah empat puluh empat indikator dari respons Kepala Sekolah tadi, ditambah dua fitur konteks: status sosial-ekonomi sekolah, yang disingkat S-E-S sekolah, dan Indeks Pembangunan Manusia kabupaten atau kota.
+
+[[PAUSE 1.0]]
+
+Sekarang perhatikan sesuatu yang sangat penting, dan ini adalah keputusan desain yang paling elegan dalam proposal ini.
+
+X berasal dari jawaban Kepala Sekolah. Y berasal dari hasil tes siswa.
+
+Sumbernya sengaja dipisah. Kenapa? Untuk menghindari sirkularitas.
+
+Sirkularitas terjadi kalau Anda memakai sesuatu untuk memprediksi dirinya sendiri. Kalau X dan Y sama-sama berasal dari jawaban orang yang sama, model bisa terlihat sangat akurat padahal yang ditemukan hanyalah konsistensi cara menjawab satu orang, bukan hubungan nyata antara proses sekolah dan hasil belajar.
+
+Dengan memisahkan sumber responden, kalau model menemukan bahwa persepsi kepala sekolah tentang iklim keamanan berkaitan dengan skor literasi siswanya, itu temuan yang jauh lebih bisa dipercaya.
+
+[[PAUSE 0.8]]
+
+Ingat baik-baik kalimat ini, karena penguji hampir pasti menyentuhnya: X dari Kepala Sekolah, Y dari siswa, dipisah untuk menghindari sirkularitas.
+
+=== END ===
+
+=== SEG 09 | voice=ARDI | rate=-2% | pitch=+0Hz | Kosakata 3: prediksi bukan sebab-akibat ===
+
+Istilah berikutnya berpotensi menimbulkan salah paham besar, jadi saya perlambat.
+
+Kata "prediktor" dan "prediksi" dalam disertasi ini punya arti teknis yang spesifik. Artinya: mengestimasi Y dari X. Titik.
+
+Yang tidak dimaksud ada dua.
+
+Pertama, ini bukan prediksi ke depan waktu. Bukan meramal skor tahun depan.
+Kedua, ini bukan klaim sebab-akibat. Bukan mengatakan bahwa memperbaiki iklim keamanan akan menyebabkan naiknya literasi.
+
+[[PAUSE 0.8]]
+
+Kenapa tidak boleh mengklaim sebab-akibat? Karena X dan Y diukur pada waktu yang bersamaan, dalam siklus Asesmen Nasional dua ribu dua puluh lima yang sama. Dalam istilah metodologi, hubungannya bersifat asosiatif-konkuren. Konkuren artinya serentak.
+
+Untuk mengklaim sebab, secara minimal Anda butuh urutan waktu: sebab harus mendahului akibat. Di sini tidak ada urutan waktu. Jadi klaimnya berhenti pada asosiasi.
+
+Ini bukan kelemahan yang disembunyikan. Ini justru ditulis eksplisit, dua kali, di Bab Tiga bagian desain dan di bagian keterbatasan penelitian. Dan itu tanda kejujuran metodologis yang baik.
+
+=== END ===
+
+=== SEG 10 | voice=ARDI | rate=-2% | pitch=+0Hz | Kosakata 4: method effect ===
+
+Sekarang istilah yang menjadi salah satu kebaruan penelitian ini: method effect.
+
+Definisinya: varians sistematis dalam jawaban responden yang disebabkan oleh metode pengukurannya sendiri — termasuk format atau arah penulisan item — bukan oleh konstruk yang sebenarnya ingin diukur.
+
+Terdengar abstrak. Mari kita buat konkret.
+
+[[PAUSE 0.8]]
+
+Bayangkan sebuah kuesioner. Sebagian pertanyaannya berbentuk "seberapa sering hal ini terjadi", dijawab dengan skala frekuensi. Sebagian lagi berbentuk "seberapa setuju Anda", dijawab dengan skala persetujuan. Sebagian lagi berbentuk ya atau tidak.
+
+Ketika data dianalisis, ternyata pertanyaan-pertanyaan berformat "seberapa sering" mengelompok jadi satu kelompok. Pertanyaan berformat "seberapa setuju" mengelompok jadi kelompok lain.
+
+Masalahnya, pengelompokan itu terjadi bukan karena isinya mirip. Tapi semata karena bentuk pertanyaannya mirip. Responden merespons format, bukan substansi.
+
+[[PAUSE 1.0]]
+
+Fenomena ini sudah lama didokumentasikan dalam literatur psikometri, terutama oleh Podsakoff dan koleganya pada tahun dua ribu tiga. Tapi selama ini selalu diuji pada instrumen self-report individual: skala kejenuhan belajar, skala harga diri, skala kecemasan sosial. Semuanya mengukur satu orang.
+
+Yang belum pernah dilakukan siapa pun: menguji method effect pada indikator teragregasi level institusi, dari instrumen asesmen berskala besar seperti Asesmen Nasional.
+
+Itulah celah pertama yang diisi penelitian ini.
+
+[[PAUSE 0.8]]
+
+Dan konsekuensinya praktis, bukan sekadar akademis. Kalau method effect terbukti ada, maka memakai skor domain gabungan — misalnya "skor iklim keamanan" hasil rata-rata sepuluh indikator — berisiko mencampur sinyal asli dengan artefak format pertanyaan. Solusinya: pakai skor item per sekolah, satu per satu, bukan skor domain gabungan. Biarkan model machine learning yang menentukan indikator mana yang penting.
+
+Jadi diagnosis pengukuran di sini bukan sekadar langkah pembersihan data. Diagnosis ini adalah dasar justifikasi empiris untuk keputusan desain berikutnya. Sekaligus jadi kontribusi ilmiah tersendiri.
+
+=== END ===
+
+=== SEG 11 | voice=ARDI | rate=-2% | pitch=+0Hz | Kosakata 5: EFA dan CFA ===
+
+Bagaimana cara mendeteksi method effect? Dengan dua teknik bersaudara: E-F-A dan C-F-A.
+
+E-F-A, kepanjangannya Exploratory Factor Analysis, atau analisis faktor eksploratori. Ini teknik reduksi dimensi. Tugasnya menemukan struktur tersembunyi di balik korelasi antarindikator.
+
+Analoginya: Anda punya empat puluh empat termometer di sebuah gedung. Anda tidak tahu ada berapa ruangan. Tapi dengan melihat pola mana termometer yang naik-turun bersamaan, Anda bisa menyimpulkan bahwa sebenarnya hanya ada, katakanlah, enam ruangan. Enam ruangan itulah yang disebut faktor laten. Laten artinya tidak teramati langsung.
+
+Kata kuncinya di E-F-A adalah eksploratori. Anda tidak memberi tahu mesin harus ada berapa kelompok. Mesin yang menemukannya.
+
+[[PAUSE 0.8]]
+
+Dalam penelitian ini, E-F-A dijalankan dengan dua pilihan teknis yang perlu Anda hafal.
+
+Pertama, Parallel Analysis sebagai kriteria penentuan jumlah faktor. Cara kerjanya: membandingkan struktur data asli dengan struktur data acak. Faktor yang dipertahankan hanya faktor yang lebih kuat dibanding kebetulan acak.
+
+Kedua, rotasi Promax. Rotasi adalah cara memutar sumbu agar hasilnya lebih mudah ditafsirkan. Promax termasuk rotasi oblique, artinya membolehkan antarfaktor saling berkorelasi. Ini pilihan yang realistis, karena dimensi-dimensi mutu sekolah memang masuk akal kalau saling berhubungan.
+
+[[PAUSE 1.0]]
+
+Sekarang C-F-A. Kepanjangannya Confirmatory Factor Analysis, analisis faktor konfirmatori.
+
+Kalau E-F-A bertanya "ada struktur apa di sini", maka C-F-A bertanya "apakah struktur yang saya duga ini cocok dengan datanya".
+
+Jadi E-F-A menemukan, C-F-A menguji.
+
+Dan yang krusial: C-F-A harus dijalankan pada data yang berbeda dari data yang dipakai E-F-A. Kalau diuji di data yang sama, hasilnya pasti cocok — karena strukturnya memang diturunkan dari data itu. Itu namanya menguji jawaban dengan soal yang jawabannya sudah dicontek.
+
+Karena itulah nanti sampelnya dipecah. Kita bahas di bagian enam.
+
+[[PAUSE 0.8]]
+
+C-F-A dinilai dengan indeks kecocokan atau fit indices. Angka ambangnya standar psikometri, dan sebaiknya Anda hafal:
+C-F-I minimal nol koma sembilan lima.
+T-L-I minimal nol koma sembilan lima.
+R-M-S-E-A maksimal nol koma nol enam.
+S-R-M-R maksimal nol koma nol delapan.
+Dan reliabilitas tiap faktor dinilai dengan koefisien omega McDonald, minimal nol koma tujuh nol. Sementara muatan faktor terstandar minimal nol koma lima nol.
+
+Perhatikan arah tandanya. C-F-I dan T-L-I makin besar makin baik. R-M-S-E-A dan S-R-M-R makin kecil makin baik.
+
+=== END ===
+
+=== SEG 12 | voice=ARDI | rate=-2% | pitch=+0Hz | Kosakata 6: soal estimator MLR dan WLSMV ===
+
+Ada satu detail teknis di dalam C-F-A yang sepele kelihatannya, tapi justru menunjukkan kematangan berpikir peneliti. Saya bahas singkat karena ini kandidat kuat pertanyaan penguji.
+
+Estimator adalah mesin hitung yang dipakai C-F-A untuk mencocokkan model dengan data. Dua pilihan yang relevan di sini.
+
+W-L-S-M-V, kepanjangannya Weighted Least Squares Mean and Variance adjusted. Estimator ini direkomendasikan untuk data ordinal — data berjenjang dengan kategori sedikit, seperti skala satu sampai empat.
+
+M-L-R, kepanjangannya Maximum Likelihood Robust. Estimator ini cocok untuk data kontinu, dan tahan terhadap pelanggaran normalitas.
+
+[[PAUSE 0.8]]
+
+Nah, empat puluh empat indikator Asesmen Nasional ini bentuknya skor kontinu hasil agregasi, bukan ordinal diskret. Maka estimator baku yang dipilih adalah M-L-R.
+
+Tapi keputusannya tidak ditutup mati. W-L-S-M-V akan dipakai sebagai alternatif kalau pemeriksaan data riil nanti menunjukkan pelanggaran normalitas multivariat yang signifikan, misalnya lewat uji Mardia, atau kalau ternyata distribusi itemnya bersifat ordinal berjenjang rendah, yaitu kurang dari lima kategori.
+
+Dan keputusan akhirnya akan dilaporkan di bagian hasil sebagai bentuk transparansi proses.
+
+[[PAUSE 0.8]]
+
+Pelajaran metodologisnya: ketika Anda belum memegang data riil, sikap yang benar bukan memaksakan satu pilihan, melainkan menetapkan aturan keputusan lebih dulu. Kalau kondisi A, pakai ini. Kalau kondisi B, pakai itu. Itu yang disebut pre-specified decision rule.
+
+=== END ===
+
+=== SEG 13 | voice=ARDI | rate=-2% | pitch=+0Hz | Kosakata 7: Random Forest dan XGBoost ===
+
+Sekarang kita pindah ke mesin utamanya: machine learning.
+
+Dua model yang dipakai keduanya berbasis pohon keputusan. Jadi kita mulai dari pohon keputusan.
+
+Pohon keputusan bekerja seperti daftar pertanyaan bertingkat. Apakah indeks kepemimpinan instruksional sekolah ini di atas tujuh puluh? Kalau ya, belok kanan. Di cabang berikutnya, apakah indeks iklim keamanannya di atas enam puluh lima? Kalau tidak, belok kiri. Dan seterusnya, sampai berhenti di sebuah tebakan skor.
+
+Satu pohon saja biasanya rapuh. Sedikit perubahan data bisa mengubah seluruh bentuk pohonnya.
+
+[[PAUSE 0.8]]
+
+Random Forest, diperkenalkan Breiman pada tahun dua ribu satu, mengatasi kerapuhan itu dengan cara sederhana: jangan pakai satu pohon, pakai ratusan.
+
+Tiap pohon dilatih pada sampel data yang sedikit berbeda dan hanya boleh melihat sebagian fitur secara acak. Lalu hasil semua pohon dirata-ratakan. Itulah sebabnya disebut hutan, forest, dan acak, random.
+
+Analogi yang paling pas: menanyakan pendapat ke satu ahli berisiko. Menanyakan ke tiga ratus ahli lalu mengambil rata-ratanya jauh lebih stabil.
+
+[[PAUSE 0.8]]
+
+X-G-Boost, kepanjangannya Extreme Gradient Boosting, memakai filosofi berbeda. Kalau Random Forest menanam banyak pohon secara paralel dan sejajar, X-G-Boost menanam pohon secara berurutan. Pohon kedua dilatih khusus untuk memperbaiki kesalahan pohon pertama. Pohon ketiga memperbaiki sisa kesalahan pohon kedua. Begitu seterusnya.
+
+Analoginya: siswa yang belajar dari kesalahan ujian sebelumnya, berulang kali.
+
+[[PAUSE 0.8]]
+
+Keunggulan kedua model ini sama: mampu menangkap pola non-linear dan interaksi antarfitur tanpa perlu diberi tahu dulu, dan tanpa asumsi distribusi tertentu.
+
+Kelemahannya juga sama, dan ini serius: keduanya black-box. Anda dapat prediksi yang akurat, tapi tidak tahu kenapa. Dan untuk kebijakan publik, "percaya saja pada mesin" bukan jawaban yang bisa dipertanggungjawabkan.
+
+Di sinilah SHAP masuk.
+
+=== END ===
+
+=== SEG 14 | voice=ARDI | rate=-2% | pitch=+0Hz | Kosakata 8: SHAP, jantung penelitian ini ===
+
+SHAP, kepanjangannya SHapley Additive exPlanations. Diperkenalkan Lundberg dan Lee pada tahun dua ribu tujuh belas.
+
+Akarnya bukan dari ilmu komputer, melainkan dari teori permainan kooperatif. Konsep nilai Shapley dirumuskan Lloyd Shapley untuk menjawab satu pertanyaan: kalau sebuah tim menang bersama, bagaimana cara adil membagi hadiahnya ke tiap anggota?
+
+[[PAUSE 0.8]]
+
+Mari pakai analogi. Bayangkan tim futsal beranggotakan lima orang mencetak sepuluh gol. Berapa kontribusi masing-masing pemain?
+
+Cara Shapley: coba semua kemungkinan susunan tim. Berapa gol kalau hanya ada pemain A? Berapa kalau A ditambah B? Berapa tambahan gol ketika C bergabung ke tim yang sudah berisi A dan B? Lalu rata-ratakan seluruh tambahan itu untuk setiap pemain, di seluruh kemungkinan urutan bergabungnya.
+
+Hasilnya adalah pembagian kontribusi yang adil secara matematis.
+
+[[PAUSE 1.0]]
+
+SHAP memindahkan logika itu ke model prediksi. Pemainnya bukan orang, melainkan fitur. Golnya bukan gol, melainkan nilai prediksi.
+
+Jadi SHAP menjawab: seberapa besar indikator kepemimpinan instruksional menggeser prediksi skor literasi sekolah ini, dibanding kalau indikator itu tidak diketahui?
+
+[[PAUSE 0.8]]
+
+SHAP punya tiga properti fundamental yang sebaiknya Anda hafal, karena inilah alasan SHAP dipilih ketimbang metode interpretasi lain.
+
+Satu, local accuracy. Jumlah seluruh kontribusi fitur persis sama dengan output model. Tidak ada sisa yang tidak terjelaskan.
+Dua, missingness. Fitur yang tidak ada berkontribusi nol.
+Tiga, consistency. Kalau sebuah fitur pengaruh marjinalnya meningkat dalam model baru, nilai kontribusinya tidak akan turun.
+
+[[PAUSE 0.8]]
+
+Ada dua level pembacaan SHAP.
+
+Level global: peringkat fitur mana yang paling berpengaruh di seluruh empat belas ribu sekolah. Ini yang menjawab pertanyaan kebijakan nasional.
+Level lokal: kenapa sekolah nomor sekian ini diprediksi rendah. Ini yang menjawab kebutuhan pendampingan per sekolah.
+
+Dan satu keunggulan yang membedakan SHAP dari variable importance bawaan Random Forest: SHAP menunjukkan arah. Bukan sekadar "indikator ini penting", melainkan "indikator ini mendorong prediksi naik" atau "mendorong prediksi turun". Untuk kebijakan, arah itu segalanya.
+
+[[PAUSE 0.8]]
+
+Satu catatan teknis. Menghitung nilai Shapley secara harfiah butuh mencoba semua kombinasi fitur, dan itu mustahil secara komputasi untuk empat puluh empat fitur. Solusinya adalah TreeSHAP, dipublikasikan Lundberg dan koleganya di Nature Machine Intelligence tahun dua ribu dua puluh. TreeSHAP memanfaatkan struktur pohon untuk menghitung nilai Shapley secara eksak namun efisien. Itulah yang dipakai di penelitian ini.
+
+=== END ===
+
+=== SEG 15 | voice=ARDI | rate=-2% | pitch=+0Hz | Kosakata 9: SHAP interaction values ===
+
+Ada satu fitur lanjutan SHAP yang dipakai penelitian ini untuk menjawab pertanyaan spesifik: SHAP interaction values.
+
+Konsepnya begini. Kadang dua fitur bekerja sama menghasilkan efek yang lebih besar, atau lebih kecil, dibanding jumlah efek masing-masing kalau berdiri sendiri. Selisih itulah yang disebut interaksi.
+
+SHAP interaction values mendekomposisi kontribusi gabungan dua fitur di luar jumlah kontribusi individualnya.
+
+[[PAUSE 0.8]]
+
+Dalam penelitian ini, interaksi yang diuji sangat spesifik: antara status sosial-ekonomi sekolah dan Indeks Pembangunan Manusia kabupaten atau kota.
+
+Pertanyaan substantifnya: apakah keunggulan sekolah yang siswanya berlatar ekonomi lebih baik berlaku sama di semua daerah? Atau justru menguat di daerah maju dan melemah di daerah tertinggal? Atau sebaliknya?
+
+[[PAUSE 0.8]]
+
+Dan inilah nilai metodologisnya. Secara tradisional, untuk menguji interaksi semacam ini Anda harus membangun model regresi baru dengan suku perkalian antara dua variabel. SHAP interaction values memungkinkan pengujian itu dilakukan langsung dari model machine learning yang sudah terlatih, tanpa perlu model regresi terpisah.
+
+Ini diposisikan sebagai pelengkap pendekatan pengujian moderasi konvensional, bukan penggantinya. Dan ini salah satu kontribusi teoretis yang diklaim penelitian ini.
+
+=== END ===
+
+=== SEG 16 | voice=ARDI | rate=-2% | pitch=+0Hz | Kosakata 10: data bersarang, MERF, dan GLMM trees ===
+
+Istilah terakhir di bagian kosakata, dan ini yang menopang seluruh lapis validasi ketiga: struktur data bersarang, atau nested.
+
+Sekolah bersarang di dalam kabupaten atau kota. Konsekuensinya: dua sekolah dalam satu kabupaten berbagi banyak hal — anggaran daerah yang sama, kebijakan dinas yang sama, pasar tenaga kerja guru yang sama, kondisi ekonomi yang sama.
+
+Artinya, mereka tidak saling bebas.
+
+[[PAUSE 0.8]]
+
+Kenapa ini masalah? Karena Random Forest dan X-G-Boost mengasumsikan setiap observasi saling bebas. Kalau asumsi itu dilanggar, dua hal bisa terjadi. Model bisa menghasilkan estimasi yang bias. Dan model bisa terlihat lebih akurat dari yang sebenarnya, karena sebagian "keberhasilan"-nya sebetulnya hanya menghafal karakteristik daerah.
+
+[[PAUSE 0.8]]
+
+Ada dua metode yang mengakomodasi struktur ini.
+
+Yang pertama, M-E-R-F. Kepanjangannya Mixed-Effects Random Forest, dikembangkan Hajjem, Bellavance, dan Larocque pada tahun dua ribu empat belas.
+
+Cara kerjanya menggabungkan dua komponen. Komponen fixed effect, yang menangkap pola umum non-linear, diestimasi dengan Random Forest. Dan komponen random effect, yang menangkap simpangan khas tiap kabupaten, diestimasi secara parametrik mengikuti struktur Linear Mixed Model. Keduanya diestimasi bergantian secara iteratif, dengan skema yang menyerupai algoritma Expectation-Maximization.
+
+Analoginya: Random Forest mengurus "apa yang berlaku umum di seluruh Indonesia", sementara komponen random effect mengurus "apa yang khas Kabupaten Sumba Timur" atau "apa yang khas Kota Surabaya".
+
+[[PAUSE 0.8]]
+
+Yang kedua, G-L-M-M trees. Kepanjangannya Generalized Linear Mixed-Model trees, dikembangkan Fokkema, Edbrooke-Childs, dan Wolpert pada tahun dua ribu dua puluh. Pendekatan ini mengintegrasikan pohon keputusan dengan struktur G-L-M-M. Umumnya lebih mudah ditafsirkan, tapi akurasi prediktifnya biasanya sedikit lebih rendah dibanding pendekatan ensemble murni.
+
+[[PAUSE 1.0]]
+
+Sekarang, perhatikan baik-baik bagaimana kedua metode ini diposisikan dalam penelitian ini. Ini sering disalahpahami.
+
+M-E-R-F dan G-L-M-M trees di sini bukan model utama. Keduanya adalah instrumen validasi. Tugasnya menjawab satu pertanyaan: apakah pola kontribusi fitur yang ditemukan model utama tetap bertahan setelah struktur wilayah diperhitungkan secara eksplisit?
+
+Kalau bertahan, temuan model utama kokoh. Kalau berubah drastis, berarti sebagian pola tadi sebenarnya hanya bayangan perbedaan antarwilayah.
+
+[[PAUSE 1.0]]
+
+Kosakata selesai. Sekarang semuanya akan mulai tersambung.
+
+[[SFX chime]]
+
+=== END ===
+
+=== SEG 17 | voice=ARDI | rate=-2% | pitch=+0Hz | Tiga celah dan klaim kebaruan ===
+
+Bagian tiga. Tiga celah penelitian dan posisi terhadap studi lain.
+
+Mari kita rangkum ketiga celah tadi dalam bentuk yang lebih tajam.
+
+Celah pertama, celah level analisis. Explainable machine learning pada asesmen pendidikan sudah cukup matang secara global, tapi hampir selalu diterapkan pada level siswa individual. Penerapan pada level satuan pendidikan, pada asesmen pendidikan berskala besar di Indonesia, belum pernah dilakukan.
+
+Celah kedua, celah validitas input. Belum ada yang menguji validitas konstruk instrumen sumber fiturnya lebih dulu. Padahal indikasi method effect sudah terlihat pada diagnosis awal. Dan literatur method effect sendiri belum pernah menjangkau indikator teragregasi level institusi.
+
+Celah ketiga, celah validitas struktural. Model machine learning yang diterapkan pada data pendidikan Indonesia umumnya mengabaikan struktur bersarang sekolah dalam wilayah, atau kalaupun memperhatikannya, tidak disertai explainability.
+
+[[PAUSE 1.0]]
+
+Klaim kebaruan penelitian ini bukan pada salah satu celah secara terpisah. Masing-masing celah, kalau berdiri sendiri, mungkin bisa diperdebatkan. Klaimnya adalah pada kombinasi ketiganya dalam satu studi — dan kombinasi itu, sejauh penelusuran literatur, belum ditemukan pada studi mana pun.
+
+Perhatikan frasa "sejauh penelusuran literatur". Frasa ini muncul berulang kali dalam proposal, dan itu disengaja. Itu cara akademis yang jujur untuk mengatakan: saya sudah mencari, saya tidak menemukan, tapi saya tidak mengklaim kemahatahuan.
+
+=== END ===
+
+=== SEG 18 | voice=ARDI | rate=-2% | pitch=+0Hz | Studi relevan kelompok satu: tradisi Indonesia ===
+
+Kebaruan hanya bermakna kalau dibandingkan dengan yang sudah ada. Proposal ini meninjau enam studi kunci dalam tiga kelompok. Saya bahas satu per satu, karena inilah bahan yang paling sering dipakai penguji untuk menekan klaim kebaruan.
+
+Kelompok pertama, studi yang memprediksi mutu atau capaian sekolah di Indonesia.
+
+Raharjo, Yuliana, dan Yudha, tahun dua ribu delapan belas. Mereka menunjukkan bahwa capaian delapan Standar Nasional Pendidikan berpengaruh signifikan terhadap mutu sekolah, diukur dari nilai Ujian Nasional, memakai data B-A-N S-M tahun dua ribu lima belas. Persamaannya dengan penelitian ini: sama-sama prediktor mutu sekolah level institusi di Indonesia. Bedanya: metodenya regresi klasik, bukan machine learning, dan datanya mendahului Asesmen Nasional dua ribu dua puluh lima.
+
+[[PAUSE 0.8]]
+
+Irvan, Purnama, dan Vhalery, tahun dua ribu sembilan belas. Mereka membangun model prediktif berbasis machine learning untuk memprediksi status akreditasi S-M-P, dengan Random Forest sebagai model terbaik, akurasi sekitar tujuh puluh enam sampai tujuh puluh sembilan persen.
+
+Studi ini penting untuk diposisikan dengan hati-hati. Ia membuktikan bahwa machine learning di level S-M-P Indonesia secara teknis layak. Tapi ia bukan preseden konseptual bagi penelitian ini. Alasannya tiga.
+
+Satu, targetnya status akreditasi. Itu variabel administratif-kategoris, berbeda secara konseptual dari profil mutu multidimensi empat puluh empat indikator.
+Dua, modelnya black-box, tanpa explainability.
+Tiga, tidak ada pengujian validitas konstruk atas indikator sumber datanya.
+
+=== END ===
+
+=== SEG 19 | voice=ARDI | rate=-2% | pitch=+0Hz | Studi relevan kelompok dua dan tiga ===
+
+Kelompok kedua, penerapan explainable A-I pada asesmen pendidikan skala besar.
+
+Tertulino dan Almeida, tahun dua ribu dua puluh lima. Mereka menerapkan X-G-Boost dipadu SHAP pada mikrodata S-A-E-B di Brasil, mengintegrasikan data siswa, guru, sekolah, dan kepala sekolah. Temuan utamanya menarik: status sosial-ekonomi sekolah muncul sebagai prediktor paling dominan.
+
+Ini studi yang paling mirip secara teknis. Tapi perhatikan perbedaannya. Meskipun studi itu menyebut dirinya multilevel, unit klasifikasi akhirnya tetap siswa, bukan sekolah. Justru karena itu, celah penerapan explainable A-I di level satuan pendidikan tetap terbuka.
+
+[[PAUSE 1.0]]
+
+Kelompok ketiga, penerapan model mixed-effects berbasis pohon pada data pendidikan.
+
+Dan di sini ada temuan yang jujur dan berani dari penyusun proposal: ternyata pendekatan ini sudah dirintis di Indonesia.
+
+Mayapada, tahun dua ribu dua puluh satu, dalam tesis magister di I-P-B, membandingkan Random Forest dengan M-E-R-F untuk memprediksi capaian matematika siswa pada Survei A-K-S-I.
+
+Lalu Azizah, Susetyo, Fitrianto, dan Zamjani, tahun dua ribu dua puluh enam. Ini yang paling dekat. Mereka menerapkan M-E-R-F dan Stochastic M-E-R-F untuk memprediksi capaian numerasi sekolah jenjang S-M-A di Jawa Barat, memakai data Asesmen Nasional dan enam puluh tiga prediktor dari Survei Lingkungan Belajar. Domainnya sangat mirip dengan domain Kasek: kepemimpinan instruksional, iklim keamanan, iklim kebhinekaan, inklusivitas.
+
+[[PAUSE 1.0]]
+
+Pertanyaan yang wajar muncul: kalau sudah ada yang sangat mirip, apa yang tersisa?
+
+Empat hal, dan sebaiknya Anda hafal keempatnya.
+
+Satu, kedua studi itu memprediksi satu skor capaian kognitif tunggal, bukan mutu sekolah sebagai konstruk multidimensi.
+Dua, keduanya memakai variable importance bawaan Random Forest, bukan SHAP. Artinya tidak bisa menunjukkan arah kontribusi maupun interaksi antarfitur.
+Tiga, keduanya tidak mendiagnosis validitas konstruk instrumen sumber fiturnya.
+Empat, cakupannya satu provinsi dan jenjang S-M-A pada studi Azizah, atau tidak memperhitungkan konteks wilayah sama sekali pada studi Mayapada.
+
+Penelitian ini menyasar mutu sekolah jenjang S-M-P secara nasional, dengan eksplanasi berbasis SHAP, dan dengan diagnosis pengukuran sebagai justifikasi fiturnya.
+
+[[PAUSE 0.8]]
+
+Studi keenam, Fokkema, Edbrooke-Childs, dan Wolpert tahun dua ribu dua puluh, berbeda jenis. Itu bukan studi terapan, melainkan pengembangan metode G-L-M-M trees itu sendiri. Perannya di sini sebagai dasar metodologis Fase Tiga, dan metodenya belum pernah diterapkan pada data Asesmen Nasional Indonesia.
+
+=== END ===
+
+=== SEG 20 | voice=ARDI | rate=-3% | pitch=+0Hz | Kerangka pikir: dua lapis validitas ===
+
+Sekarang kita sampai pada kalimat yang saya minta Anda pegang sejak awal.
+
+Dua lapis validitas, mengapit satu mesin prediktif utama.
+
+[[PAUSE 1.0]]
+
+Penelitian ini dirancang dalam tiga fase. Tapi ketiganya bukan tangga yang harus dinaiki berurutan, di mana kegagalan satu anak tangga membatalkan semuanya. Bukan begitu arsitekturnya. Dan pembedaan ini penting, karena kalau dipahami sebagai prasyarat berantai, seluruh penelitian jadi rapuh.
+
+Fase Satu adalah lapis validitas input. Diagnosis pengukuran lewat E-F-A dan C-F-A. Pertanyaannya: apakah bahan yang akan saya masukkan ke model ini layak dipakai, dan dalam bentuk apa sebaiknya dipakai?
+
+Fase Dua adalah mesin prediktif utama. Pemodelan explainable machine learning. Pertanyaannya: indikator apa yang paling menentukan, dan ke arah mana?
+
+Fase Tiga adalah lapis validitas struktural. Validasi dengan M-E-R-F dan G-L-M-M trees. Pertanyaannya: apakah temuan Fase Dua tetap bertahan setelah struktur wilayah dihormati?
+
+[[PAUSE 1.0]]
+
+Jadi alurnya begini, dan ini cara terbaik untuk menceritakan kerangka pikir kalau ditanya penguji.
+
+Semuanya bermula dari empat puluh empat indikator Kepala Sekolah, yang diposisikan sebagai representasi komponen Proses.
+
+Sebelum dipakai, Fase Satu memeriksa validitas konstruknya, mendiagnosis method effect, lalu menentukan strategi feature engineering: skor item per sekolah, bukan skor domain gabungan.
+
+Fitur hasil Fase Satu, ditambah status sosial-ekonomi sekolah dan Indeks Pembangunan Manusia sebagai fitur konteks, menjadi masukan bagi Fase Dua. Di sana Random Forest dan X-G-Boost memprediksi capaian Literasi dan Numerasi, dan SHAP menjelaskan kontribusi tiap fitur beserta arahnya.
+
+Fase Tiga menguji ulang pola itu dengan model yang menghormati struktur bersarang, sekaligus mendekomposisi berapa besar variasi yang dijelaskan konteks wilayah.
+
+Muaranya satu: rekomendasi kebijakan yang actionable. Indikator dominan dan arah kontribusinya untuk prioritas aksi benahi, serta pola interaksi status sosial-ekonomi sekolah dengan Indeks Pembangunan Manusia untuk kebijakan afirmatif yang disesuaikan kondisi wilayah.
+
+[[SFX chime]]
+
+=== END ===
+
+=== SEG 21 | voice=ARDI | rate=-2% | pitch=+0Hz | Teori 1: mutu sekolah dan kerangka CIPO ===
+
+Bagian empat. Teori yang mendasari.
+
+Setiap bangunan metode butuh fondasi teori. Ada empat kelompok teori yang menopang penelitian ini. Kita mulai dari teori tentang mutu sekolah itu sendiri.
+
+Mutu sekolah adalah konstruk multidimensi. Ia mencerminkan kapasitas satuan pendidikan dalam menyediakan lingkungan belajar yang kondusif, kepemimpinan yang efektif, dan pengalaman pembelajaran yang bermakna bagi seluruh peserta didik.
+
+[[PAUSE 0.8]]
+
+Harvey dan Green, tahun seribu sembilan ratus sembilan puluh tiga, mengidentifikasi lima konsepsi mutu dalam pendidikan. Yang dipilih penelitian ini adalah konsepsi fitness for purpose — sejauh mana sekolah memenuhi standar nasional pendidikan. Konsepsi ini dipilih karena paling relevan dengan konteks kebijakan Indonesia, yang memang beroperasi dengan standar nasional.
+
+Reynolds dan koleganya, tahun dua ribu empat belas, dalam tinjauan state-of-the-art tentang riset efektivitas pendidikan, mengidentifikasi dimensi kunci efektivitas sekolah: kepemimpinan instruksional, iklim sekolah yang positif, ekspektasi tinggi terhadap peserta didik, dan keterlibatan keluarga.
+
+Perhatikan bahwa dimensi-dimensi itu sejalan dengan domain instrumen Asesmen Nasional Kasek. Ini bukan kebetulan yang menguntungkan, melainkan argumen bahwa instrumennya memang berakar pada literatur efektivitas sekolah.
+
+[[PAUSE 1.0]]
+
+Fondasi utamanya datang dari Scheerens, tahun dua ribu enam belas, dengan model C-I-P-O.
+
+C-I-P-O adalah singkatan dari Context, Input, Process, Output. Konteks, Masukan, Proses, Keluaran.
+
+Logikanya: konteks membentuk masukan, masukan diolah lewat proses sekolah, proses menghasilkan keluaran. Dan yang penting, Scheerens menempatkan proses sekolah sebagai mediator antara konteks dan output pendidikan.
+
+=== END ===
+
+=== SEG 22 | voice=ARDI | rate=-2% | pitch=+0Hz | Teori 2: pemakaian CIPO secara parsial ===
+
+Sekarang bagian yang menunjukkan kehati-hatian penyusun, dan ini kandidat kuat pertanyaan penguji.
+
+Penelitian ini memakai C-I-P-O secara sadar dan secara parsial. Bukan menguji model C-I-P-O secara utuh.
+
+Pemetaannya begini.
+Empat puluh empat indikator Kasek diposisikan sebagai komponen Proses. Isinya memang proses: iklim keamanan, iklim kebhinekaan, inklusivitas, kepemimpinan instruksional, kualitas pembelajaran, dan kesiapsiagaan bencana.
+Skor Literasi dan Numerasi diposisikan sebagai komponen Output.
+Indeks Pembangunan Manusia, klasifikasi urban-rural, dan wilayah bagian Indonesia diposisikan sebagai komponen Konteks.
+
+[[PAUSE 0.8]]
+
+Lalu di mana komponen Input?
+
+Jawabannya jujur: berada di luar cakupan. Komponen Input, misalnya karakteristik awal peserta didik saat masuk jenjang S-M-P, tidak tersedia dalam dataset Kasek yang jadi sumber fitur utama.
+
+Maka posisi yang diambil adalah: C-I-P-O dipakai sebagai kerangka pengorganisasi hubungan antara Proses, Konteks, dan Output. Bukan sebagai model yang diuji secara lengkap.
+
+[[PAUSE 0.8]]
+
+Dan perhatikan bahwa pemisahan Proses sebagai X dan Output sebagai Y ternyata bukan hanya konsisten dengan kerangka Asesmen Nasional itu sendiri. Pemisahan itu juga persis yang dibutuhkan secara metodologis untuk menghindari sirkularitas, seperti yang kita bahas tadi.
+
+Jadi satu keputusan desain menjawab dua kebutuhan sekaligus: kebutuhan teoretis dan kebutuhan metodologis. Ini yang disebut desain yang koheren.
+
+=== END ===
+
+=== SEG 23 | voice=ARDI | rate=-2% | pitch=+0Hz | Teori 3: konteks wilayah dan Indeks Pembangunan Manusia ===
+
+Kelompok teori ketiga menjelaskan kenapa konteks wilayah harus masuk model.
+
+Pertama, Indeks Pembangunan Manusia itu sendiri. Ini indikator komposit yang dikembangkan U-N-D-P dan diterbitkan berkala oleh Badan Pusat Statistik pada level nasional, provinsi, dan kabupaten atau kota. Tiga dimensi pokoknya: kesehatan, diukur lewat angka harapan hidup; pendidikan, diukur lewat harapan dan rata-rata lama sekolah; dan standar hidup layak, diukur lewat pengeluaran per kapita yang disesuaikan.
+
+Yang dipakai adalah Indeks Pembangunan Manusia tahun dua ribu dua puluh empat pada level kabupaten atau kota, sebagai variabel kontinu yang merepresentasikan kapasitas pembangunan daerah tempat sekolah berada.
+
+[[PAUSE 0.8]]
+
+Kenapa Indeks Pembangunan Manusia relevan secara teoretis? Ada dua sandaran.
+
+Sandaran pertama, Coleman dan koleganya, tahun seribu sembilan ratus enam puluh enam, dalam laporan legendaris Equality of Educational Opportunity. Temuan besarnya: konteks sosial-ekonomi merupakan determinan penting capaian pendidikan yang melampaui kapasitas sekolah individual. Laporan ini berumur enam puluh tahun, tapi masih jadi rujukan wajib dalam literatur ketimpangan pendidikan.
+
+Sandaran kedua, Ersan dan Rodriguez, tahun dua ribu dua puluh. Studi multilevel mereka pada data T-I-M-S-S di Turki menemukan bahwa status sosial-ekonomi, baik pada level siswa maupun level sekolah, merupakan prediktor penting capaian matematika. Dan yang menarik: pengaruh pada level sekolah justru lebih kuat dibanding level siswa.
+
+Temuan itu mendukung keputusan penelitian ini untuk bekerja di level sekolah, bukan level siswa.
+
+[[PAUSE 0.8]]
+
+Dalam penelitian ini, Indeks Pembangunan Manusia punya dua peran sekaligus, dan ini sering membingungkan, jadi saya perjelas.
+
+Peran pertama: sebagai fitur di dalam matriks X pada Fase Dua, supaya interaksinya dengan status sosial-ekonomi sekolah bisa diperiksa lewat SHAP interaction values.
+
+Peran kedua: sebagai variabel konteks level dua pada Fase Tiga, yang dievaluasi lewat dekomposisi variance component.
+
+Satu variabel, dua peran, dua fase berbeda. Itu bukan inkonsistensi, melainkan pemanfaatan ganda yang disengaja.
+
+=== END ===
+
+=== SEG 24 | voice=ARDI | rate=-2% | pitch=+0Hz | Teori 4: validitas multi-informan dan justifikasi agregasi ===
+
+Kelompok teori keempat menjawab pertanyaan yang muncul pada satu tahap opsional penelitian ini.
+
+Ceritanya begini. Konstruk yang sama — misalnya iklim keamanan sekolah — diukur dari tiga jenis responden: kepala sekolah, guru, dan siswa. Muncul pertanyaan metodologis: bolehkah skor guru dan siswa dirata-ratakan ke level sekolah, supaya bisa dibandingkan dengan jawaban kepala sekolah?
+
+Jawabannya tidak otomatis boleh. Ada syaratnya.
+
+[[PAUSE 0.8]]
+
+Literatur iklim organisasi menyediakan kerangka bakunya. Bliese, tahun dua ribu, menjelaskan bahwa agregasi skor individual ke level unit yang lebih tinggi hanya sahih kalau dua syarat terpenuhi. Pertama, ada cukup kesepakatan antarresponden dalam unit yang sama. Kedua, ada cukup variasi antarunit.
+
+Logikanya masuk akal. Kalau lima guru di satu sekolah menjawab sangat berbeda-beda, maka rata-ratanya tidak mewakili apa pun. Dan kalau semua sekolah punya rata-rata yang sama, maka variabel itu tidak bisa membedakan apa-apa.
+
+[[PAUSE 0.8]]
+
+LeBreton dan Senter, tahun dua ribu delapan, merumuskan dua bentuk Intraclass Correlation Coefficient yang saling melengkapi.
+
+I-C-C satu mengestimasi proporsi varians skor individu yang dapat dijelaskan oleh keanggotaan kelompok, dalam hal ini sekolah.
+I-C-C dua mengestimasi reliabilitas rerata kelompok sebagai representasi kelompok tersebut.
+
+Ambang konvensionalnya: nilai I-C-C dua sebesar nol koma tujuh nol atau lebih dianggap cukup andal untuk mendukung agregasi.
+
+[[PAUSE 0.8]]
+
+Satu catatan penting. Kerangka ini dipakai untuk tahap validasi tambahan yang sifatnya kondisional — hanya dijalankan jika waktu penelitian memungkinkan. Tahap itu menguji apakah pola kontribusi SHAP dari jawaban kepala sekolah konsisten dengan persepsi guru dan siswa pada domain yang sepadan.
+
+Kondisional, dan ditulis eksplisit sebagai kondisional. Itu praktik yang jujur. Tapi konsekuensinya, kalau ditanya penguji, Anda harus siap menjawab apa yang terjadi kalau tahap ini tidak jadi dijalankan. Jawabannya: tidak ada yang runtuh, karena tahap ini memang bersifat memperkaya, bukan menopang.
+
+[[SFX chime]]
+
+=== END ===
+
+=== SEG 25 | voice=ARDI | rate=-2% | pitch=+0Hz | Rumusan masalah satu sampai empat ===
+
+Bagian lima. Rumusan masalah, tujuan, dan hipotesis.
+
+Ada enam rumusan masalah, dan yang keenam punya dua sub-pertanyaan. Saya bacakan satu per satu dengan terjemahan bebasnya, karena versi resminya panjang.
+
+Rumusan masalah satu. Bagaimana struktur dimensi laten dari empat puluh empat indikator mutu S-M-P Asesmen Nasional dua ribu dua puluh lima Kasek, dan sejauh mana ditemukan indikasi method effect, melalui E-F-A dan C-F-A?
+Terjemahan bebasnya: apakah indikator-indikator ini mengelompok mengikuti isi, atau mengikuti format pertanyaan?
+
+Rumusan masalah dua. Berdasarkan diagnosis tersebut, strategi feature engineering mana yang menghasilkan performa prediktif lebih baik: skor item per sekolah, atau skor domain gabungan?
+Terjemahan bebasnya: bahan mentah mana yang lebih baik dipakai, item satuan atau rata-rata domain?
+
+Rumusan masalah tiga. Seberapa akurat model explainable machine learning berbasis ensemble pohon dibandingkan model regresi klasik dalam memprediksi capaian Literasi dan Numerasi level sekolah?
+Terjemahan bebasnya: apakah mesin modern benar-benar mengalahkan regresi biasa di data ini?
+
+Rumusan masalah empat. Indikator apa yang memberikan kontribusi paling dominan terhadap prediksi capaian sekolah berdasarkan interpretasi SHAP, dan bagaimana arah kontribusinya?
+Terjemahan bebasnya: faktor apa yang paling menentukan, dan mendorong naik atau turun?
+
+Rumusan masalah empat inilah yang paling langsung menjawab kebutuhan kebijakan.
+
+=== END ===
+
+=== SEG 26 | voice=ARDI | rate=-2% | pitch=+0Hz | Rumusan masalah lima dan enam ===
+
+Rumusan masalah lima. Sejauh mana pola prediksi dan kontribusi fitur dari model machine learning konvensional tetap konsisten ketika model dibangun ulang menggunakan pendekatan yang menghormati struktur bersarang sekolah dalam kabupaten atau kota?
+Terjemahan bebasnya: apakah temuannya bertahan setelah faktor daerah diperhitungkan?
+
+Rumusan masalah enam. Sejauh mana konteks wilayah berkontribusi terhadap prediksi mutu sekolah dalam kerangka validasi multilevel? Rumusan ini dipecah jadi dua.
+
+Enam A. Sejauh mana Indeks Pembangunan Manusia kabupaten atau kota berkontribusi terhadap variasi antarwilayah, berdasarkan dekomposisi variance component?
+
+Enam B. Sejauh mana kontribusi status sosial-ekonomi sekolah berinteraksi dengan Indeks Pembangunan Manusia, berdasarkan SHAP interaction values?
+
+[[PAUSE 1.0]]
+
+Perhatikan bahwa keenam rumusan masalah ini punya pasangan satu lawan satu dengan tujuan penelitian. Tujuan satu menjawab rumusan satu, tujuan dua menjawab rumusan dua, dan seterusnya, sampai tujuan enam yang menjawab rumusan enam A dan enam B sekaligus.
+
+Kesejajaran ini bukan kebetulan. Penguji hampir selalu memeriksa apakah rumusan masalah, tujuan, hipotesis, dan teknik analisis benar-benar sejajar. Kalau ada satu yang menggantung tanpa pasangan, itu celah pertama yang akan diserang.
+
+=== END ===
+
+=== SEG 27 | voice=ARDI | rate=-2% | pitch=+0Hz | Hipotesis dan alasan dua rumusan tidak dihipotesiskan ===
+
+Sekarang hipotesis. Ada enam hipotesis, dengan penomoran yang mengikuti rumusan masalahnya.
+
+H satu, terkait rumusan masalah satu. Struktur faktor empat puluh empat indikator yang dikonfirmasi lewat C-F-A tidak sepenuhnya sesuai dengan struktur enam domain konten resmi, melainkan menunjukkan pengelompokan tambahan yang mengikuti kemiripan format pertanyaan. Ini indikasi method effect.
+
+H dua, terkait rumusan masalah dua. Strategi berbasis skor item per sekolah menghasilkan performa prediktif yang lebih baik dibanding skor domain gabungan.
+
+H tiga, terkait rumusan masalah tiga. Model ensemble pohon menghasilkan akurasi prediktif lebih tinggi dibanding regresi linear berganda.
+
+H lima, terkait rumusan masalah lima. Pola kontribusi SHAP dari model konvensional tetap konsisten dengan pola variable importance dari model yang menghormati struktur bersarang, dengan kriteria korelasi Spearman rho lebih besar atau sama dengan nol koma tujuh nol.
+
+H enam A. Indeks Pembangunan Manusia berkontribusi signifikan terhadap variasi antarwilayah dalam prediksi mutu sekolah.
+
+H enam B. Terdapat interaksi signifikan antara status sosial-ekonomi sekolah dan Indeks Pembangunan Manusia terhadap prediksi mutu sekolah.
+
+[[PAUSE 1.0]]
+
+Anda mungkin sadar ada yang hilang. Tidak ada H empat.
+
+Itu disengaja, dan alasannya penting. Rumusan masalah satu dan empat sebenarnya bersifat eksploratif. Tapi rumusan satu masih bisa dihipotesiskan pada bagian konfirmatorinya, karena C-F-A menguji dugaan struktur tertentu. Sedangkan rumusan empat — indikator apa yang paling dominan — murni eksploratif. Tidak ada dasar teoretis yang cukup kuat untuk menebak lebih dulu indikator mana yang akan menang dari empat puluh empat kandidat.
+
+Maka rumusan empat dijawab lewat eksplorasi data, bukan lewat pengujian hipotesis.
+
+[[PAUSE 0.8]]
+
+Ini keputusan metodologis yang matang. Mengajukan hipotesis tanpa dasar teoretis hanya akan jadi tebakan berbaju ilmiah. Dan kalau ditanya penguji kenapa tidak semua rumusan masalah dihipotesiskan, jawaban ini sudah siap pakai.
+
+[[SFX chime]]
+
+=== END ===
+
+=== SEG 28 | voice=ARDI | rate=-2% | pitch=+0Hz | Desain penelitian dan sumber data ===
+
+Bagian enam. Desain, data, dan pembagian sampel.
+
+Jenis penelitiannya kuantitatif, dengan pendekatan analisis data sekunder. Kerangka yang diikuti adalah kerangka Logan, tahun dua ribu dua puluh, tentang pemanfaatan data berskala besar yang representatif dan dikumpulkan oleh institusi dengan kapasitas metodologis memadai. Dalam hal ini, Kementerian Pendidikan Dasar dan Menengah.
+
+Desain analisisnya bersifat predictive modeling dalam pengertian statistik dan machine learning, seperti yang sudah kita bahas panjang di bagian kosakata.
+
+Tidak ada pengumpulan data primer sama sekali. Tidak ada kuesioner yang disebar peneliti, tidak ada wawancara, tidak ada observasi lapangan. Maka tidak ada lokasi penelitian dalam pengertian tradisional.
+
+[[PAUSE 0.8]]
+
+Cakupannya seluruh Indonesia: tiga puluh delapan provinsi dan lima ratus satu kabupaten atau kota, berdasarkan cakupan S-M-P dan M-Ts dalam data Asesmen Nasional dua ribu dua puluh lima.
+
+Sumber datanya tiga. Asesmen Nasional dua ribu dua puluh lima dari Kemendikdasmen. Indeks Pembangunan Manusia dua ribu dua puluh empat dari Badan Pusat Statistik. Dan Gambaran Umum S-M-P dua ribu dua puluh lima, juga dari Kemendikdasmen.
+
+Jadwalnya: pengolahan data, yaitu integrasi sumber dan praproses, dilakukan Mei sampai Agustus dua ribu dua puluh enam. Analisis utamanya berjalan pada Semester Dua sampai Lima program doktoral.
+
+=== END ===
+
+=== SEG 29 | voice=ARDI | rate=-2% | pitch=+0Hz | Populasi, sensus, dan kenapa tidak ada sampling probabilitas ===
+
+Sekarang bagian yang sering bikin bingung, jadi saya pelan-pelan.
+
+Populasinya seluruh S-M-P dan M-Ts peserta Asesmen Nasional dua ribu dua puluh lima, sekitar empat belas ribu seratus dua puluh satu satuan pendidikan.
+
+Sampel akhirnya ditetapkan empat belas ribu delapan puluh lima. Selisihnya tiga puluh enam.
+
+Ke mana tiga puluh enam itu? Dikeluarkan karena merupakan satuan pendidikan nonformal, yaitu Program Paket B, yang tidak memiliki kode wilayah administratif dalam basis data referensi Kemendikdasmen. Tanpa kode wilayah, sekolah itu tidak bisa dipasangkan dengan data Indeks Pembangunan Manusia kabupaten atau kota. Maka terpaksa dikeluarkan.
+
+[[PAUSE 0.8]]
+
+Dan sekarang poin pentingnya. Karena data Asesmen Nasional bersifat sensus, bukan sampel probabilitas dari populasi yang lebih besar, maka tidak diperlukan teknik sampling probabilitas untuk tujuan generalisasi.
+
+Ini konsekuensi logis yang perlu Anda pahami betul. Dalam penelitian survei biasa, Anda mengambil sampel acak lalu menggeneralisasi ke populasi, dengan margin of error tertentu. Di sini, seluruh populasi sudah di tangan. Tidak ada yang perlu digeneralisasi. Yang Anda hitung adalah keadaan populasi itu sendiri.
+
+[[PAUSE 0.8]]
+
+Tapi ada satu kegunaan lain dari pembagian data, yang sama sekali berbeda tujuannya: validasi internal. Dan ini yang kita bahas berikutnya.
+
+=== END ===
+
+=== SEG 30 | voice=ARDI | rate=-3% | pitch=+0Hz | Pembagian empat subsampel ===
+
+Data dibagi empat, secara acak, pada level satuan pendidikan, dengan seed yang bisa direplikasi. Tujuannya satu: mencegah kebocoran data antartahap analisis.
+
+Ini pembagiannya. Saya sarankan Anda hafal angka-angka ini, karena ini salah satu bagian yang paling konkret dan paling sering ditanyakan.
+
+Subsampel Diagnosis, tiga puluh persen, sekitar empat ribu dua ratus dua puluh enam sekolah. Dipakai untuk E-F-A pada Fase Satu.
+
+Subsampel Konfirmasi, dua puluh persen, sekitar dua ribu delapan ratus tujuh belas sekolah. Dipakai untuk C-F-A, pada data yang independen dari E-F-A.
+
+Subsampel Latih, tiga puluh lima persen, sekitar empat ribu sembilan ratus tiga puluh sekolah. Dipakai melatih Random Forest, X-G-Boost, M-E-R-F, dan G-L-M-M trees.
+
+Subsampel Uji, lima belas persen, sekitar dua ribu seratus tiga belas sekolah. Dipakai mengevaluasi akurasi akhir, dan dihitung hanya sekali, di akhir.
+
+Tiga puluh, dua puluh, tiga puluh lima, lima belas. Jumlahnya seratus persen.
+
+[[PAUSE 1.0]]
+
+Sekarang tiga alasan di balik pembagian ini, dan ketiganya layak Anda kuasai.
+
+Alasan pertama, kenapa Diagnosis dapat tiga puluh persen. Bukan karena angka bulat. Alasannya mengacu pada rasio observasi terhadap indikator yang lazim disarankan untuk E-F-A, yaitu berkisar minimal lima banding satu sampai sepuluh banding satu. Dengan empat puluh empat indikator, kebutuhan minimalnya antara dua ratus dua puluh sampai empat ratus empat puluh observasi. Sedangkan empat ribu dua ratus dua puluh enam jauh melampaui ambang mana pun. Jadi proporsi itu bisa dipertahankan secara defensible.
+
+Alasan kedua, kenapa Latih dan Uji dipakai identik untuk Fase Dua maupun Fase Tiga. Supaya perbandingan konsistensi antara kedua fase itu adil. Kedua model hanya boleh berbeda pada satu hal: apakah struktur bersarang dihormati atau tidak. Bukan berbeda pada data yang dipakai. Kalau datanya berbeda, Anda tidak akan tahu perbedaan hasil itu berasal dari metode atau dari datanya.
+
+Alasan ketiga, kenapa Fase Satu harus terpisah total dari Latih dan Uji. Karena keputusan feature engineering diambil di Fase Satu. Kalau keputusan itu diambil dari data yang sama dengan data pelatihan, maka performa model jadi "diuntungkan" oleh keputusan desain yang diambil dari data itu sendiri. Hasilnya terlihat bagus secara semu.
+
+[[PAUSE 0.8]]
+
+Satu istilah untuk semua ini: data leakage, atau kebocoran data. Itu dosa paling serius dalam pemodelan prediktif. Dan seluruh arsitektur pembagian empat subsampel ini pada dasarnya adalah pertahanan berlapis terhadap dosa itu.
+
+[[SFX chime]]
+
+=== END ===
+
+=== SEG 31 | voice=ARDI | rate=-2% | pitch=+0Hz | Definisi operasional variabel ===
+
+Bagian tujuh. Proses pengolahan data dan tools.
+
+Sebelum masuk ke prosesnya, kita rapikan dulu daftar variabelnya. Ada empat kelompok.
+
+Kelompok satu, variabel target Y. Capaian Literasi dan Numerasi level sekolah. Skor kontinu, hasil agregasi capaian siswa dari Asesmen Nasional dua ribu dua puluh lima. Diposisikan sebagai proksi mutu sekolah yang independen dari sumber data X.
+
+Kelompok dua, variabel prediktor utama X. Empat puluh empat indikator mutu Kasek, dipakai dalam bentuk skor item per sekolah — dengan catatan, apabila hasil perbandingan strategi fitur nanti memang mengonfirmasi keunggulannya.
+
+Kelompok tiga, variabel prediktor tambahan X. Status sosial-ekonomi sekolah, skala kontinu nol sampai seratus. Dan Indeks Pembangunan Manusia kabupaten atau kota, juga kontinu nol sampai seratus. Keduanya masuk ke dalam matriks fitur X yang sama, bukan diperlakukan sebagai variabel terpisah di luar pipeline.
+
+Kelompok empat, variabel konteks level dua untuk Fase Tiga. Indeks Pembangunan Manusia dua ribu dua puluh empat, klasifikasi urban-rural, wilayah bagian Indonesia — Barat, Tengah, atau Timur — jumlah S-M-P per kabupaten atau kota dalam bentuk rate, dan angka putus sekolah jenjang S-M-P per kabupaten atau kota, juga dalam bentuk rate.
+
+=== END ===
+
+=== SEG 32 | voice=ARDI | rate=-2% | pitch=+0Hz | Integrasi data dan praproses ===
+
+Sekarang praprosesnya. Bagian ini terdengar membosankan, tapi justru di sinilah penelitian data sekunder paling sering gagal diam-diam.
+
+Masalah utamanya: kode wilayah internal Asesmen Nasional dua ribu dua puluh lima tidak kompatibel langsung dengan kode Badan Pusat Statistik maupun Kementerian Dalam Negeri.
+
+Artinya Anda tidak bisa begitu saja menempelkan data Indeks Pembangunan Manusia ke data sekolah. Kodenya beda sistem.
+
+Solusinya adalah jalur crosswalk yang sudah diverifikasi, dengan tiga langkah. Dari kode sekolah, ke nama wilayah lewat tabel crosswalk, lalu pencocokan nama ke basis data Badan Pusat Statistik.
+
+[[PAUSE 0.8]]
+
+Selain itu, praprosesnya mencakup tiga hal.
+
+Satu, deduplikasi kode sekolah. Menghapus baris ganda.
+Dua, eksklusi tiga puluh enam satuan Paket B yang sudah kita bahas.
+Tiga, konversi angka putus sekolah dan jumlah S-M-P dari hitungan absolut menjadi rate per kabupaten atau kota.
+
+Langkah ketiga ini perlu Anda pahami alasannya. Kalau dipakai angka absolut, kabupaten besar akan selalu punya angka lebih tinggi semata karena ukurannya, bukan karena kondisinya. Mengubahnya jadi rate membuat perbandingan antarwilayah jadi adil.
+
+=== END ===
+
+=== SEG 33 | voice=ARDI | rate=-2% | pitch=+0Hz | Fase Satu: pelaksanaan EFA dan CFA ===
+
+Sekarang tiga fase analisisnya, satu per satu, lengkap dengan tools-nya.
+
+Fase Satu, diagnosis pengukuran.
+
+Alat yang dipakai: bahasa pemrograman R, dengan dua paket. Paket psych untuk E-F-A, termasuk Parallel Analysis dan rotasi Promax. Dan paket lavaan untuk C-F-A.
+
+Urutannya: E-F-A dijalankan di subsampel Diagnosis, lalu C-F-A dijalankan di subsampel Konfirmasi.
+
+[[PAUSE 0.8]]
+
+Uji method effect dilakukan dengan cara membandingkan dua skema pengelompokan. Skema pertama, pengelompokan berdasarkan kemiripan format atau tipe pertanyaan. Skema kedua, pengelompokan berdasarkan domain konten resmi.
+
+Perbandingannya memakai koefisien asosiasi kategorial bernama Cramér's V. Koefisien ini mengukur kekuatan hubungan antara dua variabel kategorial, dengan nilai antara nol dan satu. Makin mendekati satu, makin kuat hubungannya.
+
+Logikanya: kalau nilai Cramér's V antara struktur faktor hasil E-F-A dan pengelompokan format ternyata lebih tinggi dibanding dengan pengelompokan domain konten, maka itu bukti bahwa indikator lebih mengikuti format daripada isi. Itulah method effect.
+
+=== END ===
+
+=== SEG 34 | voice=ARDI | rate=-2% | pitch=+0Hz | Perbandingan strategi fitur ===
+
+Ada satu langkah antara, yang berdiri di antara Fase Satu dan Fase Dua. Langkah ini menjawab rumusan masalah dua, dan sebaiknya jangan Anda lewatkan, karena struktur logikanya sangat rapi.
+
+Pertanyaannya: pakai skor item per sekolah, atau skor domain gabungan?
+
+Diagnosis Fase Satu memang memberi jawaban teoretis. Tapi penelitian ini tidak berhenti di situ. Jawaban teoretis itu diuji secara empiris.
+
+[[PAUSE 0.8]]
+
+Caranya: kedua strategi dilatih memakai algoritma yang sama, yaitu Random Forest, pada subsampel Latih yang sama. Lalu dievaluasi dengan grouped k-fold cross-validation yang dikelompokkan berdasarkan kabupaten atau kota. Perbandingannya berdasarkan R-M-S-E dan R kuadrat.
+
+Saya jelaskan dua istilah itu sebentar.
+
+Cross-validation, atau validasi silang, adalah cara menguji model tanpa menyentuh data uji akhir. Data latih dipotong jadi beberapa lipatan, biasa disebut fold. Model dilatih di sebagian lipatan, diuji di lipatan sisanya, lalu diputar sampai semua lipatan pernah jadi penguji.
+
+Yang bikin khusus di sini adalah kata grouped. Pemotongan lipatannya tidak acak per sekolah, melainkan dikelompokkan per kabupaten atau kota. Artinya, sekolah-sekolah dari kabupaten yang sama selalu berada di lipatan yang sama.
+
+Kenapa? Karena kalau dua sekolah dari kabupaten yang sama terpisah — satu di data latih, satu di data uji — model bisa "mengintip" karakteristik kabupaten itu dari sekolah tetangganya. Itu bentuk halus dari kebocoran data.
+
+[[PAUSE 0.8]]
+
+Sekarang metriknya. R-M-S-E, kepanjangannya Root Mean Squared Error, adalah rata-rata besar kesalahan prediksi. Makin kecil makin baik. M-A-E, Mean Absolute Error, konsepnya mirip, tapi tidak menghukum kesalahan besar sekeras R-M-S-E. R kuadrat menunjukkan proporsi variasi Y yang bisa dijelaskan model. Makin besar makin baik, dengan satu sebagai sempurna.
+
+[[PAUSE 1.0]]
+
+Dan inilah bagian terbaiknya. Aturan keputusannya sudah ditetapkan di muka, lengkap dengan skenario seri.
+
+Kalau salah satu strategi menang secara prediktif, strategi itu yang dipakai — dengan temuan method effect dari Fase Satu berperan sebagai penjelasan substantif atas kenapa ia menang, bukan sebagai penentu tunggal.
+
+Kalau keduanya ternyata setara secara statistik, keputusan mengikuti hasil diagnosis Fase Satu, yaitu skor item per sekolah, dengan alasan dasar teoretisnya lebih kuat.
+
+Menetapkan aturan main sebelum melihat hasil. Itu tanda integritas metodologis.
+
+=== END ===
+
+=== SEG 35 | voice=ARDI | rate=-2% | pitch=+0Hz | Fase Dua dan Fase Tiga ===
+
+Fase Dua, pemodelan explainable machine learning.
+
+Random Forest dan X-G-Boost dilatih pada subsampel Latih, memakai strategi fitur terpilih dari langkah sebelumnya. Penyetelan parameter dilakukan lewat grouped k-fold cross-validation berbasis kabupaten atau kota, seluruhnya di dalam subsampel Latih, tanpa menyentuh subsampel Uji sama sekali.
+
+Pembandingnya regresi linear berganda, yang berperan sebagai baseline. Baseline artinya garis dasar. Kalau model canggih tidak mampu mengalahkan regresi biasa, maka kecanggihannya tidak terbukti berguna di data ini — dan itu pun temuan yang sah dan layak dilaporkan.
+
+Interpretasinya lewat TreeSHAP, untuk kontribusi dan arah tiap fitur. Lalu SHAP interaction values, untuk menguji interaksi status sosial-ekonomi sekolah dengan Indeks Pembangunan Manusia.
+
+Evaluasi akhir memakai subsampel Uji, dan dihitung satu kali saja. Kenapa satu kali? Karena kalau Anda berulang kali mengintip data uji lalu menyetel ulang model, data uji itu perlahan berubah menjadi data latih. Modelnya jadi terlihat bagus di kertas, tapi rapuh di dunia nyata. Itu bentuk overfitting.
+
+[[PAUSE 1.0]]
+
+Fase Tiga, validasi multilevel.
+
+M-E-R-F dan atau G-L-M-M trees dilatih pada subsampel Latih yang sama, dengan struktur bersarang sekolah dalam kabupaten atau kota, memakai skema cross-validation yang sama, dan dievaluasi pada subsampel Uji yang sama. Persis seperti yang dijanjikan tadi: satu-satunya perbedaan adalah penghormatan pada struktur bersarang.
+
+Ada satu langkah pemeriksaan sebelum estimasi dijalankan, dan ini menunjukkan kehati-hatian. Distribusi jumlah sekolah per kabupaten atau kota pada subsampel Latih akan dilaporkan eksplisit: nilai minimum, median, dan maksimum.
+
+Alasannya begini. Subsampel Latih berisi sekitar empat ribu sembilan ratus tiga puluh sekolah yang tersebar di lima ratus satu kabupaten atau kota. Rata-ratanya sekitar sembilan koma delapan sekolah per kabupaten. Tapi rata-rata menyembunyikan ketimpangan. Akan ada kabupaten dengan puluhan sekolah, dan ada yang hanya punya dua atau tiga.
+
+Pada klaster yang sangat kecil, estimasi random effect jadi tidak stabil. Maka kabupaten dengan jumlah sekolah kurang dari lima akan ditandai eksplisit sebagai keterbatasan interpretasi.
+
+[[PAUSE 0.8]]
+
+Lalu dekomposisi variance component menjawab rumusan masalah enam A: seberapa besar porsi variasi mutu yang bisa dijelaskan perbedaan antarwilayah, dan seberapa besar Indeks Pembangunan Manusia berperan di dalamnya.
+
+[[PAUSE 1.0]]
+
+Terakhir, uji konsistensi antara Fase Dua dan Fase Tiga. Ini penutup logika seluruh penelitian.
+
+Caranya: peringkat feature importance dari SHAP pada Fase Dua dibandingkan dengan peringkat variable importance dari Fase Tiga, memakai korelasi Spearman.
+
+Korelasi Spearman adalah korelasi antarperingkat, bukan antarnilai. Cocok dipakai di sini karena yang dibandingkan memang urutan kepentingan, bukan besaran yang satuannya sama.
+
+Ambangnya rho lebih besar atau sama dengan nol koma tujuh nol.
+
+Dan perhatikan kejujuran dalam menetapkan ambang ini. Proposalnya menyebut secara terbuka bahwa angka nol koma tujuh nol mengacu pada konvensi umum korelasi kuat, dan ditetapkan sebagai keputusan a priori peneliti. Artinya: ini bukan hukum alam, ini keputusan yang diambil di muka dan dinyatakan terbuka.
+
+Interpretasinya dua arah. Kalau rho mencapai ambang, pola Fase Dua dinyatakan konsisten dan temuannya kokoh. Kalau di bawah ambang, itu diinterpretasikan sebagai indikasi bahwa sebagian pola Fase Dua dipengaruhi confounding struktur wilayah yang belum terkoreksi.
+
+Dua-duanya adalah temuan. Tidak ada skenario gagal di sini. Itu ciri desain penelitian yang baik.
+
+[[SFX chime]]
+
+=== END ===
+
+=== SEG 36 | voice=ARDI | rate=-2% | pitch=+0Hz | Luaran dan manfaat ===
+
+Bagian delapan. Luaran, manfaat, keterbatasan, dan etika.
+
+Luaran yang diharapkan ada tiga.
+
+Satu, model prediktif mutu S-M-P berbasis explainable machine learning yang sudah divalidasi dua kali: secara konstruk pengukuran pada Fase Satu, dan secara struktur bersarang wilayah pada Fase Tiga.
+
+Dua, daftar indikator Asesmen Nasional Kasek yang paling dominan berkontribusi terhadap capaian Literasi dan Numerasi, lengkap dengan arah kontribusinya.
+
+Tiga, pemetaan pola interaksi antara status sosial-ekonomi sekolah dan konteks wilayah.
+
+[[PAUSE 0.8]]
+
+Manfaatnya dibagi tiga jenis, dan pembagian ini standar dalam disertasi Indonesia.
+
+Manfaat teoretis, ada tiga capaian. Pertama, memperluas literatur method effect dari instrumen self-report individual ke indikator teragregasi level institusi. Kedua, memperkaya literatur explainable machine learning dalam pendidikan yang selama ini terpusat di level siswa. Ketiga, menunjukkan penggunaan SHAP interaction values sebagai pendekatan alternatif menguji interaksi antarfitur langsung dari model terlatih.
+
+Manfaat praktis. Sasarannya Direktorat S-M-P dan Dinas Pendidikan kabupaten atau kota, dalam mendukung platform Rapor Pendidikan dan program aksi benahi. Bentuk konkretnya: menginformasikan prioritas alokasi B-O-S Afirmasi, atau penentuan sekolah sasaran pendampingan. Ini kontras dengan laporan deskriptif-agregat yang tersedia saat ini. Ditambah, temuan diagnosis method effect bisa jadi masukan bagi Kemendikdasmen untuk meninjau format item pada siklus pengembangan instrumen berikutnya.
+
+Manfaat metodologis. Menunjukkan kepada komunitas peneliti pendidikan Indonesia sebuah alur analitik tiga fase yang bisa direplikasi pada jenjang atau instrumen asesmen lain. Sekaligus menunjukkan kelayakan teknis M-E-R-F dan G-L-M-M trees untuk memvalidasi struktur bersarang pada pipeline machine learning di data pendidikan Indonesia.
+
+=== END ===
+
+=== SEG 37 | voice=ARDI | rate=-2% | pitch=+0Hz | Keterbatasan dan etika ===
+
+Sekarang keterbatasan. Ada lima, dan semuanya diakui eksplisit. Saya sarankan Anda hafal kelimanya, karena mengakui keterbatasan lebih dulu selalu lebih kuat daripada dipergoki penguji.
+
+Satu, karena X dan Y sama-sama bersumber dari siklus pengumpulan data yang sama, hubungannya bersifat asosiatif-konkuren, bukan kausal maupun prediktif ke depan waktu.
+
+Dua, instrumen Asesmen Nasional dirancang untuk pelaporan kebijakan nasional, bukan untuk kepentingan penelitian akademik spesifik. Ini keterbatasan inheren analisis data sekunder, sebagaimana diakui Logan, dan tidak sepenuhnya bisa dikompensasi lewat diagnosis pengukuran Fase Satu.
+
+Tiga, estimasi pada kabupaten atau kota dengan jumlah sekolah sangat kecil berisiko kurang stabil.
+
+Empat, penelitian ini terbatas pada algoritma ensemble berbasis pohon. Jaringan saraf tiruan dan deep learning tidak dieksplorasi.
+
+Lima, tahap validasi eksplanasi lintas-informan bersifat kondisional pada ketersediaan waktu.
+
+[[PAUSE 1.0]]
+
+Terakhir, etika penelitian.
+
+Penelitian ini sepenuhnya memakai data sekunder agregat pada level sekolah dan level wilayah. Tidak memuat informasi identitas individu siswa, guru, maupun kepala sekolah. Maka risiko terhadap privasi subjek tergolong minimal.
+
+Akses data akan diperoleh melalui mekanisme resmi permohonan kepada Kemendikdasmen dan Badan Pusat Statistik, sesuai ketentuan yang berlaku.
+
+Dan ada satu komitmen yang ditulis eksplisit, yang menurut saya patut dicatat: peneliti berkomitmen melaporkan seluruh hasil analisis secara jujur dan transparan, termasuk temuan yang tidak sesuai dengan asumsi awal. Misalnya, kalau hasil perbandingan strategi fitur ternyata tidak mendukung keputusan Fase Satu.
+
+Menulis kemungkinan "hipotesis saya salah" di dalam proposal sendiri bukan kelemahan. Itu tanda peneliti yang mencari kebenaran, bukan mencari pembenaran.
+
+[[SFX chime]]
+
+=== END ===
+
+=== SEG 38 | voice=GADIS | rate=-2% | pitch=+0Hz | Antisipasi pertanyaan penguji, bagian satu ===
+
+Bagian sembilan. Antisipasi pertanyaan penguji.
+
+Suara berganti di bagian ini supaya telinga Anda tahu bahwa modenya berbeda. Berikut delapan pertanyaan yang paling mungkin muncul, beserta arah jawabannya.
+
+[[PAUSE 0.8]]
+
+Pertanyaan satu. Ini bukankah hanya latihan machine learning, bukan penelitian pendidikan?
+Arah jawaban: unit analisisnya sekolah, kerangkanya C-I-P-O, dan mesin machine learning-nya diapit dua lapis validitas yang justru berasal dari tradisi psikometri dan statistik multilevel. Machine learning di sini alat, bukan tujuan.
+
+Pertanyaan dua. Kalau Azizah dan koleganya sudah pakai M-E-R-F pada data Asesmen Nasional, apa bedanya?
+Arah jawaban: empat beda. Target multidimensi bukan skor tunggal, SHAP bukan variable importance biasa, ada diagnosis validitas konstruk, dan cakupannya nasional jenjang S-M-P bukan satu provinsi jenjang S-M-A.
+
+Pertanyaan tiga. Kenapa hanya data Kepala Sekolah? Bukankah persepsi kepala sekolah bisa bias menyenangkan diri sendiri?
+Arah jawaban: justru karena itu Y diambil dari sumber berbeda, yaitu hasil tes siswa, untuk menghindari sirkularitas. Dan tahap validasi lintas-informan dengan guru dan siswa disiapkan sebagai pemeriksaan tambahan yang bersifat kondisional.
+
+Pertanyaan empat. Kalau datanya sensus, kenapa masih bicara sampel dan pembagian data?
+Arah jawaban: pembagian data di sini bukan untuk generalisasi populasi, melainkan untuk validasi internal dan pencegahan kebocoran data antartahap.
+
+=== END ===
+
+=== SEG 39 | voice=GADIS | rate=-2% | pitch=+0Hz | Antisipasi pertanyaan penguji, bagian dua ===
+
+Pertanyaan lima. Kalau method effect memang ada, bukankah itu berarti instrumen Asesmen Nasional cacat dan seluruh datanya tidak layak dipakai?
+Arah jawaban: tidak sejauh itu. Method effect berarti sebagian varians bersumber dari format, bukan seluruh varians. Justru karena itu strategi fiturnya beralih ke skor item per sekolah, bukan skor domain gabungan. Dan perlu ditegaskan, penelitian ini bersifat diagnostik-justifikatif, bukan pengembangan ulang instrumen.
+
+Pertanyaan enam. Kenapa ambang rho nol koma tujuh nol, bukan nol koma enam atau nol koma delapan?
+Arah jawaban: akui terbuka bahwa itu keputusan a priori peneliti yang mengacu pada konvensi umum korelasi kuat. Tekankan bahwa nilainya ditetapkan sebelum melihat data, dan bahwa hasil di bawah ambang pun tetap bermakna sebagai indikasi confounding wilayah.
+
+Pertanyaan tujuh. Apa yang terjadi kalau Random Forest ternyata kalah dari regresi linear?
+Arah jawaban: itu tetap temuan yang sah dan akan dilaporkan. Justru menunjukkan bahwa struktur hubungan di data ini lebih linear dari dugaan. Desain penelitian ini tidak mensyaratkan machine learning harus menang.
+
+Pertanyaan delapan. Kenapa berhenti di dua level? Kenapa tidak sampai provinsi?
+Arah jawaban: struktur bersarang yang lebih tinggi eksplisit dinyatakan di luar cakupan pada Pembatasan Masalah. Dengan lima ratus satu kabupaten atau kota sebagai unit level dua, jumlah klaster sudah sangat memadai untuk estimasi random effect.
+
+[[PAUSE 1.0]]
+
+Satu saran umum untuk semua pertanyaan ini. Kalau Anda tidak yakin, jangan mengarang. Kalimat "itu belum saya pertimbangkan, dan itu masukan yang akan saya tindak lanjuti" jauh lebih kuat daripada jawaban yang terdengar percaya diri tapi keliru.
+
+[[SFX chime]]
+
+=== END ===
+
+=== SEG 40 | voice=ARDI | rate=-3% | pitch=+0Hz | Rekap ===
+
+Bagian sepuluh. Rekap.
+
+Mari kita kumpulkan semuanya dalam satu tarikan napas.
+
+[[PAUSE 0.6]]
+
+Masalahnya: data Asesmen Nasional dua ribu dua puluh lima memuat empat puluh empat indikator mutu dari hampir seluruh S-M-P dan M-Ts Indonesia, tapi baru dimanfaatkan secara deskriptif dan linear.
+
+Solusinya: explainable machine learning pada level sekolah, yang menjelaskan bukan sekadar memprediksi.
+
+Tapi solusi itu punya dua titik rawan, dan penelitian ini menutup keduanya.
+
+Titik rawan pertama, validitas bahan mentahnya. Ditutup oleh Fase Satu: diagnosis method effect lewat E-F-A dan C-F-A, yang menghasilkan keputusan memakai skor item per sekolah.
+
+Titik rawan kedua, asumsi independensi observasi. Ditutup oleh Fase Tiga: validasi lewat M-E-R-F dan G-L-M-M trees, yang menghormati sekolah bersarang dalam kabupaten atau kota.
+
+Di antara keduanya, Fase Dua sebagai mesin utama: Random Forest dan X-G-Boost, diinterpretasi lewat TreeSHAP, dengan SHAP interaction values untuk memeriksa interaksi status sosial-ekonomi sekolah dengan Indeks Pembangunan Manusia.
+
+Datanya empat belas ribu delapan puluh lima sekolah, dibagi empat: tiga puluh, dua puluh, tiga puluh lima, lima belas persen.
+
+Muaranya rekomendasi kebijakan yang actionable bagi Rapor Pendidikan dan aksi benahi.
+
+[[PAUSE 1.0]]
+
+Dan kalimat yang saya minta Anda pegang sejak menit pertama, sekarang seharusnya sudah punya isi:
+
+[[PAUSE 0.6]]
+
+Dua lapis validitas, mengapit satu mesin prediktif utama.
+
+=== END ===
+
+=== SEG 41 | voice=ARDI | rate=-4% | pitch=+0Hz | Latihan mengingat dan penutup ===
+
+Terakhir, sepuluh pertanyaan untuk menguji ingatan Anda. Setelah tiap pertanyaan akan ada hening. Jawablah dalam hati sebelum saya lanjut. Jangan lewati bagian ini — mengingat kembali jauh lebih kuat daripada mendengar ulang.
+
+[[PAUSE 1.0]]
+
+Satu. Berapa jumlah indikator yang dipakai, dan kenapa bukan empat puluh enam?
+[[PAUSE 5.0]]
+
+Dua. Apa yang menjadi variabel Y, dan dari responden mana asalnya?
+[[PAUSE 5.0]]
+
+Tiga. Kenapa sumber X dan Y sengaja dipisah?
+[[PAUSE 5.0]]
+
+Empat. Apa itu method effect, dalam satu kalimat?
+[[PAUSE 5.0]]
+
+Lima. Apa beda E-F-A dan C-F-A, dan kenapa keduanya harus dijalankan pada subsampel berbeda?
+[[PAUSE 5.0]]
+
+Enam. Apa tiga properti fundamental SHAP?
+[[PAUSE 6.0]]
+
+Tujuh. Kenapa cross-validation-nya harus grouped berdasarkan kabupaten atau kota?
+[[PAUSE 5.0]]
+
+Delapan. Apa peran M-E-R-F dan G-L-M-M trees dalam penelitian ini — model utama, atau alat validasi?
+[[PAUSE 5.0]]
+
+Sembilan. Berapa ambang korelasi Spearman untuk menyatakan konsisten, dan apa artinya kalau di bawah ambang?
+[[PAUSE 6.0]]
+
+Sepuluh. Sebutkan tiga celah penelitian yang diisi studi ini.
+[[PAUSE 7.0]]
+
+[[PAUSE 1.0]]
+
+Kalau Anda bisa menjawab tujuh dari sepuluh, Anda sudah memegang inti penelitian ini. Kalau belum, putar ulang bagian dua — kosakata dasar — karena hampir semua pertanyaan tadi berakar di sana.
+
+[[PAUSE 1.2]]
+
+Sampai di sini bahan belajar kita. Semoga membantu, dan selamat menyiapkan ujian.
+
+=== END ===

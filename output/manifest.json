@@ -1,0 +1,423 @@
+{
+ "title": "Bahan Belajar Disertasi Herman",
+ "album": "Prediktor Mutu SMP di Indonesia melalui Explainable Machine Learning",
+ "backend": "gtrans",
+ "post_rate_applied": false,
+ "total_duration_sec": 5930.808,
+ "n_segments": 41,
+ "n_chunks": 242,
+ "n_speech_chunks": 136,
+ "n_silence_chunks": 106,
+ "segments": [
+  {
+   "number": 1,
+   "title": "Cold open",
+   "voice": "ARDI",
+   "rate": "-6%",
+   "pitch": "+0Hz",
+   "start": 0.0,
+   "end": 42.424,
+   "duration": 42.424
+  },
+  {
+   "number": 2,
+   "title": "Orientasi dan peta jalan",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 42.424,
+   "end": 195.704,
+   "duration": 153.28
+  },
+  {
+   "number": 3,
+   "title": "Masalah besar: ketimpangan mutu",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 195.704,
+   "end": 286.496,
+   "duration": 90.792
+  },
+  {
+   "number": 4,
+   "title": "Data besar, pemanfaatan kecil",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 286.496,
+   "end": 396.656,
+   "duration": 110.16
+  },
+  {
+   "number": 5,
+   "title": "Solusi yang tersedia dan jebakannya",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 396.656,
+   "end": 560.648,
+   "duration": 163.992
+  },
+  {
+   "number": 6,
+   "title": "Jembatan ke bagian kosakata",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 560.648,
+   "end": 603.032,
+   "duration": 42.384
+  },
+  {
+   "number": 7,
+   "title": "Kosakata 1: Asesmen Nasional dan data Kepala Sekolah",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 603.032,
+   "end": 775.128,
+   "duration": 172.096
+  },
+  {
+   "number": 8,
+   "title": "Kosakata 2: fitur, target, dan bahaya sirkularitas",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 775.128,
+   "end": 924.32,
+   "duration": 149.192
+  },
+  {
+   "number": 9,
+   "title": "Kosakata 3: prediksi bukan sebab-akibat",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 924.32,
+   "end": 1013.464,
+   "duration": 89.144
+  },
+  {
+   "number": 10,
+   "title": "Kosakata 4: method effect",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 1013.464,
+   "end": 1183.896,
+   "duration": 170.432
+  },
+  {
+   "number": 11,
+   "title": "Kosakata 5: EFA dan CFA",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 1183.896,
+   "end": 1400.768,
+   "duration": 216.872
+  },
+  {
+   "number": 12,
+   "title": "Kosakata 6: soal estimator MLR dan WLSMV",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 1400.768,
+   "end": 1525.968,
+   "duration": 125.2
+  },
+  {
+   "number": 13,
+   "title": "Kosakata 7: Random Forest dan XGBoost",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 1525.968,
+   "end": 1683.096,
+   "duration": 157.128
+  },
+  {
+   "number": 14,
+   "title": "Kosakata 8: SHAP, jantung penelitian ini",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 1683.096,
+   "end": 1895.28,
+   "duration": 212.184
+  },
+  {
+   "number": 15,
+   "title": "Kosakata 9: SHAP interaction values",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 1895.28,
+   "end": 1997.2,
+   "duration": 101.92
+  },
+  {
+   "number": 16,
+   "title": "Kosakata 10: data bersarang, MERF, dan GLMM trees",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 1997.2,
+   "end": 2205.36,
+   "duration": 208.16
+  },
+  {
+   "number": 17,
+   "title": "Tiga celah dan klaim kebaruan",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 2205.36,
+   "end": 2325.16,
+   "duration": 119.8
+  },
+  {
+   "number": 18,
+   "title": "Studi relevan kelompok satu: tradisi Indonesia",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 2325.16,
+   "end": 2458.104,
+   "duration": 132.944
+  },
+  {
+   "number": 19,
+   "title": "Studi relevan kelompok dua dan tiga",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 2458.104,
+   "end": 2675.248,
+   "duration": 217.144
+  },
+  {
+   "number": 20,
+   "title": "Kerangka pikir: dua lapis validitas",
+   "voice": "ARDI",
+   "rate": "-3%",
+   "pitch": "+0Hz",
+   "start": 2675.248,
+   "end": 2850.984,
+   "duration": 175.736
+  },
+  {
+   "number": 21,
+   "title": "Teori 1: mutu sekolah dan kerangka CIPO",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 2850.984,
+   "end": 2992.152,
+   "duration": 141.168
+  },
+  {
+   "number": 22,
+   "title": "Teori 2: pemakaian CIPO secara parsial",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 2992.152,
+   "end": 3113.8,
+   "duration": 121.648
+  },
+  {
+   "number": 23,
+   "title": "Teori 3: konteks wilayah dan Indeks Pembangunan Manusia",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 3113.8,
+   "end": 3289.544,
+   "duration": 175.744
+  },
+  {
+   "number": 24,
+   "title": "Teori 4: validitas multi-informan dan justifikasi agregasi",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 3289.544,
+   "end": 3457.784,
+   "duration": 168.24
+  },
+  {
+   "number": 25,
+   "title": "Rumusan masalah satu sampai empat",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 3457.784,
+   "end": 3577.784,
+   "duration": 120.0
+  },
+  {
+   "number": 26,
+   "title": "Rumusan masalah lima dan enam",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 3577.784,
+   "end": 3683.952,
+   "duration": 106.168
+  },
+  {
+   "number": 27,
+   "title": "Hipotesis dan alasan dua rumusan tidak dihipotesiskan",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 3683.952,
+   "end": 3849.792,
+   "duration": 165.84
+  },
+  {
+   "number": 28,
+   "title": "Desain penelitian dan sumber data",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 3849.792,
+   "end": 3962.048,
+   "duration": 112.256
+  },
+  {
+   "number": 29,
+   "title": "Populasi, sensus, dan kenapa tidak ada sampling probabilitas",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 3962.048,
+   "end": 4069.68,
+   "duration": 107.632
+  },
+  {
+   "number": 30,
+   "title": "Pembagian empat subsampel",
+   "voice": "ARDI",
+   "rate": "-3%",
+   "pitch": "+0Hz",
+   "start": 4069.68,
+   "end": 4286.904,
+   "duration": 217.224
+  },
+  {
+   "number": 31,
+   "title": "Definisi operasional variabel",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 4286.904,
+   "end": 4393.656,
+   "duration": 106.752
+  },
+  {
+   "number": 32,
+   "title": "Integrasi data dan praproses",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 4393.656,
+   "end": 4488.656,
+   "duration": 95.0
+  },
+  {
+   "number": 33,
+   "title": "Fase Satu: pelaksanaan EFA dan CFA",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 4488.656,
+   "end": 4580.92,
+   "duration": 92.264
+  },
+  {
+   "number": 34,
+   "title": "Perbandingan strategi fitur",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 4580.92,
+   "end": 4781.496,
+   "duration": 200.576
+  },
+  {
+   "number": 35,
+   "title": "Fase Dua dan Fase Tiga",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 4781.496,
+   "end": 5076.76,
+   "duration": 295.264
+  },
+  {
+   "number": 36,
+   "title": "Luaran dan manfaat",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 5076.76,
+   "end": 5232.504,
+   "duration": 155.744
+  },
+  {
+   "number": 37,
+   "title": "Keterbatasan dan etika",
+   "voice": "ARDI",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 5232.504,
+   "end": 5385.712,
+   "duration": 153.208
+  },
+  {
+   "number": 38,
+   "title": "Antisipasi pertanyaan penguji, bagian satu",
+   "voice": "GADIS",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 5385.712,
+   "end": 5506.3596,
+   "duration": 120.648
+  },
+  {
+   "number": 39,
+   "title": "Antisipasi pertanyaan penguji, bagian dua",
+   "voice": "GADIS",
+   "rate": "-2%",
+   "pitch": "+0Hz",
+   "start": 5506.3596,
+   "end": 5646.8635,
+   "duration": 140.504
+  },
+  {
+   "number": 40,
+   "title": "Rekap",
+   "voice": "ARDI",
+   "rate": "-3%",
+   "pitch": "+0Hz",
+   "start": 5646.8635,
+   "end": 5768.3915,
+   "duration": 121.528
+  },
+  {
+   "number": 41,
+   "title": "Latihan mengingat dan penutup",
+   "voice": "ARDI",
+   "rate": "-4%",
+   "pitch": "+0Hz",
+   "start": 5768.3915,
+   "end": 5930.7595,
+   "duration": 162.368
+  }
+ ]
+}
